@@ -1482,7 +1482,7 @@
                 // Get user profile for location data
                 const { data: profile } = await window.hardySupabase
                     .from('profiles')
-                    .select('neighborhood, location_coords')
+                    .select('neighborhood, location_coords, zip_code')
                     .eq('id', currentUser.id)
                     .single();
                 
@@ -1505,6 +1505,7 @@
                     expires_at: expiresAt.toISOString(),
                     is_active: true,
                     status: 'active',
+                    zip_code: profile?.zip_code || null,
                     location_display: profile?.neighborhood || null,
                     location_coords: profile?.location_coords || null
                 };
@@ -1541,6 +1542,17 @@
                             .update({ image_urls: imageUrls })
                             .eq('id', listingId);
                     }
+                }
+                
+                // Send confirmation email for new listings (not updates)
+                if (!editListingId && result.data && result.data[0]) {
+                    const listingId = result.data[0].id;
+                    const userEmail = currentUser.email;
+                    const userName = userProfile?.full_name || userProfile?.nickname || 'Gardener';
+                    const listingTitle = listingData.title;
+                    
+                    // Send confirmation email (don't await - let it run in background)
+                    sendListingConfirmationEmail(userEmail, userName, listingTitle, listingId);
                 }
                 
                 // Track in analytics
