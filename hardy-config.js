@@ -129,7 +129,7 @@ function createWelcomeEmail(userName) {
                 </div>
                 <div style="padding: 30px; background-color: #f9f9f9;">
                     <p>Hi ${userName},</p>
-                    <p>Welcome to Hardy, the community gardening platform connecting neighbors in Kenosha and Racine Counties!</p>
+                    <p>Welcome to Hardy, the Community Garden in Your Pocket!</p>
                     <p>You can now:</p>
                     <ul>
                         <li>🥕 Share your surplus harvest with neighbors</li>
