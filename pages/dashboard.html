@@ -1,0 +1,2444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard - Hardy Home and Garden</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Hardy Config -->
+    <script src="../hardy-config.js"></script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CJ4MS44MBB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-CJ4MS44MBB');
+    </script>
+    
+    <style>
+        /* CSS Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Variables */
+        :root {
+            /* Brand Colors */
+            --hardy-green: #4CAF50;
+            --hardy-green-dark: #388E3C;
+            --hardy-green-light: #A5D6A7;
+            
+            /* Supporting Colors */
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --text-light: #FFFFFF;
+            --background-light: #F9F9F9;
+            --background-white: #FFFFFF;
+            --border-color: #E0E0E0;
+            
+            /* Spacing */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-xxl: 3rem;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            
+            /* Box Shadows */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-md: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        }
+        
+        /* Base Styles */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background-color: var(--background-light);
+        }
+        
+        a {
+            color: var(--hardy-green);
+            text-decoration: none;
+        }
+        
+        a:hover {
+            color: var(--hardy-green-dark);
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+        
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Lora', serif;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+        }
+        
+        h2 {
+            font-size: 2rem;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+        }
+        
+        p {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--hardy-green);
+            color: var(--text-light);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--hardy-green-dark);
+            color: var(--text-light);
+        }
+        
+        .btn-secondary {
+            background-color: var(--text-light);
+            color: var(--hardy-green);
+            border: 2px solid var(--hardy-green);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-secondary);
+            border: 2px solid var(--border-color);
+        }
+        
+        .btn-outline:hover {
+            border-color: var(--hardy-green);
+            color: var(--hardy-green);
+        }
+        
+        .btn-small {
+            padding: var(--spacing-xs) var(--spacing-md);
+            font-size: 0.9rem;
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        /* Header */
+        .site-header {
+            background-color: var(--background-white);
+            box-shadow: var(--shadow-sm);
+            padding: var(--spacing-md) 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .site-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            max-width: 150px;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .main-nav ul {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+        
+        .main-nav a {
+            color: var(--text-primary);
+            font-weight: 600;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: var(--hardy-green);
+            background-color: var(--hardy-green-light);
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .user-menu {
+            position: relative;
+        }
+        
+        .user-menu-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            background: none;
+            border: 2px solid var(--border-color);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .user-menu-btn:hover {
+            border-color: var(--hardy-green);
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: var(--hardy-green-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--hardy-green-dark);
+            font-weight: bold;
+        }
+        
+        /* User Dropdown Menu */
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: var(--spacing-xs);
+            background-color: var(--background-white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            min-width: 200px;
+            z-index: 1001;
+            display: none;
+            border: 1px solid var(--border-color);
+        }
+        
+        .user-dropdown.show {
+            display: block;
+        }
+        
+        .user-dropdown a,
+        .user-dropdown button {
+            display: block;
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            text-align: left;
+            color: var(--text-primary);
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+        
+        .user-dropdown a:hover,
+        .user-dropdown button:hover {
+            background-color: var(--background-light);
+            color: var(--hardy-green);
+        }
+        
+        .user-dropdown .divider {
+            height: 1px;
+            background-color: var(--border-color);
+            margin: var(--spacing-xs) 0;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+        
+        /* Dashboard Specific */
+        .dashboard-header {
+            background-color: var(--background-white);
+            padding: var(--spacing-xl) 0;
+            margin-bottom: var(--spacing-xl);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .dashboard-welcome {
+            text-align: center;
+        }
+        
+        .welcome-text h1 {
+            color: var(--hardy-green-dark);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .member-info {
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+        
+        .neighborhood-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+        }
+        
+        /* Tab Navigation */
+        .dashboard-tabs {
+            display: flex;
+            gap: var(--spacing-xs);
+            margin-bottom: var(--spacing-xl);
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: var(--spacing-md) var(--spacing-lg);
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-btn:hover {
+            color: var(--hardy-green);
+        }
+        
+        .tab-btn.active {
+            color: var(--hardy-green);
+        }
+        
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--hardy-green);
+        }
+        
+        .tab-btn .badge {
+            background-color: var(--hardy-green);
+            color: white;
+            padding: 0.2rem 0.4rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: var(--spacing-xs);
+        }
+        
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .dashboard-card {
+            background-color: var(--background-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            padding: var(--spacing-xl);
+            transition: all 0.3s ease;
+        }
+        
+        .dashboard-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .card-header h3 {
+            margin-bottom: 0;
+            color: var(--hardy-green-dark);
+        }
+        
+        .card-icon {
+            font-size: 1.5rem;
+            color: var(--hardy-green);
+        }
+        
+        /* ============================= */
+        /* Mobile Message Toggle Buttons */
+        /* ============================= */
+        .mobile-message-toggle {
+            display: none;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-xs);
+            margin-bottom: var(--spacing-md);
+            background-color: var(--background-white);
+            padding: var(--spacing-xs);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .mobile-message-toggle .toggle-btn {
+            background: none;
+            border: none;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            font-size: 14px;
+        }
+
+        .mobile-message-toggle .toggle-btn.active {
+            background-color: var(--hardy-green);
+            color: white;
+        }
+
+        .mobile-message-toggle .toggle-btn:not(.active):hover {
+            background-color: var(--background-light);
+        }
+
+        .mobile-message-toggle .toggle-btn i {
+            font-size: 16px;
+        }
+
+        /* ======================= */
+        /* Mobile Back Button      */
+        /* ======================= */
+        .mobile-back-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--hardy-green);
+            font-weight: 600;
+            cursor: pointer;
+            padding: var(--spacing-xs);
+            margin-bottom: var(--spacing-xs);
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: 14px;
+            transition: color 0.2s ease;
+        }
+
+        .mobile-back-btn:hover {
+            color: var(--hardy-green-dark);
+        }
+
+        .mobile-back-btn i {
+            font-size: 18px;
+        }
+        
+        /* Messages Styles - FIXED FOR SCROLLING */
+        .messages-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: var(--spacing-lg);
+            height: 600px;
+            background-color: var(--background-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+        
+        .conversations-list {
+            background-color: var(--background-light);
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .conversations-header {
+            padding: var(--spacing-md);
+            background-color: var(--background-white);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        #conversations-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .conversation-item {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .conversation-item:hover {
+            background-color: var(--background-white);
+        }
+        
+        .conversation-item.active {
+            background-color: var(--hardy-green-light);
+        }
+        
+        .conversation-item.unread {
+            font-weight: 600;
+        }
+        
+        .conversation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .conversation-user {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .conversation-time {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .conversation-listing {
+            font-size: 0.9rem;
+            color: var(--hardy-green-dark);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .conversation-preview {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        
+        /* Message View - FIXED FOR SCROLLING */
+        .message-view {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .message-header {
+            padding: var(--spacing-md);
+            background-color: var(--background-white);
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+        
+        .message-header h3 {
+            margin-bottom: var(--spacing-xs);
+            font-size: 1.2rem;
+        }
+        
+        .message-listing-info {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Messages Area - FIXED FOR SCROLLING */
+        .messages-area {
+            flex: 1;
+            padding: var(--spacing-md);
+            overflow-y: auto;
+            overflow-x: hidden;
+            background-color: var(--background-light);
+            min-height: 0; /* Important for flexbox scrolling */
+        }
+        
+        /* Smooth scrolling */
+        .messages-area {
+            scroll-behavior: smooth;
+        }
+        
+        /* Custom scrollbar for messages area */
+        .messages-area::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .messages-area::-webkit-scrollbar-track {
+            background: var(--background-light);
+        }
+        
+        .messages-area::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        
+        .messages-area::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+        
+        .message {
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+        }
+        
+        .message.sent {
+            flex-direction: row-reverse;
+        }
+        
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: var(--hardy-green-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--hardy-green-dark);
+            font-weight: bold;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        
+        .message-content {
+            max-width: 70%;
+        }
+        
+        .message-bubble {
+            background-color: var(--background-white);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .message.sent .message-bubble {
+            background-color: var(--hardy-green);
+            color: white;
+        }
+        
+        .message-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: var(--spacing-xs);
+        }
+        
+        .message-input-area {
+            padding: var(--spacing-md);
+            background-color: var(--background-white);
+            border-top: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+        
+        .message-input-form {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .message-input {
+            flex: 1;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            font-family: inherit;
+            resize: none;
+        }
+        
+        .message-input:focus {
+            outline: none;
+            border-color: var(--hardy-green);
+        }
+        
+        .send-btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background-color: var(--hardy-green);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .send-btn:hover {
+            background-color: var(--hardy-green-dark);
+        }
+        
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .no-conversation-selected {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+        
+        /* Listings Management */
+        .listings-section {
+            margin-top: var(--spacing-lg);
+        }
+        
+        .listing-item {
+            background-color: var(--background-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .listing-info {
+            flex: 1;
+        }
+        
+        .listing-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .listing-meta {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .listing-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .listing-type {
+            display: inline-block;
+            padding: 0.2rem 0.4rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .listing-type.offering {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+        }
+        
+        .listing-type.seeking {
+            background-color: #FFF176;
+            color: #F57F17;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xxl) var(--spacing-md);
+            color: var(--text-secondary);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        /* Settings Grid */
+        .settings-grid {
+            display: grid;
+            gap: var(--spacing-md);
+        }
+        
+        /* Footer */
+        .site-footer {
+            background-color: var(--text-primary);
+            color: var(--text-light);
+            padding: var(--spacing-xxl) 0 var(--spacing-md);
+            margin-top: var(--spacing-xxl);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-xxl);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .footer-logo {
+            margin-bottom: var(--spacing-md);
+            max-width: 150px;
+        }
+        
+        .footer-logo img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .footer-links h3 {
+            margin-bottom: var(--spacing-md);
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+        
+        .footer-links ul li {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .footer-links a {
+            color: var(--text-light);
+            opacity: 0.8;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--hardy-green-light);
+        }
+        
+        .footer-newsletter p {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .footer-newsletter form {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .footer-newsletter input {
+            flex: 1;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: none;
+            border-radius: var(--radius-sm);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Mobile Menu Styles */
+        .mobile-menu-container {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--background-white);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-md);
+            z-index: 999;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 var(--spacing-md) 0;
+        }
+
+        .mobile-nav-links li {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .mobile-nav-links a {
+            display: block;
+            padding: var(--spacing-sm) var(--spacing-md);
+            color: var(--text-primary);
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav-links a:hover,
+        .mobile-nav-links a.active {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green);
+        }
+
+        .mobile-user-actions {
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .mobile-user-actions .btn {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        /* ============================= */
+        /* Mobile Responsive Styles      */
+        /* ============================= */
+        @media (max-width: 768px) {
+            .main-nav > ul {
+                display: none !important;
+            }
+            
+            .user-actions {
+                display: none !important;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            /* Show mobile-specific controls */
+            .mobile-message-toggle {
+                display: grid !important;
+            }
+            
+            .mobile-back-btn {
+                display: flex;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .footer-newsletter form {
+                flex-direction: column;
+            }
+            
+            .footer-newsletter input {
+                margin-bottom: var(--spacing-sm);
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .member-info {
+                flex-direction: column;
+                gap: var(--spacing-sm);
+            }
+            
+            .listing-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .listing-actions {
+                justify-content: stretch;
+            }
+            
+            .listing-actions .btn {
+                flex: 1;
+            }
+            
+            /* Messages container adjustments */
+            .messages-container {
+                grid-template-columns: 1fr;
+                height: 500px;
+                gap: 0;
+            }
+            
+            /* Conversations list mobile behavior */
+            .conversations-list {
+                display: none;
+                border-right: none;
+                height: 100%;
+                border-radius: var(--radius-md);
+            }
+            
+            .conversations-list.mobile-show {
+                display: flex;
+                flex-direction: column;
+            }
+            
+            /* Message view mobile behavior */
+            .message-view {
+                display: none;
+                height: 100%;
+            }
+            
+            .message-view.mobile-show {
+                display: flex;
+                flex-direction: column;
+            }
+            
+            /* Adjust message header on mobile */
+            .message-header {
+                padding: var(--spacing-sm) var(--spacing-md);
+                border-bottom: 1px solid var(--border-color);
+            }
+            
+            /* Ensure proper scrolling on mobile */
+            .conversation-messages {
+                flex: 1;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            /* Adjust message input on mobile */
+            .message-input-form {
+                flex-wrap: wrap;
+            }
+            
+            .message-input {
+                min-width: 0;
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+            
+            .dashboard-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab-btn {
+                padding: var(--spacing-sm) var(--spacing-md);
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <a href='/'>
+                    <img src="../img/logo.svg" alt="Hardy Home and Garden">
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-links">
+                    <li><a href='/'>Home</a></li>
+                    <li><a href='/pages/browse'>Browse</a></li>
+                    <li><a class='active' href='/pages/dashboard'>My Dashboard</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <div class="user-menu">
+                    <button class="user-menu-btn" id="user-menu-btn">
+                        <div class="user-avatar" id="user-avatar">?</div>
+                        <span id="user-name">User</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <a href='/pages/browse'>
+                            <i class="fas fa-search"></i> Browse Listings
+                        </a>
+                        <a href='/pages/create'>
+                            <i class="fas fa-plus"></i> Create Listing
+                        </a>
+                        <div class="divider"></div>
+                        <a href='/pages/support'>
+                            <i class="fas fa-heart"></i> Support Hardy
+                        </a>
+                        <div class="divider"></div>
+                        <button onclick="handleSignOut()">
+                            <i class="fas fa-sign-out-alt"></i> Sign Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="dashboard-header">
+        <div class="container">
+            <div class="dashboard-welcome">
+                <div class="welcome-text">
+                    <h1>Welcome back, <span id="welcome-name">Friend</span>!</h1>
+                    <div class="member-info">
+                        <span class="neighborhood-badge">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="user-neighborhood">Your Neighborhood</span>
+                        </span>
+                        <span>Member since <span id="member-date">January 2025</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Tab Navigation -->
+        <div class="dashboard-tabs">
+            <button class="tab-btn active" onclick="switchTab('overview', event)">
+                <i class="fas fa-th-large"></i> Overview
+            </button>
+            <button class="tab-btn" onclick="switchTab('listings', event)">
+                <i class="fas fa-leaf"></i> My Listings
+            </button>
+            <button class="tab-btn" onclick="switchTab('messages', event)">
+                <i class="fas fa-comments"></i> Messages
+                <span class="badge" id="unread-badge" style="display: none;">0</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('settings', event)">
+                <i class="fas fa-cog"></i> Settings
+            </button>
+        </div>
+
+        <!-- Tab Content -->
+        <!-- Overview Tab -->
+        <div class="tab-content active" id="overview-tab">
+            <div class="dashboard-grid">
+                <!-- Quick Stats -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Quick Stats</h3>
+                        <i class="fas fa-chart-line card-icon"></i>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); text-align: center;">
+                        <div>
+                            <div style="font-size: 2rem; font-weight: bold; color: var(--hardy-green);" id="active-count">0</div>
+                            <div style="color: var(--text-secondary);">Active Listings</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem; font-weight: bold; color: var(--hardy-green);" id="message-count">0</div>
+                            <div style="color: var(--text-secondary);">Total Messages</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Quick Actions</h3>
+                        <i class="fas fa-bolt card-icon"></i>
+                    </div>
+                    <div style="display: grid; gap: var(--spacing-md);">
+                        <a class='btn btn-primary' href='/pages/create'>
+                            <i class="fas fa-plus"></i> Create New Listing
+                        </a>
+                        <a class='btn btn-secondary' href='/pages/browse'>
+                            <i class="fas fa-search"></i> Browse Listings
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Listings Tab -->
+        <div class="tab-content" id="listings-tab">
+            <div class="dashboard-card" style="max-width: none;">
+                <div class="card-header">
+                    <h3>My Listings</h3>
+                    <a class='btn btn-primary btn-small' href='/pages/create'>
+                        <i class="fas fa-plus"></i> Create New
+                    </a>
+                </div>
+                
+                <div class="listings-section" id="my-listings">
+                    <div class="empty-state">
+                        <i class="fas fa-seedling"></i>
+                        <p>Loading your listings...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Messages Tab -->
+        <div class="tab-content" id="messages-tab">
+            <!-- Mobile toggle buttons (only visible on mobile) -->
+            <div class="mobile-message-toggle">
+                <button class="toggle-btn active" onclick="showMobileConversations()">
+                    <i class="fas fa-comments"></i> Conversations
+                </button>
+                <button class="toggle-btn" onclick="showMobileMessageView()">
+                    <i class="fas fa-comment"></i> Messages
+                </button>
+            </div>
+            
+            <div class="messages-container" id="messages-container">
+                <!-- Conversations List -->
+                <div class="conversations-list" id="conversations-list">
+                    <div class="conversations-header">
+                        <i class="fas fa-comments"></i> Conversations
+                    </div>
+                    <div id="conversations-content">
+                        <div class="empty-state">
+                            <p>Loading conversations...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Message View -->
+                <div class="message-view" id="message-view">
+                    <div class="no-conversation-selected">
+                        <div>
+                            <i class="fas fa-comments" style="font-size: 3rem; color: var(--border-color); margin-bottom: var(--spacing-md);"></i>
+                            <p>Select a conversation to start messaging</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div class="tab-content" id="settings-tab">
+            <div class="dashboard-card" style="max-width: 600px; margin: 0 auto;">
+                <div class="card-header">
+                    <h3>Account Settings</h3>
+                    <i class="fas fa-cog card-icon"></i>
+                </div>
+                <p style="color: var(--text-secondary);">Manage your profile and account preferences.</p>
+                
+                <div class="settings-grid" style="margin-top: var(--spacing-lg);">
+                    <button class="btn btn-outline" onclick="editProfile()">
+                        <i class="fas fa-user"></i> Edit Profile
+                    </button>
+                    <button class="btn btn-outline" onclick="updateNeighborhood()">
+                        <i class="fas fa-map-marker-alt"></i> Update Neighborhood
+                    </button>
+                    <button class="btn btn-outline" onclick="handleSignOut()">
+                        <i class="fas fa-sign-out-alt"></i> Sign Out
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <div class="footer-logo">
+                        <img src="../img/logo-white.svg" alt="Hardy Home and Garden">
+                    </div>
+                    <p>Connecting gardeners and building sustainable communities one harvest at a time.</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href='/'>Home</a></li>
+                        <li><a href='/pages/browse'>Browse</a></li>
+                        <li><a href='/pages/about'>About Hardy</a></li>
+                        <li><a href='/pages/faq'>FAQ</a></li>
+                        <li><a href='/pages/contact'>Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Get Started</h3>
+                    <ul>
+                        <li><a href='/pages/auth'>Create Account</a></li>
+                        <li><a href='/pages/create'>Create Listing</a></li>
+                        <li><a href='/pages/auth'>Log In</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href='/pages/terms'>Terms of Use</a></li>
+                        <li><a href='/pages/privacy'>Privacy Policy</a></li>
+                        <li><a href='/pages/coming-soon?feature=cookie'>Cookie Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>Stay Updated</h3>
+                    <p>Join our mailing list for offers and updates.</p>
+                    <form id="newsletter-form">
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit" class="btn btn-primary">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Hardy Home and Garden. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Dashboard Scripts -->
+    <script>
+        let currentUser = null;
+        let userProfile = null;
+        let userListings = [];
+        let conversations = [];
+        let currentConversation = null;
+        let messagesSubscription = null;
+        
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Get current user
+            const { data: { user } } = await window.hardySupabase.auth.getUser();
+            
+            if (!user) {
+                // Redirect to auth page if not logged in
+                window.location.href = 'auth.html?redirect=dashboard';
+                return;
+            }
+            
+            currentUser = user;
+            
+            // Get user profile
+            const { data: profile, error } = await window.hardySupabase
+                .from('profiles')
+                .select('*')
+                .eq('id', user.id)
+                .single();
+            
+            if (error) {
+                console.error('Error fetching profile:', error);
+                // Create a complete fallback profile
+                userProfile = {
+                    id: user.id,
+                    full_name: user.user_metadata?.full_name || user.email.split('@')[0],
+                    email: user.email,
+                    created_at: user.created_at,
+                    neighborhood: null,
+                    zip_code: null
+                };
+            } else {
+                userProfile = profile;
+                // Ensure email is included if not in profile
+                if (!userProfile.email && user.email) {
+                    userProfile.email = user.email;
+                }
+            }
+            
+            // Update UI with user info
+            updateUserInfo(userProfile);
+            
+            // Check for expired listings
+            try {
+                await window.hardySupabase.rpc('mark_expired_listings_inactive');
+            } catch (err) {
+                // Silent fail - not critical if this doesn't work
+                console.log('Could not check expired listings');
+            }
+            
+            // Check URL parameters for tab/conversation
+            const urlParams = new URLSearchParams(window.location.search);
+            const tab = urlParams.get('tab');
+            const conversationId = urlParams.get('conversation');
+            
+            // Load initial data
+            await Promise.all([
+                loadUserListings(),
+                loadConversations()
+            ]);
+            
+            // Switch to requested tab AFTER data is loaded
+            if (tab) {
+                switchTab(tab);
+            }
+            
+            // Select conversation if specified
+            if (conversationId && tab === 'messages') {
+                // Find and select the conversation
+                const conv = conversations.find(c => c.id === conversationId);
+                if (conv) {
+                    selectConversation(conversationId);
+                }
+            }
+            
+            // Setup components
+            setupUserDropdown();
+            setupMobileMenu();
+            setupNewsletterForm();
+            setupRealtimeSubscriptions();
+        });
+        
+        // Mobile messaging functions
+        function showMobileConversations() {
+            const convList = document.getElementById('conversations-list');
+            const msgView = document.getElementById('message-view');
+            const toggleBtns = document.querySelectorAll('.mobile-message-toggle .toggle-btn');
+            
+            convList.classList.add('mobile-show');
+            msgView.classList.remove('mobile-show');
+            
+            toggleBtns[0].classList.add('active');
+            toggleBtns[1].classList.remove('active');
+        }
+        
+        function showMobileMessageView() {
+            const convList = document.getElementById('conversations-list');
+            const msgView = document.getElementById('message-view');
+            const toggleBtns = document.querySelectorAll('.mobile-message-toggle .toggle-btn');
+            
+            convList.classList.remove('mobile-show');
+            msgView.classList.add('mobile-show');
+            
+            toggleBtns[0].classList.remove('active');
+            toggleBtns[1].classList.add('active');
+        }
+        
+        // Tab switching
+        function switchTab(tabName, event) {
+            // Prevent default if called from a click event
+            if (event && event.preventDefault) {
+                event.preventDefault();
+            }
+            
+            // Update URL without reloading
+            const url = new URL(window.location);
+            url.searchParams.set('tab', tabName);
+            window.history.pushState({}, '', url);
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                // Check if this button is for the current tab
+                if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`'${tabName}'`)) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            const targetTab = document.getElementById(`${tabName}-tab`);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+            
+            // If switching to messages tab on mobile, show conversations by default
+            if (tabName === 'messages' && window.innerWidth <= 768) {
+                showMobileConversations();
+            }
+        }
+        
+        // Update user info in header
+        function updateUserInfo(profile) {
+            // Debug log to see what we're working with
+            console.log('Profile data:', profile);
+            
+            // Get display name - check multiple possible fields
+            let displayName = 'Friend'; // Default fallback
+            
+            if (profile) {
+                // Try different fields in order of preference
+                if (profile.nickname && profile.nickname.trim() !== '') {
+                    displayName = profile.nickname;
+                } else if (profile.full_name && profile.full_name.trim() !== '') {
+                    displayName = profile.full_name;
+                } else if (profile.email) {
+                    // Use email prefix as last resort
+                    displayName = profile.email.split('@')[0];
+                } else if (currentUser && currentUser.email) {
+                    // If profile doesn't have email, try current user
+                    displayName = currentUser.email.split('@')[0];
+                }
+            }
+            
+            console.log('Display name:', displayName);
+            
+            // Update welcome message
+            document.getElementById('welcome-name').textContent = displayName;
+            
+            // Update dropdown button
+            document.getElementById('user-name').textContent = displayName;
+            
+            // Update avatar with first letter of display name
+            const avatar = document.getElementById('user-avatar');
+            if (displayName && displayName !== 'Friend') {
+                avatar.textContent = displayName.charAt(0).toUpperCase();
+            } else {
+                avatar.textContent = '?';
+            }
+            
+            // Update neighborhood
+            if (profile && profile.neighborhood) {
+                document.getElementById('user-neighborhood').textContent = profile.neighborhood;
+            } else if (profile && profile.zip_code) {
+                // If no neighborhood, show ZIP code
+                document.getElementById('user-neighborhood').textContent = `ZIP ${profile.zip_code}`;
+            } else {
+                document.getElementById('user-neighborhood').textContent = 'Your Neighborhood';
+            }
+            
+            // Update member date
+            if (profile && profile.created_at) {
+                const memberDate = new Date(profile.created_at);
+                const monthYear = memberDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                document.getElementById('member-date').textContent = monthYear;
+            }
+        }
+        
+        // Load user's listings
+        async function loadUserListings() {
+            try {
+                const { data: listings, error } = await window.hardySupabase
+                    .from('listings')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                userListings = listings || [];
+                displayUserListings();
+                
+                // Update stats
+                const activeCount = userListings.filter(l => l.is_active).length;
+                document.getElementById('active-count').textContent = activeCount;
+                
+            } catch (error) {
+                console.error('Error loading listings:', error);
+                document.getElementById('my-listings').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Error loading your listings</p>
+                        <button class="btn btn-primary" onclick="loadUserListings()">Retry</button>
+                    </div>
+                `;
+            }
+        }
+        
+        // Display user's listings
+        function displayUserListings() {
+            const container = document.getElementById('my-listings');
+            
+            if (userListings.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-seedling"></i>
+                        <p>No listings yet</p>
+                        <p style="font-size: 0.9rem;">Create your first listing to start sharing with your community!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            userListings.forEach(listing => {
+                const listingItem = createListingItem(listing);
+                container.appendChild(listingItem);
+            });
+        }
+        
+        // Create a listing item element
+        function createListingItem(listing) {
+            const item = document.createElement('div');
+            item.className = 'listing-item';
+            
+            const listingTypeClass = listing.listing_type === 'seeking' ? 'seeking' : 'offering';
+            const listingTypeText = listing.listing_type === 'seeking' ? 'Seeking' : 'Offering';
+            
+            // Format exchange types
+            const exchangeTypes = listing.exchange_type.split(',');
+            let transactionText = '';
+            if (exchangeTypes.length === 2) {
+                transactionText = 'Free or Trade';
+            } else {
+                transactionText = exchangeTypes[0] === 'free' ? 'Free' : 'Trade';
+            }
+            
+            // Format availability
+            const availabilityMap = {
+                'now': 'Now',
+                'today': 'Today',
+                'tomorrow': 'Tomorrow',
+                'this_week': 'This Week',
+                'next_week': 'Next Week'
+            };
+            const availabilityText = availabilityMap[listing.availability] || listing.availability;
+            
+            // Format date
+            const createdDate = new Date(listing.created_at).toLocaleDateString();
+            
+            item.innerHTML = `
+                <div class="listing-info">
+                    <div class="listing-type ${listingTypeClass}">${listingTypeText} • ${transactionText}</div>
+                    <div class="listing-title">${escapeHtml(listing.title)}</div>
+                    <div class="listing-meta">
+                        ${listing.category} • Available: ${availabilityText} • Created: ${createdDate}
+                    </div>
+                </div>
+                <div class="listing-actions">
+                    <button class="btn btn-secondary btn-small" onclick="editListing('${listing.id}')">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn btn-outline btn-small" onclick="deleteListing('${listing.id}')">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            `;
+            
+            return item;
+        }
+        
+        // Load conversations
+        async function loadConversations() {
+            try {
+                // First, get conversations where user is a participant
+                const { data: myParticipations, error: partError } = await window.hardySupabase
+                    .from('conversation_participants')
+                    .select('conversation_id, last_read_at')
+                    .eq('user_id', currentUser.id);
+
+                if (partError) throw partError;
+
+                if (!myParticipations || myParticipations.length === 0) {
+                    conversations = [];
+                    displayConversations();
+                    return;
+                }
+
+                // Get conversation IDs
+                const conversationIds = myParticipations.map(p => p.conversation_id);
+
+                // Now get the full conversation data
+                const { data: convos, error } = await window.hardySupabase
+                    .from('conversations')
+                    .select(`
+                        *,
+                        listings (
+                            id,
+                            title,
+                            user_id
+                        ),
+                        messages (
+                            id,
+                            content,
+                            sender_id,
+                            created_at
+                        )
+                    `)
+                    .in('id', conversationIds)
+                    .order('last_message_at', { ascending: false, nullsFirst: false });
+
+                if (error) throw error;
+
+                conversations = convos || [];
+
+                // Add user's participation data to each conversation
+                conversations.forEach(conv => {
+                    const myPart = myParticipations.find(p => p.conversation_id === conv.id);
+                    conv.myParticipation = myPart;
+                });
+
+                // Get other participants' profiles
+                for (let conv of conversations) {
+                    console.log('Processing conversation:', conv.id);
+                    
+                    // Get all participants for this conversation
+                    const { data: allParticipants, error: participantsError } = await window.hardySupabase
+                        .from('conversation_participants')
+                        .select('user_id')
+                        .eq('conversation_id', conv.id);
+
+                    if (participantsError) {
+                        console.error('Error fetching participants:', participantsError);
+                        continue;
+                    }
+
+                    console.log('All participants:', allParticipants);
+                    console.log('Current user ID:', currentUser.id);
+
+                    // Find the other participant (not the current user)
+                    const otherParticipantId = allParticipants?.find(p => p.user_id !== currentUser.id)?.user_id;
+                    console.log('Other participant ID:', otherParticipantId);
+                    
+                    // If we can't find the other participant in the participants table,
+                    // try to determine them from the listing and messages
+                    if (!otherParticipantId && conv.listings) {
+                        console.log('No other participant found, checking listing owner...');
+                        console.log('Listing user_id:', conv.listings.user_id);
+                        
+                        // If the listing belongs to someone else, they might be the other party
+                        if (conv.listings.user_id && conv.listings.user_id !== currentUser.id) {
+                            const listingOwnerId = conv.listings.user_id;
+                            console.log('Using listing owner as other participant:', listingOwnerId);
+                            
+                            // Get the listing owner's profile
+                            const { data: ownerProfile, error: ownerError } = await window.hardySupabase
+                                .from('profiles')
+                                .select('id, full_name, nickname, email')
+                                .eq('id', listingOwnerId)
+                                .single();
+                            
+                            if (!ownerError && ownerProfile) {
+                                conv.otherUser = ownerProfile;
+                                console.log('Found listing owner profile:', ownerProfile);
+                            } else {
+                                console.error('Could not fetch listing owner profile:', ownerError);
+                                conv.otherUser = {
+                                    id: listingOwnerId,
+                                    full_name: null,
+                                    nickname: null,
+                                    email: null
+                                };
+                            }
+                        } else {
+                            // Check messages to find the other participant
+                            console.log('Checking messages for other participant...');
+                            const otherSenderId = conv.messages?.find(m => m.sender_id !== currentUser.id)?.sender_id;
+                            
+                            if (otherSenderId) {
+                                console.log('Found other sender in messages:', otherSenderId);
+                                const { data: senderProfile, error: senderError } = await window.hardySupabase
+                                    .from('profiles')
+                                    .select('id, full_name, nickname, email')
+                                    .eq('id', otherSenderId)
+                                    .single();
+                                
+                                if (!senderError && senderProfile) {
+                                    conv.otherUser = senderProfile;
+                                    console.log('Found message sender profile:', senderProfile);
+                                } else {
+                                    console.error('Could not fetch message sender profile:', senderError);
+                                    conv.otherUser = null;
+                                }
+                            } else {
+                                console.log('No other participant found in messages either');
+                                conv.otherUser = null;
+                            }
+                        }
+                    } else if (otherParticipantId) {
+                        // Normal case - get profile from profiles table
+                        const { data: profile, error: profileError } = await window.hardySupabase
+                            .from('profiles')
+                            .select('id, full_name, nickname, email')
+                            .eq('id', otherParticipantId)
+                            .single();
+                        
+                        if (profileError) {
+                            console.error('Error fetching other user profile:', profileError);
+                            console.error('Profile query failed for user ID:', otherParticipantId);
+                            
+                            conv.otherUser = {
+                                id: otherParticipantId,
+                                full_name: null,
+                                nickname: null,
+                                email: null
+                            };
+                        } else {
+                            console.log('Successfully fetched profile:', profile);
+                            conv.otherUser = profile;
+                        }
+                    }
+                    
+                    console.log('Final otherUser for conversation:', conv.id, conv.otherUser);
+                }
+
+                displayConversations();
+                updateUnreadCount();
+                
+                // Update message count stat
+                const totalMessages = conversations.reduce((sum, conv) => 
+                    sum + (conv.messages?.length || 0), 0
+                );
+                document.getElementById('message-count').textContent = totalMessages;
+                
+            } catch (error) {
+                console.error('Error loading conversations:', error);
+                console.error('Error details:', error.message);
+                console.error('Full error object:', JSON.stringify(error, null, 2));
+                
+                // Also show error in the UI
+                document.getElementById('conversations-content').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Error loading conversations</p>
+                        <p style="font-size: 0.8rem; color: red;">${error.message}</p>
+                        <button class="btn btn-primary btn-small" onclick="loadConversations()">Retry</button>
+                    </div>
+                `;
+            }
+        }
+        
+        // Display conversations list
+        function displayConversations() {
+            const container = document.getElementById('conversations-content');
+            
+            if (conversations.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>No conversations yet</p>
+                        <p style="font-size: 0.9rem;">Start by contacting someone about their listing!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            conversations.forEach(conv => {
+                const item = createConversationItem(conv);
+                container.appendChild(item);
+            });
+        }
+        
+        // Create conversation item
+        function createConversationItem(conv) {
+            const item = document.createElement('div');
+            item.className = 'conversation-item';
+            
+            // Check if conversation has unread messages
+            const myParticipation = conv.myParticipation;
+            const lastMessage = conv.messages?.[0];
+            const hasUnread = lastMessage && 
+                lastMessage.sender_id !== currentUser.id && 
+                (!myParticipation.last_read_at || 
+                 new Date(lastMessage.created_at) > new Date(myParticipation.last_read_at));
+            
+            if (hasUnread) {
+                item.classList.add('unread');
+            }
+            
+            if (currentConversation?.id === conv.id) {
+                item.classList.add('active');
+            }
+            
+            // Format time
+            const timeAgo = conv.last_message_at ? formatTimeAgo(conv.last_message_at) : 'No messages';
+            
+            // Get display name for other user
+            let otherUserName = 'Unknown User';
+            
+            if (conv.otherUser) {
+                if (conv.otherUser.nickname && conv.otherUser.nickname.trim() !== '') {
+                    otherUserName = conv.otherUser.nickname;
+                } else if (conv.otherUser.full_name && conv.otherUser.full_name.trim() !== '') {
+                    otherUserName = conv.otherUser.full_name;
+                } else if (conv.otherUser.email) {
+                    otherUserName = conv.otherUser.email.split('@')[0];
+                } else if (conv.listings?.user_id === conv.otherUser.id) {
+                    otherUserName = 'Listing Owner';
+                }
+            } else if (conv.listings?.user_id && conv.listings.user_id !== currentUser.id) {
+                // If we couldn't get the other user but know they're the listing owner
+                otherUserName = 'Listing Owner';
+            }
+            
+            item.innerHTML = `
+                <div class="conversation-header">
+                    <div class="conversation-user">${otherUserName}</div>
+                    <div class="conversation-time">${timeAgo}</div>
+                </div>
+                <div class="conversation-listing">${conv.listings?.title || 'Deleted Listing'}</div>
+                <div class="conversation-preview">
+                    ${lastMessage ? escapeHtml(lastMessage.content) : 'No messages yet'}
+                </div>
+            `;
+            
+            item.onclick = () => selectConversation(conv.id);
+            
+            return item;
+        }
+        
+        // Select a conversation
+        async function selectConversation(conversationId) {
+            currentConversation = conversations.find(c => c.id === conversationId);
+            
+            if (!currentConversation) return;
+            
+            // Update URL
+            const url = new URL(window.location);
+            url.searchParams.set('conversation', conversationId);
+            window.history.pushState({}, '', url);
+            
+            // Update active state
+            document.querySelectorAll('.conversation-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Find and activate the clicked item
+            const items = document.querySelectorAll('.conversation-item');
+            items.forEach((item, index) => {
+                if (conversations[index]?.id === conversationId) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Load and display messages
+            await loadMessages(conversationId);
+            
+            // Mark as read
+            await markConversationAsRead(conversationId);
+            
+            // Setup realtime for this conversation
+            setupMessageSubscription(conversationId);
+            
+            // On mobile, automatically switch to message view
+            if (window.innerWidth <= 768) {
+                showMobileMessageView();
+            }
+        }
+        
+        // Load messages for a conversation
+        async function loadMessages(conversationId) {
+            try {
+                const { data: messages, error } = await window.hardySupabase
+                    .from('messages')
+                    .select('*')
+                    .eq('conversation_id', conversationId)
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                // Get sender profiles separately
+                if (messages && messages.length > 0) {
+                    const senderIds = [...new Set(messages.map(m => m.sender_id))];
+                    
+                    const { data: profiles } = await window.hardySupabase
+                        .from('profiles')
+                        .select('id, full_name, nickname')
+                        .in('id', senderIds);
+                    
+                    // Add profile data to messages
+                    messages.forEach(msg => {
+                        msg.profiles = profiles?.find(p => p.id === msg.sender_id);
+                    });
+                }
+
+                displayMessages(messages || []);
+                
+            } catch (error) {
+                console.error('Error loading messages:', error);
+                alert('Error loading messages. Please try again.');
+            }
+        }
+        
+        // Display messages
+        function displayMessages(messages) {
+            const messageView = document.getElementById('message-view');
+            
+            const otherUser = currentConversation.otherUser;
+            const listing = currentConversation.listings;
+            
+            // Get display name for header
+            let otherUserName = 'Unknown User';
+            
+            if (otherUser) {
+                if (otherUser.nickname && otherUser.nickname.trim() !== '') {
+                    otherUserName = otherUser.nickname;
+                } else if (otherUser.full_name && otherUser.full_name.trim() !== '') {
+                    otherUserName = otherUser.full_name;
+                } else if (otherUser.email) {
+                    otherUserName = otherUser.email.split('@')[0];
+                }
+            } else if (listing?.user_id && listing.user_id !== currentUser.id) {
+                otherUserName = 'Listing Owner';
+            }
+            
+            messageView.innerHTML = `
+                <div class="message-header">
+                    <button class="mobile-back-btn" onclick="showMobileConversations()">
+                        <i class="fas fa-arrow-left"></i> Back to Conversations
+                    </button>
+                    <h3>${otherUserName}</h3>
+                    <div class="message-listing-info">
+                        Regarding: ${listing?.title || 'Deleted Listing'}
+                    </div>
+                </div>
+                <div class="messages-area" id="messages-area">
+                    ${messages.map(msg => createMessageElement(msg)).join('')}
+                </div>
+                <div class="message-input-area">
+                    <form class="message-input-form" onsubmit="sendMessage(event)">
+                        <textarea 
+                            class="message-input" 
+                            id="message-input"
+                            placeholder="Type your message..." 
+                            rows="2"
+                            required
+                        ></textarea>
+                        <button type="submit" class="send-btn">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                    </form>
+                </div>
+            `;
+            
+            // Scroll to bottom
+            const messagesArea = document.getElementById('messages-area');
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
+        
+        // Create message element
+        function createMessageElement(message) {
+            const isSent = message.sender_id === currentUser.id;
+            
+            // Get sender's display name
+            const senderName = message.profiles?.nickname || 
+                             message.profiles?.full_name || 
+                             'Unknown';
+            const senderInitial = senderName.charAt(0).toUpperCase();
+            const timeStr = formatTime(message.created_at);
+            
+            return `
+                <div class="message ${isSent ? 'sent' : 'received'}">
+                    <div class="message-avatar">${senderInitial}</div>
+                    <div class="message-content">
+                        <div class="message-bubble">
+                            ${escapeHtml(message.content)}
+                        </div>
+                        <div class="message-time">${timeStr}</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Send a message
+        async function sendMessage(event) {
+            event.preventDefault();
+            console.log('Send message called');
+            
+            const input = document.getElementById('message-input');
+            const sendBtn = event.target.querySelector('.send-btn');
+            const content = input.value.trim();
+            
+            console.log('Message content:', content);
+            console.log('Current conversation:', currentConversation);
+            
+            if (!content || !currentConversation) {
+                console.log('No content or no current conversation');
+                return;
+            }
+            
+            try {
+                sendBtn.disabled = true;
+                sendBtn.textContent = 'Sending...';
+                
+                // Insert message
+                console.log('Inserting message...');
+                const { data: newMessage, error: messageError } = await window.hardySupabase
+                    .from('messages')
+                    .insert({
+                        conversation_id: currentConversation.id,
+                        sender_id: currentUser.id,
+                        content: content
+                    })
+                    .select();
+                
+                if (messageError) {
+                    console.error('Message insert error:', messageError);
+                    throw messageError;
+                }
+                
+                console.log('Message inserted:', newMessage);
+                
+                // Update conversation's last message time
+                const { error: convError } = await window.hardySupabase
+                    .from('conversations')
+                    .update({ last_message_at: new Date().toISOString() })
+                    .eq('id', currentConversation.id);
+                
+                if (convError) {
+                    console.error('Conversation update error:', convError);
+                    throw convError;
+                }
+                
+                // Clear input
+                input.value = '';
+                
+                // Reload messages immediately
+                await loadMessages(currentConversation.id);
+                
+                // Reload conversations to update preview
+                await loadConversations();
+                
+            } catch (error) {
+                console.error('Error sending message:', error);
+                alert('Failed to send message. Please try again.');
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send';
+            }
+        }
+        
+        // Mark conversation as read
+        async function markConversationAsRead(conversationId) {
+            try {
+                await window.hardySupabase
+                    .from('conversation_participants')
+                    .update({ last_read_at: new Date().toISOString() })
+                    .eq('conversation_id', conversationId)
+                    .eq('user_id', currentUser.id);
+                
+                // Update UI
+                updateUnreadCount();
+                
+            } catch (error) {
+                console.error('Error marking as read:', error);
+            }
+        }
+        
+        // Update unread count
+        function updateUnreadCount() {
+            let unreadCount = 0;
+            
+            conversations.forEach(conv => {
+                const myParticipation = conv.myParticipation;
+                const lastMessage = conv.messages?.[0];
+                
+                if (lastMessage && 
+                    lastMessage.sender_id !== currentUser.id && 
+                    (!myParticipation?.last_read_at || 
+                     new Date(lastMessage.created_at) > new Date(myParticipation.last_read_at))) {
+                    unreadCount++;
+                }
+            });
+            
+            const badge = document.getElementById('unread-badge');
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+        
+        // Setup realtime subscriptions
+        function setupRealtimeSubscriptions() {
+            // Subscribe to conversation updates
+            window.hardySupabase
+                .channel('conversations-channel')
+                .on('postgres_changes', 
+                    { 
+                        event: '*', 
+                        schema: 'public', 
+                        table: 'conversations' 
+                    }, 
+                    (payload) => {
+                        console.log('Conversation update:', payload);
+                        loadConversations();
+                    }
+                )
+                .subscribe((status) => {
+                    console.log('Conversations subscription status:', status);
+                });
+                
+            // Subscribe to new messages for all user's conversations
+            window.hardySupabase
+                .channel('user-messages-channel')
+                .on('postgres_changes',
+                    {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'messages'
+                    },
+                    async (payload) => {
+                        console.log('New message in any conversation:', payload);
+                        
+                        // Check if this message is in one of user's conversations
+                        const isMyConversation = conversations.some(c => c.id === payload.new.conversation_id);
+                        
+                        if (isMyConversation && payload.new.sender_id !== currentUser.id) {
+                            // Reload conversations to update unread count
+                            await loadConversations();
+                            
+                            // If it's the current conversation, reload messages
+                            if (currentConversation?.id === payload.new.conversation_id) {
+                                await loadMessages(payload.new.conversation_id);
+                                
+                                // Scroll to bottom
+                                const messagesArea = document.getElementById('messages-area');
+                                if (messagesArea) {
+                                    messagesArea.scrollTop = messagesArea.scrollHeight;
+                                }
+                            }
+                        }
+                    }
+                )
+                .subscribe((status) => {
+                    console.log('User messages subscription status:', status);
+                });
+        }
+        
+        // Setup message subscription for current conversation
+        function setupMessageSubscription(conversationId) {
+            // Unsubscribe from previous
+            if (messagesSubscription) {
+                messagesSubscription.unsubscribe();
+            }
+            
+            // Subscribe to new messages in this conversation
+            messagesSubscription = window.hardySupabase
+                .channel(`messages:${conversationId}`)
+                .on('postgres_changes', 
+                    { 
+                        event: 'INSERT', 
+                        schema: 'public', 
+                        table: 'messages',
+                        filter: `conversation_id=eq.${conversationId}`
+                    }, 
+                    async (payload) => {
+                        console.log('New message received:', payload);
+                        
+                        // Only reload if the message is from someone else
+                        if (payload.new.sender_id !== currentUser.id) {
+                            // Reload messages when new one arrives
+                            await loadMessages(conversationId);
+                            
+                            // Scroll to bottom
+                            const messagesArea = document.getElementById('messages-area');
+                            if (messagesArea) {
+                                messagesArea.scrollTop = messagesArea.scrollHeight;
+                            }
+                            
+                            // Play a sound or show notification (optional)
+                            // new Audio('/notification.mp3').play();
+                        }
+                        
+                        // Always reload conversations to update the preview
+                        await loadConversations();
+                        
+                        // Mark as read if conversation is open
+                        if (currentConversation?.id === conversationId) {
+                            await markConversationAsRead(conversationId);
+                        }
+                    }
+                )
+                .subscribe((status) => {
+                    console.log('Subscription status:', status);
+                });
+        }
+        
+        // Format time helpers
+        function formatTimeAgo(dateStr) {
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diff = now - date;
+            
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            
+            if (minutes < 1) return 'Just now';
+            if (minutes < 60) return `${minutes}m ago`;
+            if (hours < 24) return `${hours}h ago`;
+            if (days < 7) return `${days}d ago`;
+            
+            return date.toLocaleDateString();
+        }
+        
+        function formatTime(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+        }
+        
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Edit listing function
+        function editListing(listingId) {
+            window.location.href = `create.html?edit=${listingId}`;
+        }
+        
+        // Delete listing function
+        async function deleteListing(listingId) {
+            if (!confirm('Are you sure you want to delete this listing? This action cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                const { error } = await window.hardySupabase
+                    .from('listings')
+                    .delete()
+                    .eq('id', listingId)
+                    .eq('user_id', currentUser.id);
+                
+                if (error) throw error;
+                
+                userListings = userListings.filter(listing => listing.id !== listingId);
+                displayUserListings();
+                
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'listing_deleted', {
+                        'event_category': 'engagement'
+                    });
+                }
+                
+            } catch (error) {
+                console.error('Error deleting listing:', error);
+                alert('Error deleting listing. Please try again.');
+            }
+        }
+        
+        // Setup user dropdown
+        function setupUserDropdown() {
+            const userMenuBtn = document.getElementById('user-menu-btn');
+            const userDropdown = document.getElementById('user-dropdown');
+            
+            if (userMenuBtn && userDropdown) {
+                userMenuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    userDropdown.classList.toggle('show');
+                });
+                
+                document.addEventListener('click', function() {
+                    userDropdown.classList.remove('show');
+                });
+                
+                userDropdown.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
+        }
+        
+        // Settings functions
+        function editProfile() {
+            location.href = '/pages/edit-profile.html';
+        }
+        
+        async function updateNeighborhood() {
+            const currentNeighborhood = document.getElementById('user-neighborhood').textContent;
+            const newNeighborhood = prompt('Enter your neighborhood:', currentNeighborhood);
+            
+            if (newNeighborhood && newNeighborhood !== currentNeighborhood) {
+                try {
+                    const { error } = await window.hardySupabase
+                        .from('profiles')
+                        .update({ neighborhood: newNeighborhood })
+                        .eq('id', currentUser.id);
+                    
+                    if (error) throw error;
+                    
+                    document.getElementById('user-neighborhood').textContent = newNeighborhood;
+                    userProfile.neighborhood = newNeighborhood;
+                    
+                    alert('Neighborhood updated successfully!');
+                } catch (error) {
+                    console.error('Error updating neighborhood:', error);
+                    alert('Error updating neighborhood. Please try again.');
+                }
+            }
+        }
+        
+        async function handleSignOut() {
+            if (confirm('Are you sure you want to sign out?')) {
+                await window.hardySupabase.auth.signOut();
+                window.location.href = '../index.html';
+            }
+        }
+        
+        // Mobile menu setup
+        function setupMobileMenu() {
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const mainNav = document.querySelector('.main-nav');
+            
+            if (mobileMenuBtn && mainNav) {
+                let mobileMenuContainer = document.querySelector('.mobile-menu-container');
+                if (!mobileMenuContainer) {
+                    mobileMenuContainer = document.createElement('div');
+                    mobileMenuContainer.className = 'mobile-menu-container';
+                    mobileMenuContainer.style.display = 'none';
+                    mobileMenuContainer.innerHTML = `
+                        <ul class="mobile-nav-links">
+                            <li><a href="../index.html">Home</a></li>
+                            <li><a href="browse.html">Browse</a></li>
+                            <li><a href="dashboard.html" class="active">My Dashboard</a></li>
+                        </ul>
+                        <div class="mobile-user-actions">
+                            <button class="btn btn-outline btn-block" onclick="handleSignOut()">Sign Out</button>
+                        </div>
+                    `;
+                    mainNav.appendChild(mobileMenuContainer);
+                }
+                
+                mobileMenuBtn.addEventListener('click', function() {
+                    if (mobileMenuContainer.style.display === 'block') {
+                        mobileMenuContainer.style.display = 'none';
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                    } else {
+                        mobileMenuContainer.style.display = 'block';
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    }
+                });
+            }
+        }
+        
+        // Newsletter form setup
+        function setupNewsletterForm() {
+            const form = document.getElementById('newsletter-form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const emailInput = form.querySelector('input[type="email"]');
+                    if (emailInput && emailInput.value) {
+                        alert('Thanks for subscribing! We\'ll keep you updated on Hardy\'s development.');
+                        emailInput.value = '';
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
