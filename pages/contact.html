@@ -177,12 +177,17 @@
             text-decoration: none;
         }
         
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
         .btn-primary {
             background-color: var(--hardy-green);
             color: var(--text-light);
         }
         
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             background-color: var(--hardy-green-dark);
             color: var(--text-light);
         }
@@ -295,6 +300,16 @@
         .success-message {
             background-color: var(--hardy-green-light);
             color: var(--hardy-green-dark);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+            display: none;
+        }
+        
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
             padding: var(--spacing-lg);
             border-radius: var(--radius-md);
             text-align: center;
@@ -486,6 +501,11 @@
             <p>Thank you for contacting us. We'll get back to you as soon as possible.</p>
         </div>
         
+        <div class="error-message" id="error-message">
+            <h3>Oops!</h3>
+            <p id="error-text">There was an error sending your message. Please try again.</p>
+        </div>
+        
         <div class="contact-container">
             <div class="contact-form">
                 <h2>Send us a message</h2>
@@ -516,7 +536,7 @@
                         <textarea id="message" rows="6" required></textarea>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+                    <button type="submit" class="btn btn-primary btn-block" id="submit-btn">Send Message</button>
                 </form>
             </div>
             
@@ -615,6 +635,114 @@
             }
         }
 
+        // Create contact confirmation email template
+        function createContactConfirmationEmail(name) {
+            return {
+                subject: 'We received your message - Hardy',
+                html: `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                        <div style="background-color: #4CAF50; color: white; padding: 30px; text-align: center;">
+                            <h1 style="margin: 0;">Thanks for contacting Hardy!</h1>
+                        </div>
+                        <div style="padding: 30px; background-color: #f9f9f9;">
+                            <p>Hi ${name},</p>
+                            <p>We've received your message and appreciate you taking the time to contact us.</p>
+                            <p>Our team will review your inquiry and get back to you within 48 hours during business days.</p>
+                            <p>In the meantime, you might find answers to common questions on our <a href="https://hardyhome.us/pages/faq.html">FAQ page</a>.</p>
+                            <p>Happy gardening!</p>
+                            <p>The Hardy Team</p>
+                        </div>
+                    </div>
+                `
+            };
+        }
+
+        // Updated contact form handling with email integration
+        async function handleContactForm(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const successMessage = document.getElementById('success-message');
+            const errorMessage = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            
+            // Hide any existing messages
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+            
+            // Get form data
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value
+            };
+            
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            
+            try {
+                // Send email to Hardy admin
+                console.log('Sending email to Hardy admin...');
+                await sendEmail({
+                    to: 'info@hardygarden.com', // You can change this to your actual support email
+                    subject: `Contact Form: ${formData.subject}`,
+                    html: `
+                        <div style="font-family: Arial, sans-serif;">
+                            <h3>New Contact Form Submission</h3>
+                            <p><strong>From:</strong> ${formData.name} (${formData.email})</p>
+                            <p><strong>Subject:</strong> ${formData.subject}</p>
+                            <p><strong>Message:</strong></p>
+                            <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px;">
+                                ${formData.message.replace(/\n/g, '<br>')}
+                            </div>
+                            <hr style="margin: 20px 0;">
+                            <p style="font-size: 12px; color: #666;">
+                                This message was sent from the Hardy contact form at ${new Date().toLocaleString()}
+                            </p>
+                        </div>
+                    `
+                });
+                
+                // Send confirmation email to user
+                console.log('Sending confirmation email to user...');
+                const confirmationEmail = createContactConfirmationEmail(formData.name);
+                await sendEmail({
+                    to: formData.email,
+                    subject: confirmationEmail.subject,
+                    html: confirmationEmail.html
+                });
+                
+                // Track contact form submission
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'contact_form', {
+                        'event_category': 'engagement',
+                        'event_label': formData.subject
+                    });
+                }
+                
+                // Show success message
+                successMessage.style.display = 'block';
+                
+                // Reset form
+                document.getElementById('contact-form').reset();
+                
+                // Scroll to success message
+                successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+            } catch (error) {
+                console.error('Contact form error:', error);
+                errorText.textContent = 'Sorry, there was an error sending your message. Please try again later or email us directly at info@hardygarden.com';
+                errorMessage.style.display = 'block';
+                errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } finally {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Message';
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             // Enhanced mobile menu with Sign In and Support buttons
             const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
@@ -652,44 +780,10 @@
                 });
             }
             
-            // Contact form handling
+            // Contact form handling with email integration
             const contactForm = document.getElementById('contact-form');
-            const successMessage = document.getElementById('success-message');
-            
             if (contactForm) {
-                contactForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    // Get form data
-                    const formData = {
-                        name: document.getElementById('name').value,
-                        email: document.getElementById('email').value,
-                        subject: document.getElementById('subject').value,
-                        message: document.getElementById('message').value
-                    };
-                    
-                    // Track contact form submission
-                    if (typeof gtag !== 'undefined') {
-                        gtag('event', 'contact_form', {
-                            'event_category': 'engagement',
-                            'event_label': formData.subject
-                        });
-                    }
-                    
-                    // Show success message
-                    successMessage.style.display = 'block';
-                    
-                    // Reset form
-                    contactForm.reset();
-                    
-                    // Scroll to success message
-                    successMessage.scrollIntoView({ behavior: 'smooth' });
-                    
-                    // Hide success message after 5 seconds
-                    setTimeout(function() {
-                        successMessage.style.display = 'none';
-                    }, 5000);
-                });
+                contactForm.addEventListener('submit', handleContactForm);
             }
             
             // Newsletter form handling
