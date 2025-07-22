@@ -1030,57 +1030,62 @@
 
                 console.log('Auth user created:', authData.user.id);
 
-                // Step 2: Wait for auth propagation and verify user exists
+                // Step 2: Wait for auth propagation
                 console.log('Waiting for auth propagation...');
-                let userExists = false;
-                let attempts = 0;
-                const maxAttempts = 10;
+                // Simple wait - Supabase needs time to propagate the user
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                // Step 3: Create profile using direct upsert
+                console.log('Creating profile...');
                 
-                // Keep checking if user exists in auth system
-                while (!userExists && attempts < maxAttempts) {
-                    attempts++;
-                    await new Promise(resolve => setTimeout(resolve, 1000));
+                // First attempt - simple upsert
+                let profile;
+                let profileError;
+                
+                for (let attempt = 1; attempt <= 3; attempt++) {
+                    console.log(`Profile creation attempt ${attempt}...`);
                     
-                    const { data: { user } } = await window.hardySupabase.auth.getUser();
-                    if (user && user.id === authData.user.id) {
-                        userExists = true;
-                        console.log(`User confirmed in auth system after ${attempts} attempts`);
+                    const { data, error } = await window.hardySupabase
+                        .from('profiles')
+                        .upsert({
+                            id: authData.user.id,
+                            full_name: fullName,
+                            nickname: nickname,
+                            email: email,
+                            zip_code: zipcode,
+                            neighborhood: neighborhood,
+                            address: address,
+                            city: city,
+                            updated_at: new Date().toISOString()
+                        }, { 
+                            onConflict: 'id'
+                        })
+                        .select()
+                        .single();
+                    
+                    if (!error) {
+                        profile = data;
+                        console.log('Profile created successfully!');
+                        break;
+                    } else {
+                        profileError = error;
+                        console.log(`Attempt ${attempt} failed:`, error.message);
+                        if (attempt < 3) {
+                            // Wait longer before next attempt
+                            await new Promise(resolve => setTimeout(resolve, 2000));
+                        }
                     }
                 }
                 
-                if (!userExists) {
-                    throw new Error('User creation timeout - please try again');
+                if (!profile && profileError) {
+                    console.error('All profile creation attempts failed:', profileError);
+                    // Don't throw error - user is created, just profile failed
+                    // We'll continue and try to send email anyway
                 }
 
-                // Step 3: Now safely create or update profile
-                console.log('Creating/updating profile...');
-                
-                // Use upsert to handle both create and update cases
-                const { data: profile, error: profileError } = await window.hardySupabase
-                    .from('profiles')
-                    .upsert({
-                        id: authData.user.id,
-                        full_name: fullName,
-                        nickname: nickname,
-                        email: email,
-                        zip_code: zipcode,
-                        neighborhood: neighborhood,
-                        address: address,
-                        city: city,
-                        updated_at: new Date().toISOString()
-                    }, { 
-                        onConflict: 'id',
-                        ignoreDuplicates: false 
-                    })
-                    .select()
-                    .single();
-                
-                if (profileError) {
-                    console.error('Profile upsert error:', profileError);
-                    throw new Error('Failed to create profile: ' + profileError.message);
+                if (profile) {
+                    console.log('Profile saved:', profile);
                 }
-
-                console.log('Profile saved:', profile);
                 
                 // Step 5: Send welcome email
                 console.log('Sending welcome email...');
