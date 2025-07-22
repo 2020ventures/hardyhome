@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In or Join - Hardy</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CJ4MS44MBB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-CJ4MS44MBB');
+    </script>
+    
+    <style>
+        /* CSS Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Variables */
+        :root {
+            /* Brand Colors */
+            --hardy-green: #4CAF50;
+            --hardy-green-dark: #388E3C;
+            --hardy-green-light: #A5D6A7;
+            
+            /* Supporting Colors */
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --text-light: #FFFFFF;
+            --background-light: #F9F9F9;
+            --background-white: #FFFFFF;
+            --border-color: #E0E0E0;
+            
+            /* Spacing */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-xxl: 3rem;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            
+            /* Box Shadows */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-md: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        }
+        
+        /* Base Styles */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background-color: var(--background-light);
+        }
+        
+        a {
+            color: var(--hardy-green);
+            text-decoration: none;
+        }
+        
+        a:hover {
+            color: var(--hardy-green-dark);
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+        
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Lora', serif;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+        }
+        
+        h2 {
+            font-size: 2rem;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+        }
+        
+        p {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        /* Forms */
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--hardy-green);
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background-color: var(--hardy-green);
+            color: var(--text-light);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background-color: var(--hardy-green-dark);
+            color: var(--text-light);
+        }
+        
+        .btn-secondary {
+            background-color: var(--text-light);
+            color: var(--hardy-green);
+            border: 2px solid var(--hardy-green);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        /* Header */
+        .site-header {
+            background-color: var(--background-white);
+            box-shadow: var(--shadow-sm);
+            padding: var(--spacing-md) 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .site-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            max-width: 150px;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .main-nav ul {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+        
+        .main-nav a {
+            color: var(--text-primary);
+            font-weight: 600;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: var(--hardy-green);
+            background-color: var(--hardy-green-light);
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+        
+        /* Footer */
+        .site-footer {
+            background-color: var(--text-primary);
+            color: var(--text-light);
+            padding: var(--spacing-xxl) 0 var(--spacing-md);
+            margin-top: var(--spacing-xxl);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-xxl);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .footer-logo {
+            margin-bottom: var(--spacing-md);
+            max-width: 150px;
+        }
+        
+        .footer-logo img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .footer-links h3 {
+            margin-bottom: var(--spacing-md);
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+        
+        .footer-links ul li {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .footer-links a {
+            color: var(--text-light);
+            opacity: 0.8;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--hardy-green-light);
+        }
+        
+        .footer-newsletter p {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .footer-newsletter form {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .footer-newsletter input {
+            flex: 1;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: none;
+            border-radius: var(--radius-sm);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Mobile Menu Styles */
+        .mobile-menu-container {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--background-white);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-md);
+            z-index: 999;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 var(--spacing-md) 0;
+        }
+
+        .mobile-nav-links li {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .mobile-nav-links a {
+            display: block;
+            padding: var(--spacing-sm) var(--spacing-md);
+            color: var(--text-primary);
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav-links a:hover,
+        .mobile-nav-links a.active {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green);
+        }
+
+        .mobile-user-actions {
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .mobile-user-actions .btn {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        /* Auth Specific Styles */
+        .auth-choice-container {
+            max-width: 800px;
+            margin: var(--spacing-xxl) auto;
+            text-align: center;
+        }
+        
+        .auth-choice-header {
+            margin-bottom: var(--spacing-xxl);
+        }
+        
+        .auth-choice-header h1 {
+            color: var(--hardy-green-dark);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .auth-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-xxl);
+        }
+        
+        .auth-option {
+            background-color: var(--background-white);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .auth-option:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        
+        .auth-option h2 {
+            color: var(--hardy-green-dark);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .auth-option p {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .divider {
+            text-align: center;
+            color: var(--text-secondary);
+            position: relative;
+            margin: var(--spacing-xl) 0;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 45%;
+            height: 1px;
+            background-color: var(--border-color);
+        }
+        
+        .divider::before {
+            left: 0;
+        }
+        
+        .divider::after {
+            right: 0;
+        }
+        
+        .auth-form-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: var(--background-white);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            display: none;
+        }
+        
+        .auth-form-container.active {
+            display: block;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-lg);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .back-button:hover {
+            color: var(--hardy-green);
+        }
+        
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: var(--spacing-md);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-md);
+            display: none;
+        }
+        
+        .success-message {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-md);
+            display: none;
+        }
+        
+        .forgot-password {
+            text-align: right;
+            margin-top: var(--spacing-xs);
+            font-size: 0.9rem;
+        }
+        
+        .loading {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #zip-help {
+            display: block;
+            margin-top: var(--spacing-xs);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        #zip-help.error {
+            color: #d9534f;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-nav > ul {
+                display: none !important;
+            }
+            
+            .user-actions {
+                display: none !important;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .footer-newsletter form {
+                flex-direction: column;
+            }
+            
+            .footer-newsletter input {
+                margin-bottom: var(--spacing-sm);
+            }
+            
+            .auth-options {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <a href="../index.html">
+                    <img src="../img/logo.svg" alt="Hardy Home and Garden">
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="browse.html">Browse</a></li>
+                    <li><a href="dashboard.html">My Dashboard</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <a href="support.html" class="btn btn-secondary">Support Hardy</a>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Choice Screen -->
+        <div class="auth-choice-container" id="choice-screen">
+            <div class="auth-choice-header">
+                <h1>Welcome to Hardy</h1>
+                <p>Join our community of gardeners sharing their harvest</p>
+            </div>
+            
+            <div class="auth-options">
+                <div class="auth-option">
+                    <h2>I'm New Here</h2>
+                    <p>Create your Hardy account to start sharing your garden's bounty with neighbors</p>
+                    <button class="btn btn-primary btn-block" onclick="showSignupForm()">
+                        Sign Up
+                    </button>
+                </div>
+                
+                <div class="auth-option">
+                    <h2>Welcome Back</h2>
+                    <p>Sign in to your account to manage listings and connect with other gardeners</p>
+                    <button class="btn btn-secondary btn-block" onclick="showLoginForm()">
+                        Sign In
+                    </button>
+                </div>
+            </div>
+            
+            <div class="divider">or</div>
+            
+            <p>
+                <a href="browse.html" style="font-size: 1.1rem;">
+                    <i class="fas fa-eye"></i> Continue browsing without an account
+                </a>
+            </p>
+        </div>
+        
+        <!-- Login Form -->
+        <div class="auth-form-container" id="login-form-container">
+            <a class="back-button" onclick="showChoiceScreen()">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+            
+            <h2>Sign In</h2>
+            <p style="color: var(--text-secondary); margin-bottom: var(--spacing-lg);">
+                Welcome back to Hardy
+            </p>
+            
+            <div class="error-message" id="login-error"></div>
+            <div class="success-message" id="login-success"></div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required>
+                    <div class="forgot-password">
+                        <a href="#" id="forgot-link">Forgot password?</a>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block" id="login-submit">
+                    Sign In
+                </button>
+            </form>
+        </div>
+        
+        <!-- Signup Form -->
+        <div class="auth-form-container" id="signup-form-container">
+            <a class="back-button" onclick="showChoiceScreen()">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+            
+            <h2>Create Account</h2>
+            <p style="color: var(--text-secondary); margin-bottom: var(--spacing-lg);">
+                Join the Hardy community
+            </p>
+            
+            <div class="error-message" id="signup-error"></div>
+            <div class="success-message" id="signup-success"></div>
+            
+            <form id="signup-form">
+                <div class="form-group">
+                    <label for="nickname">Nickname</label>
+                    <input type="text" id="nickname" required>
+                    <small style="color: var(--text-secondary);">This is what will display on your listings</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fullname">Full Name</label>
+                    <input type="text" id="fullname" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="signup-email">Email Address</label>
+                    <input type="email" id="signup-email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" required minlength="6">
+                    <small style="color: var(--text-secondary);">At least 6 characters</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Street Address</label>
+                    <input type="text" id="address" placeholder="123 Main Street" required>
+                    <small style="color: var(--text-secondary);">Your exact address is never shown publicly</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city" placeholder="Kenosha" value="Kenosha" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="zipcode">ZIP Code*</label>
+                    <select id="zipcode" name="zipcode" required>
+                        <option value="">Select your ZIP code</option>
+                        <optgroup label="Kenosha County">
+                            <option value="53102">53102 - Salem</option>
+                            <option value="53104">53104 - Bristol</option>
+                            <option value="53105">53105 - Burlington</option>
+                            <option value="53109">53109 - Camp Lake</option>
+                            <option value="53114">53114 - Darien</option>
+                            <option value="53119">53119 - Eagle</option>
+                            <option value="53125">53125 - Fontana</option>
+                            <option value="53128">53128 - Genoa City</option>
+                            <option value="53140">53140 - Kenosha</option>
+                            <option value="53141">53141 - Kenosha</option>
+                            <option value="53142">53142 - Kenosha</option>
+                            <option value="53143">53143 - Kenosha</option>
+                            <option value="53144">53144 - Kenosha</option>
+                            <option value="53152">53152 - New Munster</option>
+                            <option value="53158">53158 - Pleasant Prairie</option>
+                            <option value="53168">53168 - Somers</option>
+                            <option value="53170">53170 - Silver Lake</option>
+                            <option value="53171">53171 - Somers</option>
+                            <option value="53179">53179 - Trevor</option>
+                            <option value="53181">53181 - Twin Lakes</option>
+                            <option value="53182">53182 - Union Grove</option>
+                            <option value="53192">53192 - Winthrop Harbor</option>
+                            <option value="53194">53194 - Woodworth</option>
+                            <option value="53195">53195 - Zenda</option>
+                        </optgroup>
+                        <optgroup label="Racine County">
+                            <option value="53108">53108 - Caledonia</option>
+                            <option value="53126">53126 - Franksville</option>
+                            <option value="53139">53139 - Kansasville</option>
+                            <option value="53154">53154 - Mount Pleasant</option>
+                            <option value="53167">53167 - Rochester</option>
+                            <option value="53177">53177 - Sturtevant</option>
+                            <option value="53178">53178 - Union Grove</option>
+                            <option value="53183">53183 - Union Grove</option>
+                            <option value="53185">53185 - Waterford</option>
+                            <option value="53401">53401 - Racine</option>
+                            <option value="53402">53402 - Racine</option>
+                            <option value="53403">53403 - Racine</option>
+                            <option value="53404">53404 - Racine</option>
+                            <option value="53405">53405 - Racine</option>
+                            <option value="53406">53406 - Racine</option>
+                            <option value="53408">53408 - Racine</option>
+                        </optgroup>
+                        <optgroup label="Both Counties">
+                            <option value="53105">53105 - Burlington</option>
+                            <option value="53182">53182 - Union Grove</option>
+                        </optgroup>
+                        <optgroup label="Other">
+                            <option value="other">My ZIP code isn't listed</option>
+                        </optgroup>
+                    </select>
+                    <small id="zip-help" class="form-text">
+    Hardy is currently serving Kenosha & Racine Counties for the 2025 pilot season. 
+    <span id="waitlist-link" style="display: none;">
+        <br>
+        <a href="mailto:hello@hardyhomeandgarden.com?subject=Hardy%20Waitlist&body=Hi!%20I'd%20like%20to%20join%20the%20waitlist%20for%20Hardy.%20My%20ZIP%20code%20is:%20">Join our waitlist</a> to be notified when we expand to your area!
+    </span>
+</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="neighborhood">Neighborhood Name (Optional)</label>
+                    <input type="text" id="neighborhood" placeholder="e.g., Downtown, Uptown, etc.">
+                    <small style="color: var(--text-secondary);">This is what other users will see</small>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block" id="signup-submit">
+                    Create Account
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <div class="footer-logo">
+                        <img src="../img/logo-white.svg" alt="Hardy Home and Garden">
+                    </div>
+                    <p>Connecting gardeners and building sustainable communities one harvest at a time.</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="browse.html">Browse</a></li>
+                        <li><a href="about.html">About Hardy</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Get Started</h3>
+                    <ul>
+                        <li><a href="auth.html">Create Account</a></li>
+                        <li><a href="create.html">Create Listing</a></li>
+                        <li><a href="dashboard.html">My Dashboard</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="terms.html">Terms of Use</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="coming-soon.html?feature=cookie">Cookie Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>Stay Updated</h3>
+                    <p>Join our mailing list for offers and updates.</p>
+                    <form>
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit" class="btn btn-primary">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Hardy Home and Garden. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Hardy Config -->
+    <script src="../hardy-config.js"></script>
+    
+    <!-- App Scripts -->
+    <script>
+        // Enhanced mobile menu with Sign In and Support buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const mainNav = document.querySelector('.main-nav');
+            
+            if (mobileMenuBtn && mainNav) {
+                // Create mobile menu container if it doesn't exist
+                let mobileMenuContainer = document.querySelector('.mobile-menu-container');
+                if (!mobileMenuContainer) {
+                    mobileMenuContainer = document.createElement('div');
+                    mobileMenuContainer.className = 'mobile-menu-container';
+                    mobileMenuContainer.style.display = 'none';
+                    mobileMenuContainer.innerHTML = `
+                        <ul class="mobile-nav-links">
+                            <li><a href="../index.html">Home</a></li>
+                            <li><a href="browse.html">Browse</a></li>
+                            <li><a href="dashboard.html">My Dashboard</a></li>
+                        </ul>
+                        <div class="mobile-user-actions">
+                            <a href="support.html" class="btn btn-secondary btn-block">Support Hardy</a>
+                        </div>
+                    `;
+                    mainNav.appendChild(mobileMenuContainer);
+                }
+                
+                mobileMenuBtn.addEventListener('click', function() {
+                    if (mobileMenuContainer.style.display === 'block') {
+                        mobileMenuContainer.style.display = 'none';
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                    } else {
+                        mobileMenuContainer.style.display = 'block';
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    }
+                });
+            }
+            
+            // Newsletter form handling
+            const newsletterForms = document.querySelectorAll('.footer-newsletter form');
+            newsletterForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const emailInput = form.querySelector('input[type="email"]');
+                    if (emailInput && emailInput.value) {
+                        alert('Thanks for subscribing! We\'ll keep you updated on Hardy\'s development.');
+                        emailInput.value = '';
+                    }
+                });
+            });
+
+            // Handle ZIP code selection change
+            const zipSelect = document.getElementById('zipcode');
+            if (zipSelect) {
+                zipSelect.addEventListener('change', function() {
+                    const zipHelp = document.getElementById('zip-help');
+                    if (this.value === 'other') {
+                        zipHelp.innerHTML = 'Hardy is coming to your area soon! <a href="/waitlist.html">Join our waitlist</a>';
+                        zipHelp.classList.add('error');
+                    } else {
+                        zipHelp.innerHTML = 'Hardy is currently serving Kenosha & Racine Counties for the 2025 pilot season';
+                        zipHelp.classList.remove('error');
+                    }
+                });
+            }
+        });
+        
+        // Function to determine where to redirect after successful auth
+        function getRedirectUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const redirect = urlParams.get('redirect');
+            
+            // Priority order for redirects:
+            // 1. Specific redirect parameter (dashboard, create, etc.)
+            // 2. Default to browse page (since CTAs point here)
+            
+            if (redirect === 'dashboard') {
+                return 'dashboard.html';
+            } else if (redirect === 'create') {
+                return 'create.html';
+            } else {
+                // Default redirect for CTA users - go to browse to see listings
+                return 'browse.html';
+            }
+        }
+        
+        // Function to resend confirmation email
+        async function resendConfirmation(email) {
+            try {
+                const { error } = await window.hardySupabase.auth.resend({
+                    type: 'signup',
+                    email: email
+                });
+                
+                if (error) throw error;
+                alert('Confirmation email resent! Please check your inbox.');
+            } catch (error) {
+                alert('Error resending email: ' + error.message);
+            }
+        }
+        
+        // Show/hide form functions
+        function showChoiceScreen() {
+            document.getElementById('choice-screen').style.display = 'block';
+            document.getElementById('login-form-container').classList.remove('active');
+            document.getElementById('signup-form-container').classList.remove('active');
+        }
+        
+        function showLoginForm() {
+            document.getElementById('choice-screen').style.display = 'none';
+            document.getElementById('login-form-container').classList.add('active');
+            document.getElementById('signup-form-container').classList.remove('active');
+        }
+        
+        function showSignupForm() {
+            document.getElementById('choice-screen').style.display = 'none';
+            document.getElementById('login-form-container').classList.remove('active');
+            document.getElementById('signup-form-container').classList.add('active');
+        }
+        
+        // Handle login form
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('login-submit');
+            const errorMsg = document.getElementById('login-error');
+            const successMsg = document.getElementById('login-success');
+            
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Signing In...';
+            submitBtn.classList.add('loading');
+            
+            try {
+                const { data, error } = await window.hardySupabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) throw error;
+                
+                successMsg.textContent = 'Success! Redirecting to listings...';
+                successMsg.style.display = 'block';
+                
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'login', { 'event_category': 'engagement' });
+                }
+                
+                setTimeout(() => {
+                    window.location.href = getRedirectUrl();
+                }, 1500);
+                
+            } catch (error) {
+                errorMsg.textContent = error.message || 'Invalid email or password.';
+                errorMsg.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Sign In';
+                submitBtn.classList.remove('loading');
+            }
+        });
+        
+        // Handle signup form - FIXED VERSION
+        // Handle signup form - FIXED VERSION WITH PROPER PROFILE CREATION
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('signup-submit');
+            const errorMsg = document.getElementById('signup-error');
+            const successMsg = document.getElementById('signup-success');
+            
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+            
+            // Get form values - MAKE SURE THESE IDS MATCH YOUR FORM
+            const nickname = document.getElementById('nickname').value;
+            const fullName = document.getElementById('fullname').value; // Note: 'fullname' not 'full_name'
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const address = document.getElementById('address').value;
+            const city = document.getElementById('city').value;
+            const zipcode = document.getElementById('zipcode').value;
+            const neighborhood = document.getElementById('neighborhood').value || getZipDisplayName(zipcode);
+
+            // DEBUG: Log what we're collecting
+            console.log('=== SIGNUP FORM DATA ===');
+            console.log('Nickname:', nickname);
+            console.log('Full Name:', fullName);
+            console.log('Email:', email);
+            console.log('ZIP:', zipcode);
+            console.log('Neighborhood:', neighborhood);
+
+            // Handle out-of-area selection
+            if (zipcode === 'other') {
+                errorMsg.innerHTML = 'Hardy is currently available only in Kenosha and Racine Counties. <a href="/waitlist.html">Join our waitlist</a> to be notified when we expand to your area!';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Creating Account...';
+            submitBtn.classList.add('loading');
+            
+            try {
+                // Step 1: Create auth user
+                console.log('Creating auth user...');
+                const { data: authData, error: authError } = await window.hardySupabase.auth.signUp({
+                    email: email,
+                    password: password
+                });
+                
+                if (authError) throw authError;
+                
+                if (!authData.user) {
+                    throw new Error('User creation failed - no user returned');
+                }
+
+                console.log('Auth user created:', authData.user.id);
+
+                // Step 2: Wait for auth user to be fully created
+                console.log('Waiting for user to be ready...');
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                // Step 3: Create profile with ALL the data
+                const profileData = {
+                    id: authData.user.id,
+                    full_name: fullName,
+                    nickname: nickname,
+                    email: email,
+                    zip_code: zipcode,
+                    neighborhood: neighborhood,
+                    address: address,
+                    city: city,
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                };
+
+                console.log('Creating profile with data:', profileData);
+
+                // Try insert first
+                const { data: profile, error: profileError } = await window.hardySupabase
+                    .from('profiles')
+                    .insert(profileData)
+                    .select()
+                    .single();
+
+                if (profileError) {
+                    console.error('Profile insert error:', profileError);
+                    
+                    // If insert fails, try upsert
+                    console.log('Trying upsert...');
+                    const { data: upsertProfile, error: upsertError } = await window.hardySupabase
+                        .from('profiles')
+                        .upsert(profileData, { onConflict: 'id' })
+                        .select()
+                        .single();
+                    
+                    if (upsertError) {
+                        console.error('Upsert also failed:', upsertError);
+                        throw new Error('Failed to create profile: ' + upsertError.message);
+                    } else {
+                        console.log('Profile created via upsert:', upsertProfile);
+                    }
+                } else {
+                    console.log('Profile created successfully:', profile);
+                }
+                
+                // Step 4: Verify profile was created with data
+                const { data: verifyProfile } = await window.hardySupabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', authData.user.id)
+                    .single();
+                
+                console.log('Verification - Profile contains:', verifyProfile);
+                
+                // Show success message
+                const redirectUrl = getRedirectUrl();
+                const nextStepText = redirectUrl === 'browse.html' ? 
+                    'Once verified, you\'ll be taken to browse listings from local gardeners!' :
+                    'Once verified, you\'ll be redirected to continue where you left off.';
+                
+                successMsg.innerHTML = `
+                    <h3 style="margin-top: 0;">Welcome to Hardy! 🌱</h3>
+                    <p><strong>Check your email to verify your account.</strong></p>
+                    <p>We've sent a confirmation link to ${email}. Click the link in the email to activate your account.</p>
+                    <p>${nextStepText}</p>
+                    <p style="margin-bottom: 0;">Can't find the email? Check your spam folder or <a href="#" onclick="resendConfirmation('${email}')">click here to resend</a>.</p>
+                `;
+                successMsg.style.display = 'block';
+                
+                // Hide the form to reduce confusion
+                document.getElementById('signup-form').style.display = 'none';
+                
+                // Add a "Back to Sign In" button
+                const backButton = document.createElement('button');
+                backButton.className = 'btn btn-secondary btn-block';
+                backButton.style.marginTop = '1rem';
+                backButton.textContent = 'Back to Sign In';
+                backButton.onclick = showLoginForm;
+                document.getElementById('signup-form-container').appendChild(backButton);
+                
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'sign_up', { 'event_category': 'engagement' });
+                }
+                
+            } catch (error) {
+                console.error('Signup error:', error);
+                errorMsg.textContent = error.message || 'An error occurred. Please try again.';
+                errorMsg.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Create Account';
+                submitBtn.classList.remove('loading');
+            }
+        });
+        
+        // Handle forgot password
+        document.getElementById('forgot-link').addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const errorMsg = document.getElementById('login-error');
+            const successMsg = document.getElementById('login-success');
+            
+            if (!email) {
+                errorMsg.textContent = 'Please enter your email address first.';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            try {
+                const { error } = await window.hardySupabase.auth.resetPasswordForEmail(email, {
+                    redirectTo: window.location.origin + '/pages/reset-password.html'
+                });
+                
+                if (error) throw error;
+                
+                successMsg.textContent = 'Password reset email sent! Check your inbox.';
+                successMsg.style.display = 'block';
+                errorMsg.style.display = 'none';
+                
+            } catch (error) {
+                errorMsg.textContent = error.message || 'Error sending reset email.';
+                errorMsg.style.display = 'block';
+            }
+        });
+
+        // Helper function to get ZIP display name
+        function getZipDisplayName(zip) {
+            const zipNames = {
+                // Kenosha County
+                '53142': 'Kenosha',
+                '53143': 'Kenosha',
+                '53144': 'Kenosha',
+                '53158': 'Pleasant Prairie',
+                '53104': 'Bristol',
+                '53168': 'Somers',
+                // Racine County
+                '53402': 'Racine',
+                '53403': 'Racine',
+                '53404': 'Racine',
+                '53405': 'Racine',
+                '53406': 'Racine',
+                '53126': 'Franksville',
+                '53177': 'Sturtevant',
+                '53185': 'Waterford',
+                // Multi-county
+                '53105': 'Burlington',
+                '53182': 'Union Grove'
+            };
+            return zipNames[zip] || zip;
+        }
+    </script>
+</body>
+</html>
