@@ -186,6 +186,49 @@ function createMessageNotificationEmail(recipientName, senderName, listingTitle,
     };
 }
 
+// NEW: Listing confirmation email template
+function createListingConfirmationEmail(userName, listingTitle, listingId) {
+    return {
+        subject: 'Your Hardy listing is live!',
+        html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background-color: #4CAF50; color: white; padding: 30px; text-align: center;">
+                    <h1 style="margin: 0;">Your listing is live! 🎉</h1>
+                </div>
+                <div style="padding: 30px; background-color: #f9f9f9;">
+                    <p>Hi ${userName},</p>
+                    <p>Great news! Your listing is now live on Hardy and visible to your neighbors.</p>
+                    <div style="background-color: white; padding: 20px; border-radius: 8px; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <h3 style="margin: 0 0 10px 0; color: #4CAF50;">${listingTitle}</h3>
+                        <p style="margin: 0; color: #666;">Your neighbors can now see your listing and contact you about it.</p>
+                    </div>
+                    <p><strong>What happens next?</strong></p>
+                    <ul style="margin: 15px 0; padding-left: 20px;">
+                        <li style="margin-bottom: 8px;">🏡 Neighbors in your area can view your listing</li>
+                        <li style="margin-bottom: 8px;">💬 You'll receive email notifications when someone messages you</li>
+                        <li style="margin-bottom: 8px;">✏️ You can edit or remove your listing anytime from your dashboard</li>
+                        <li style="margin-bottom: 8px;">⏰ Your listing will remain active for the duration you selected</li>
+                    </ul>
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="https://hardyhome.us/pages/dashboard.html" 
+                           style="background-color: #4CAF50; color: white; padding: 12px 30px; 
+                                  text-decoration: none; border-radius: 5px; display: inline-block;">
+                            View Your Listing
+                        </a>
+                    </div>
+                    <p style="margin-top: 30px;">Happy sharing!</p>
+                    <p>The Hardy Team</p>
+                    <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
+                    <p style="font-size: 12px; color: #666; text-align: center;">
+                        Hardy Home and Garden · Kenosha & Racine Counties, WI<br>
+                        <a href="https://hardyhome.us/pages/dashboard.html#settings" style="color: #666;">Manage email preferences</a>
+                    </p>
+                </div>
+            </div>
+        `
+    };
+}
+
 // Helper function to send welcome email (updated to use new format)
 async function sendWelcomeEmail(userEmail, userName) {
     try {
@@ -215,5 +258,21 @@ async function sendMessageNotification(recipientEmail, recipientName, senderName
     } catch (error) {
         console.error('Failed to send message notification:', error);
         throw error; // Re-throw so the calling function knows it failed
+    }
+}
+
+// NEW: Helper function to send listing confirmation email
+async function sendListingConfirmationEmail(userEmail, userName, listingTitle, listingId) {
+    try {
+        const emailData = createListingConfirmationEmail(userName, listingTitle, listingId);
+        await sendEmail({
+            to: userEmail,
+            subject: emailData.subject,
+            html: emailData.html
+        });
+        console.log('Listing confirmation email sent successfully');
+    } catch (error) {
+        console.error('Failed to send listing confirmation email:', error);
+        // Don't re-throw here - we don't want email failure to block listing creation
     }
 }
