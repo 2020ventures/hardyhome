@@ -1101,9 +1101,8 @@
                 successMsg.innerHTML = `
                     <h3 style="margin-top: 0;">Welcome to Hardy! 🌱</h3>
                     <p><strong>Check your email to verify your account.</strong></p>
-                    <p>We've sent a confirmation link to ${email}. Click the link in the email to activate your account.</p>
-                    <p>You should also receive a welcome email from Hardy!</p>
-                    <p style="margin-bottom: 0;">Can't find the emails? Check your spam folder or <a href="#" onclick="resendConfirmation('${email}')">click here to resend</a>.</p>
+                    <p>We've sent a confirmation link to ${email}. Click the link in the email to log in and activate your account using the credentials you just created.</p>
+                    <p style="margin-bottom: 0;">Can't find the email? Check your spam folder or <a href="#" onclick="resendConfirmation('${email}')">click here to resend</a>. It may take a few minutes for the email to arrive.</p>
                 `;
                 successMsg.style.display = 'block';
                 
