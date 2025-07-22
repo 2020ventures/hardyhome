@@ -976,8 +976,7 @@
             }
         });
         
-        // Handle signup form - FIXED VERSION
-        // Handle signup form - FIXED VERSION WITH PROPER PROFILE CREATION
+        // Handle signup form - WITH EMAIL INTEGRATION
         document.getElementById('signup-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -988,23 +987,15 @@
             errorMsg.style.display = 'none';
             successMsg.style.display = 'none';
             
-            // Get form values - MAKE SURE THESE IDS MATCH YOUR FORM
+            // Get form values
             const nickname = document.getElementById('nickname').value;
-            const fullName = document.getElementById('fullname').value; // Note: 'fullname' not 'full_name'
+            const fullName = document.getElementById('fullname').value;
             const email = document.getElementById('signup-email').value;
             const password = document.getElementById('signup-password').value;
             const address = document.getElementById('address').value;
             const city = document.getElementById('city').value;
             const zipcode = document.getElementById('zipcode').value;
             const neighborhood = document.getElementById('neighborhood').value || getZipDisplayName(zipcode);
-
-            // DEBUG: Log what we're collecting
-            console.log('=== SIGNUP FORM DATA ===');
-            console.log('Nickname:', nickname);
-            console.log('Full Name:', fullName);
-            console.log('Email:', email);
-            console.log('ZIP:', zipcode);
-            console.log('Neighborhood:', neighborhood);
 
             // Handle out-of-area selection
             if (zipcode === 'other') {
@@ -1034,7 +1025,6 @@
                 console.log('Auth user created:', authData.user.id);
 
                 // Step 2: Wait for auth user to be fully created
-                console.log('Waiting for user to be ready...');
                 await new Promise(resolve => setTimeout(resolve, 2000));
 
                 // Step 3: Create profile with ALL the data
@@ -1051,7 +1041,7 @@
                     updated_at: new Date().toISOString()
                 };
 
-                console.log('Creating profile with data:', profileData);
+                console.log('Creating profile...');
 
                 // Try insert first
                 const { data: profile, error: profileError } = await window.hardySupabase
@@ -1064,7 +1054,6 @@
                     console.error('Profile insert error:', profileError);
                     
                     // If insert fails, try upsert
-                    console.log('Trying upsert...');
                     const { data: upsertProfile, error: upsertError } = await window.hardySupabase
                         .from('profiles')
                         .upsert(profileData, { onConflict: 'id' })
@@ -1072,36 +1061,27 @@
                         .single();
                     
                     if (upsertError) {
-                        console.error('Upsert also failed:', upsertError);
                         throw new Error('Failed to create profile: ' + upsertError.message);
-                    } else {
-                        console.log('Profile created via upsert:', upsertProfile);
                     }
-                } else {
-                    console.log('Profile created successfully:', profile);
                 }
                 
-                // Step 4: Verify profile was created with data
-                const { data: verifyProfile } = await window.hardySupabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', authData.user.id)
-                    .single();
-                
-                console.log('Verification - Profile contains:', verifyProfile);
+                // Step 4: Send welcome email
+                console.log('Sending welcome email...');
+                try {
+                    await sendWelcomeEmail(email, fullName);
+                    console.log('Welcome email sent successfully');
+                } catch (emailError) {
+                    // Log error but don't block signup
+                    console.error('Failed to send welcome email:', emailError);
+                }
                 
                 // Show success message
-                const redirectUrl = getRedirectUrl();
-                const nextStepText = redirectUrl === 'browse.html' ? 
-                    'Once verified, you\'ll be taken to browse listings from local gardeners!' :
-                    'Once verified, you\'ll be redirected to continue where you left off.';
-                
                 successMsg.innerHTML = `
                     <h3 style="margin-top: 0;">Welcome to Hardy! 🌱</h3>
                     <p><strong>Check your email to verify your account.</strong></p>
                     <p>We've sent a confirmation link to ${email}. Click the link in the email to activate your account.</p>
-                    <p>${nextStepText}</p>
-                    <p style="margin-bottom: 0;">Can't find the email? Check your spam folder or <a href="#" onclick="resendConfirmation('${email}')">click here to resend</a>.</p>
+                    <p>You should also receive a welcome email from Hardy!</p>
+                    <p style="margin-bottom: 0;">Can't find the emails? Check your spam folder or <a href="#" onclick="resendConfirmation('${email}')">click here to resend</a>.</p>
                 `;
                 successMsg.style.display = 'block';
                 
