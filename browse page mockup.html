@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Listings - Hardy</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <style>
+        /* CSS Variables */
+        :root {
+            --hardy-green: #4CAF50;
+            --hardy-green-dark: #388E3C;
+            --hardy-green-light: #A5D6A7;
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --text-light: #FFFFFF;
+            --background-light: #F9F9F9;
+            --background-white: #FFFFFF;
+            --border-color: #E0E0E0;
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-xxl: 3rem;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-md: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background-color: var(--background-light);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+
+        /* Header */
+        .site-header {
+            background-color: var(--background-white);
+            box-shadow: var(--shadow-sm);
+            padding: var(--spacing-md) 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .site-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            max-width: 150px;
+            color: var(--hardy-green);
+            font-family: 'Lora', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .main-nav ul {
+            display: flex;
+            gap: var(--spacing-lg);
+            list-style: none;
+        }
+
+        .main-nav a {
+            color: var(--text-primary);
+            font-weight: 600;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: var(--hardy-green);
+            background-color: var(--hardy-green-light);
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .user-menu-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            background: none;
+            border: 2px solid var(--border-color);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: var(--hardy-green-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--hardy-green-dark);
+            font-weight: bold;
+        }
+
+        /* Personal Header */
+        .personal-header {
+            background: linear-gradient(135deg, var(--hardy-green-light), var(--hardy-green));
+            padding: var(--spacing-lg) 0;
+            color: var(--hardy-green-dark);
+        }
+
+        .personal-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+
+        .welcome-text h2 {
+            font-family: 'Lora', serif;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .user-stats {
+            display: flex;
+            gap: var(--spacing-lg);
+            font-size: 0.9rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--hardy-green-dark);
+            color: var(--text-light);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--hardy-green);
+        }
+
+        /* Main Content Layout */
+        .browse-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: var(--spacing-xl);
+            margin-top: var(--spacing-xl);
+        }
+
+        /* Sidebar */
+        .browse-sidebar {
+            background-color: var(--background-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            padding: var(--spacing-lg);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .sidebar-section {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .sidebar-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .sidebar-section h3 {
+            font-family: 'Lora', serif;
+            font-size: 1.1rem;
+            margin-bottom: var(--spacing-md);
+            color: var(--hardy-green-dark);
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: var(--spacing-sm);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .wishlist-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background-color: var(--background-light);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-xs);
+            font-size: 0.9rem;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .quick-stats {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Main Content */
+        .browse-content {
+            min-height: 500px;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .results-info {
+            color: var(--text-secondary);
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .view-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .view-btn.active {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+            border-color: var(--hardy-green);
+        }
+
+        /* Listings Grid */
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .listing-card {
+            background-color: var(--background-white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .listing-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Seeking listing styling */
+        .listing-type.seeking {
+            background-color: #FFF176;
+            color: #F57F17;
+        }
+
+        .listing-image {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            background-color: var(--hardy-green-light);
+            position: relative;
+        }
+
+        .listing-details {
+            padding: var(--spacing-md);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .listing-type {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .listing-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .listing-info {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .listing-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: var(--spacing-md);
+            flex: 1;
+        }
+
+        .listing-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .listing-user {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .user-avatar-small {
+            width: 24px;
+            height: 24px;
+            background-color: var(--hardy-green-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--hardy-green-dark);
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .btn-small {
+            padding: var(--spacing-xs) var(--spacing-md);
+            font-size: 0.9rem;
+        }
+
+        .cta-button-sidebar {
+            display: block;
+            background: var(--hardy-green);
+            color: var(--text-light);
+            padding: 0.875rem 1.5rem;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .cta-button-sidebar:hover {
+            background: var(--hardy-green-dark);
+            color: var(--text-light);
+            transform: translateY(-1px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .browse-layout {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+            }
+
+            .browse-sidebar {
+                position: static;
+                order: -1; /* This makes sidebar appear first/above on mobile */
+            }
+
+            .personal-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .user-stats {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">Hardy</div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="browse.html" class="active">Browse</a></li>
+                    <li><a href="create.html">Create</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <button class="user-menu-btn">
+                    <div class="user-avatar">M</div>
+                    <span>Maria</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Personal Header (only shows when logged in) -->
+    <div class="personal-header">
+        <div class="container">
+            <div class="personal-info">
+                <div class="welcome-text">
+                    <h2>Welcome back, Maria!</h2>
+                    <div style="display: flex; align-items: center; gap: var(--spacing-md);">
+                        <span style="background: rgba(255,255,255,0.8); padding: var(--spacing-xs) var(--spacing-sm); border-radius: var(--radius-sm);">
+                            <i class="fas fa-map-marker-alt"></i> Downtown
+                        </span>
+                        <span style="font-size: 0.9rem;">Member since Jan 2025</span>
+                    </div>
+                </div>
+                <div class="user-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">2</div>
+                        <div>Active Listings</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">5</div>
+                        <div>Completed</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">3</div>
+                        <div>Messages</div>
+                    </div>
+                </div>
+                <div>
+                    <a href="create.html" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Create Listing
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="browse-layout">
+            <!-- Sidebar -->
+            <aside class="browse-sidebar">
+                <!-- Filters -->
+                <div class="sidebar-section">
+                    <h3>Filter Listings</h3>
+                    
+                    <div style="margin-bottom: var(--spacing-md);">
+                        <label style="display: block; margin-bottom: var(--spacing-xs); font-weight: 600; font-size: 0.9rem;">Listing Type</label>
+                        <select class="filter-select">
+                            <option>All</option>
+                            <option>Offering</option>
+                            <option>Seeking</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-bottom: var(--spacing-md);">
+                        <label style="display: block; margin-bottom: var(--spacing-xs); font-weight: 600; font-size: 0.9rem;">Transaction Type</label>
+                        <select class="filter-select">
+                            <option>All</option>
+                            <option>Free</option>
+                            <option>Trade</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-bottom: var(--spacing-md);">
+                        <label style="display: block; margin-bottom: var(--spacing-xs); font-weight: 600; font-size: 0.9rem;">Category</label>
+                        <select class="filter-select">
+                            <option>All Categories</option>
+                            <option>Vegetables</option>
+                            <option>Fruits</option>
+                            <option>Herbs</option>
+                            <option>Seeds & Seedlings</option>
+                            <option>Plants & Cuttings</option>
+                            <option>Eggs</option>
+                            <option>Honey</option>
+                            <option>Gardening Supplies</option>
+                            <option>Knowledge & Help</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-bottom: var(--spacing-md);">
+                        <label style="display: block; margin-bottom: var(--spacing-xs); font-weight: 600; font-size: 0.9rem;">Distance</label>
+                        <select class="filter-select">
+                            <option>All</option>
+                            <option>Within 1 mile</option>
+                            <option>Within 2 miles</option>
+                            <option>Within 5 miles</option>
+                            <option>Within 10 miles</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Dashboard Link -->
+                <div class="sidebar-section">
+                    <a href="dashboard.html" class="cta-button-sidebar">
+                        Manage My Listings
+                    </a>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="browse-content">
+                <div class="content-header">
+                    <div class="results-info">
+                        <strong>18 listings</strong> found
+                    </div>
+                    <div class="view-toggle">
+                        <button class="view-btn active"><i class="fas fa-th-large"></i></button>
+                        <button class="view-btn"><i class="fas fa-list"></i></button>
+                    </div>
+                </div>
+
+                <div class="listings-grid">
+                    <!-- Free offering listing -->
+                    <div class="listing-card">
+                        <div class="listing-image" style="background-image: url('https://images.unsplash.com/photo-1540148426945-6cf22a6b2383?w=300&h=180&fit=crop')"></div>
+                        <div class="listing-details">
+                            <div>
+                                <span class="listing-type offering">Offering</span>
+                                <span class="transaction-type">Free</span>
+                            </div>
+                            <h3 class="listing-title">Fresh Roma Tomatoes</h3>
+                            <div class="listing-info">
+                                <span>Downtown</span>
+                                <span>Available Now</span>
+                            </div>
+                            <p class="listing-description">Organic Roma tomatoes, just harvested. About 2 lbs available.</p>
+                            <div class="listing-footer">
+                                <div class="listing-user">
+                                    <div class="user-avatar-small">J</div>
+                                    <span>Jessica</span>
+                                </div>
+                                <button class="btn btn-primary btn-small">Contact</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trade offering listing -->
+                    <div class="listing-card">
+                        <div class="listing-image" style="background-image: url('https://images.unsplash.com/photo-1515023115689-589c33041d3c?w=300&h=180&fit=crop')"></div>
+                        <div class="listing-details">
+                            <div>
+                                <span class="listing-type offering">Offering</span>
+                                <span class="transaction-type">Trade</span>
+                            </div>
+                            <h3 class="listing-title">Fresh Basil Plants</h3>
+                            <div class="listing-info">
+                                <span>Riverside</span>
+                                <span>Available Today</span>
+                            </div>
+                            <p class="listing-description">Sweet basil plants ready for transplanting. Looking for tomatoes or peppers.</p>
+                            <div class="listing-footer">
+                                <div class="listing-user">
+                                    <div class="user-avatar-small">S</div>
+                                    <span>Sarah</span>
+                                </div>
+                                <button class="btn btn-primary btn-small">Contact</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Free or Trade offering -->
+                    <div class="listing-card">
+                        <div class="listing-image" style="background-image: url('https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=300&h=180&fit=crop')"></div>
+                        <div class="listing-details">
+                            <div>
+                                <span class="listing-type offering">Offering</span>
+                                <span class="transaction-type">Free or Trade</span>
+                            </div>
+                            <h3 class="listing-title">Apple Harvest</h3>
+                            <div class="listing-info">
+                                <span>Oak Park</span>
+                                <span>Available This Week</span>
+                            </div>
+                            <p class="listing-description">Honeycrisp apples from my backyard tree. Happy to share freely or trade!</p>
+                            <div class="listing-footer">
+                                <div class="listing-user">
+                                    <div class="user-avatar-small">D</div>
+                                    <span>David</span>
+                                </div>
+                                <button class="btn btn-primary btn-small">Contact</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seeking listing with trade -->
+                    <div class="listing-card">
+                        <div class="listing-image" style="background-image: url('https://images.unsplash.com/photo-1566385101042-1a0aa0c1268c?w=300&h=180&fit=crop')"></div>
+                        <div class="listing-details">
+                            <div>
+                                <span class="listing-type seeking">Seeking</span>
+                                <span class="transaction-type">Trade</span>
+                            </div>
+                            <h3 class="listing-title">Looking for Zucchini</h3>
+                            <div class="listing-info">
+                                <span>Hillside</span>
+                                <span>Needed This Week</span>
+                            </div>
+                            <p class="listing-description">Need zucchini for my family's weekly meal prep. Can trade herbs or homemade bread!</p>
+                            <div class="listing-footer">
+                                <div class="listing-user">
+                                    <div class="user-avatar-small">K</div>
+                                    <span>Kate</span>
+                                </div>
+                                <button class="btn btn-primary btn-small">Contact</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seeking listing with free or trade -->
+                    <div class="listing-card">
+                        <div class="listing-image" style="background-image: url('https://images.unsplash.com/photo-1535231540604-72e8fbaf8cdb?w=300&h=180&fit=crop')"></div>
+                        <div class="listing-details">
+                            <div>
+                                <span class="listing-type seeking">Seeking</span>
+                                <span class="transaction-type">Free or Trade</span>
+                            </div>
+                            <h3 class="listing-title">Garden Mentor Needed</h3>
+                            <div class="listing-info">
+                                <span>Downtown</span>
+                                <span>Ongoing</span>
+                            </div>
+                            <p class="listing-description">New gardener looking for someone to help me learn! Happy to receive advice freely or trade labor/baked goods.</p>
+                            <div class="listing-footer">
+                                <div class="listing-user">
+                                    <div class="user-avatar-small">A</div>
+                                    <span>Alex</span>
+                                </div>
+                                <button class="btn btn-primary btn-small">Contact</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Another offering listing -->
+                    <div class="listing-card">
+                        <div class="listing-image" style="background-image: url('https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=300&h=180&fit=crop')"></div>
+                        <div class="listing-details">
+                            <div>
+                                <span class="listing-type offering">Offering</span>
+                                <span class="transaction-type">Free</span>
+                            </div>
+                            <h3 class="listing-title">Local Honey</h3>
+                            <div class="listing-info">
+                                <span>Westside</span>
+                                <span>Available Now</span>
+                            </div>
+                            <p class="listing-description">Fresh honey from my backyard hives. Small jars available for pickup.</p>
+                            <div class="listing-footer">
+                                <div class="listing-user">
+                                    <div class="user-avatar-small">R</div>
+                                    <span>Robert</span>
+                                </div>
+                                <button class="btn btn-primary btn-small">Contact</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

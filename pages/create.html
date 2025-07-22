@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Listing - Hardy Home and Garden</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Hardy Config -->
+    <script src="../hardy-config.js"></script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CJ4MS44MBB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-CJ4MS44MBB');
+    </script>
+    
+    <style>
+        /* CSS Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Variables */
+        :root {
+            /* Brand Colors */
+            --hardy-green: #4CAF50;
+            --hardy-green-dark: #388E3C;
+            --hardy-green-light: #A5D6A7;
+            
+            /* Supporting Colors */
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --text-light: #FFFFFF;
+            --background-light: #F9F9F9;
+            --background-white: #FFFFFF;
+            --border-color: #E0E0E0;
+            
+            /* Spacing */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-xxl: 3rem;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            
+            /* Box Shadows */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-md: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        }
+        
+        /* Base Styles */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background-color: var(--background-light);
+        }
+        
+        a {
+            color: var(--hardy-green);
+            text-decoration: none;
+        }
+        
+        a:hover {
+            color: var(--hardy-green-dark);
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+        
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Lora', serif;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+        }
+        
+        h2 {
+            font-size: 2rem;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+        }
+        
+        p {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        /* Forms */
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--hardy-green);
+        }
+        
+        .form-group small {
+            display: block;
+            margin-top: var(--spacing-xs);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background-color: var(--hardy-green);
+            color: var(--text-light);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background-color: var(--hardy-green-dark);
+            color: var(--text-light);
+        }
+        
+        .btn-secondary {
+            background-color: var(--text-light);
+            color: var(--hardy-green);
+            border: 2px solid var(--hardy-green);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-secondary);
+            border: 2px solid var(--border-color);
+        }
+        
+        .btn-outline:hover {
+            border-color: var(--hardy-green);
+            color: var(--hardy-green);
+        }
+        
+        /* Header */
+        .site-header {
+            background-color: var(--background-white);
+            box-shadow: var(--shadow-sm);
+            padding: var(--spacing-md) 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .site-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            max-width: 150px;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .main-nav ul {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+        
+        .main-nav a {
+            color: var(--text-primary);
+            font-weight: 600;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: var(--hardy-green);
+            background-color: var(--hardy-green-light);
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .user-menu-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            background: none;
+            border: 2px solid var(--border-color);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: var(--hardy-green-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--hardy-green-dark);
+            font-weight: bold;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+        
+        /* Create Listing Specific */
+        .create-listing-container {
+            max-width: 700px;
+            margin: var(--spacing-xxl) auto;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xxl);
+        }
+        
+        .page-header h1 {
+            color: var(--hardy-green-dark);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .listing-form-card {
+            background-color: var(--background-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            padding: var(--spacing-xl);
+        }
+        
+        /* Service Area Notice */
+        .service-area-notice {
+            background-color: #f9f3e9;
+            border: 1px solid #e8dcc6;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            color: #5a4a3a;
+        }
+        
+        .service-area-notice h3 {
+            margin: 0 0 8px 0;
+            color: #4a7c2e;
+            font-size: 18px;
+        }
+        
+        .service-area-notice p {
+            margin: 0;
+        }
+        
+        /* Out of Area Card */
+        .out-of-area-card {
+            text-align: center;
+            padding: 60px 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            margin-top: 40px;
+        }
+        
+        .out-of-area-card h2 {
+            color: var(--hardy-green-dark);
+            margin-bottom: 20px;
+        }
+        
+        .out-of-area-card p {
+            font-size: 1.1rem;
+            color: #757575;
+            margin: 20px 0;
+        }
+        
+        .out-of-area-card .actions {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        /* Listing Type Selector */
+        .listing-type-selector {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .listing-type-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+        
+        .listing-type-option {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .listing-type-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .listing-type-label {
+            display: block;
+            padding: var(--spacing-lg);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .listing-type-option input[type="radio"]:checked + .listing-type-label {
+            border-color: var(--hardy-green);
+            background-color: var(--hardy-green-light);
+        }
+        
+        .listing-type-label:hover {
+            border-color: var(--hardy-green);
+        }
+        
+        .listing-type-icon {
+            font-size: 2rem;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .listing-type-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .listing-type-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Exchange Type Options */
+        .exchange-type-options {
+            display: flex;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+        
+        .exchange-type-option {
+            position: relative;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .exchange-type-option input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .exchange-type-label {
+            display: block;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .exchange-type-option input[type="checkbox"]:checked + .exchange-type-label {
+            border-color: var(--hardy-green);
+            background-color: var(--hardy-green-light);
+        }
+        
+        /* Image Upload Styles */
+        .image-upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-xl);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .image-upload-area:hover {
+            border-color: var(--hardy-green);
+            background-color: rgba(76, 175, 80, 0.05);
+        }
+        
+        .image-upload-area.drag-over {
+            border-color: var(--hardy-green);
+            background-color: var(--hardy-green-light);
+        }
+        
+        .image-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+        
+        .image-preview-item {
+            position: relative;
+            aspect-ratio: 1;
+            overflow: hidden;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .image-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .image-preview-item .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .image-preview-item .remove-btn:hover {
+            background: white;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .image-preview-item .main-badge {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            background: var(--hardy-green);
+            color: white;
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-xl);
+        }
+        
+        .form-actions .btn {
+            flex: 1;
+        }
+        
+        /* Success Message */
+        .success-message {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-lg);
+            display: none;
+            text-align: center;
+        }
+        
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-lg);
+            display: none;
+        }
+        
+        /* Footer */
+        .site-footer {
+            background-color: var(--text-primary);
+            color: var(--text-light);
+            padding: var(--spacing-xxl) 0 var(--spacing-md);
+            margin-top: var(--spacing-xxl);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-xxl);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .footer-logo {
+            margin-bottom: var(--spacing-md);
+            max-width: 150px;
+        }
+        
+        .footer-logo img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .footer-links h3 {
+            margin-bottom: var(--spacing-md);
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+        
+        .footer-links ul li {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .footer-links a {
+            color: var(--text-light);
+            opacity: 0.8;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--hardy-green-light);
+        }
+        
+        .footer-newsletter p {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .footer-newsletter form {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .footer-newsletter input {
+            flex: 1;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: none;
+            border-radius: var(--radius-sm);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Mobile Menu Styles */
+        .mobile-menu-container {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--background-white);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-md);
+            z-index: 999;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 var(--spacing-md) 0;
+        }
+
+        .mobile-nav-links li {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .mobile-nav-links a {
+            display: block;
+            padding: var(--spacing-sm) var(--spacing-md);
+            color: var(--text-primary);
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav-links a:hover,
+        .mobile-nav-links a.active {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green);
+        }
+
+        .mobile-user-actions {
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .mobile-user-actions .btn {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-nav > ul {
+                display: none !important;
+            }
+            
+            .user-actions {
+                display: none !important;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .footer-newsletter form {
+                flex-direction: column;
+            }
+            
+            .footer-newsletter input {
+                margin-bottom: var(--spacing-sm);
+            }
+            
+            .listing-type-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .exchange-type-options {
+                flex-direction: column;
+            }
+            
+            .form-actions {
+                flex-direction: column-reverse;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <a href="../index.html">
+                    <img src="../img/logo.svg" alt="Hardy Home and Garden">
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="browse.html">Browse</a></li>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions" id="user-actions">
+                <div style="position: relative;">
+                    <button class="user-menu-btn" onclick="toggleUserMenu(event)">
+                        <div class="user-avatar" id="user-avatar">?</div>
+                        <span id="user-name">User</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown" id="user-dropdown" style="position: absolute; top: 100%; right: 0; margin-top: 0.25rem; background: white; border-radius: 8px; box-shadow: 0 3px 6px rgba(0,0,0,0.16); min-width: 200px; display: none; z-index: 1001;">
+                        <a href="dashboard.html" style="display: block; padding: 0.5rem 1rem; color: #212121; border-bottom: 1px solid #E0E0E0;">
+                            <i class="fas fa-tachometer-alt" style="width: 20px; margin-right: 0.5rem;"></i> Dashboard
+                        </a>
+                        <a href="create.html" style="display: block; padding: 0.5rem 1rem; color: #212121; border-bottom: 1px solid #E0E0E0;">
+                            <i class="fas fa-plus" style="width: 20px; margin-right: 0.5rem;"></i> Create Listing
+                        </a>
+                        <a href="support.html" style="display: block; padding: 0.5rem 1rem; color: #212121; border-bottom: 1px solid #E0E0E0;">
+                            <i class="fas fa-heart" style="width: 20px; margin-right: 0.5rem;"></i> Support Hardy
+                        </a>
+                        <button onclick="handleSignOut()" style="display: block; width: 100%; padding: 0.5rem 1rem; color: #212121; background: none; border: none; text-align: left; cursor: pointer;">
+                            <i class="fas fa-sign-out-alt" style="width: 20px; margin-right: 0.5rem;"></i> Sign Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="create-listing-container" id="main-container">
+            <div class="page-header">
+                <h1 id="page-title">Create a Listing</h1>
+                <p id="page-subtitle">Share your garden's bounty or find what you need</p>
+            </div>
+            
+            <div class="listing-form-card">
+                <div class="success-message" id="success-message">
+                    <h3>Success! 🎉</h3>
+                    <p id="success-text">Your listing has been created. <a href="dashboard.html">Return to dashboard</a></p>
+                </div>
+                
+                <div class="error-message" id="error-message"></div>
+                
+                <form id="create-listing-form">
+                    <!-- Service Area Notice -->
+                    <div class="service-area-notice">
+                        <h3>🌱 2025 Pilot Program</h3>
+                        <p>
+                            During our pilot season, Hardy listings are available exclusively for gardeners in
+                            <strong>Kenosha and Racine Counties</strong>.
+                        </p>
+                    </div>
+                    
+                    <!-- Step 1: Listing Type -->
+                    <div class="listing-type-selector">
+                        <h3>What would you like to do?</h3>
+                        <div class="listing-type-options">
+                            <div class="listing-type-option">
+                                <input type="radio" id="offering" name="listing_type" value="offering" checked>
+                                <label for="offering" class="listing-type-label">
+                                    <div class="listing-type-icon">🌱</div>
+                                    <div class="listing-type-title">I'm Offering</div>
+                                    <div class="listing-type-description">Share produce or plants from your garden</div>
+                                </label>
+                            </div>
+                            <div class="listing-type-option">
+                                <input type="radio" id="seeking" name="listing_type" value="seeking">
+                                <label for="seeking" class="listing-type-label">
+                                    <div class="listing-type-icon">🔍</div>
+                                    <div class="listing-type-title">I'm Looking For</div>
+                                    <div class="listing-type-description">Request something specific from neighbors</div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Title -->
+                    <div class="form-group">
+                        <label for="title">
+                            <span id="title-label">What are you offering?</span>
+                        </label>
+                        <input type="text" id="title" name="title" placeholder="e.g., Fresh tomatoes, Basil seedlings" required>
+                        <small>Be specific so neighbors know exactly what you have</small>
+                    </div>
+                    
+                    <!-- Category -->
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" name="category" required>
+                            <option value="">Select a category</option>
+                            <option value="vegetables">Vegetables</option>
+                            <option value="fruits">Fruits</option>
+                            <option value="herbs">Herbs</option>
+                            <option value="seeds">Seeds & Seedlings</option>
+                            <option value="plants">Plants & Cuttings</option>
+                            <option value="eggs">Eggs</option>
+                            <option value="honey">Honey</option>
+                            <option value="gardening">Gardening Supplies</option>
+                            <option value="knowledge">Knowledge & Help</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Quantity -->
+                    <div class="form-group">
+                        <label for="quantity">
+                            <span id="quantity-label">Quantity available</span>
+                        </label>
+                        <input type="text" id="quantity" name="quantity" placeholder="e.g., 2 lbs, 6 plants, 1 bunch">
+                        <small id="quantity-help">Optional - helps set expectations</small>
+                    </div>
+                    
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" rows="4" 
+                                  placeholder="Briefly tell people what you have to offer. Add any notes about variety, growing methods, or special instructions..."></textarea>
+                        <small>Share details about your produce: variety, organic/conventional, harvest date, or any special care instructions</small>
+                    </div>
+                    
+                    <!-- Photos (Only visible for "offering") -->
+                    <div class="form-group" id="image-upload-section">
+                        <label for="images">Photos (Optional)</label>
+                        <input type="file" id="images" name="images" multiple accept="image/*" style="display: none;">
+                        <div class="image-upload-area" id="image-upload-area">
+                            <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--text-secondary); margin-bottom: var(--spacing-md); display: block;"></i>
+                            <p style="color: var(--text-secondary); margin-bottom: var(--spacing-sm);">Click to upload images or drag and drop</p>
+                            <small style="color: var(--text-secondary);">Maximum 5 images, up to 5MB each</small>
+                        </div>
+                        <div id="image-preview" class="image-preview-grid"></div>
+                    </div>
+                    
+                    <!-- Exchange Type -->
+                    <div class="form-group">
+                        <label>Exchange Type</label>
+                        <small style="margin-bottom: var(--spacing-sm); display: block;">Select all that apply - let people know what options you're open to</small>
+                        <div class="exchange-type-options">
+                            <div class="exchange-type-option">
+                                <input type="checkbox" id="free" name="exchange_type" value="free" checked>
+                                <label for="free" class="exchange-type-label">
+                                    <i class="fas fa-gift"></i> Free
+                                </label>
+                            </div>
+                            <div class="exchange-type-option">
+                                <input type="checkbox" id="trade" name="exchange_type" value="trade">
+                                <label for="trade" class="exchange-type-label">
+                                    <i class="fas fa-exchange-alt"></i> Trade
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Trade Details (conditional) -->
+                    <div class="form-group" id="trade-details" style="display: none;">
+                        <label for="trade_for" id="trade-for-label">What would you like in return?</label>
+                        <input type="text" id="trade_for" name="trade_for" 
+                               placeholder="e.g., Other vegetables, herbs, canning jars">
+                        <small>This helps people know what you're looking for in trade</small>
+                    </div>
+                    
+                    <!-- Availability -->
+                    <div class="form-group">
+                        <label for="availability">
+                            <span id="availability-label">When is this available?</span>
+                        </label>
+                        <select id="availability" name="availability">
+                            <option value="now">Available Now</option>
+                            <option value="today">Today</option>
+                            <option value="tomorrow">Tomorrow</option>
+                            <option value="this_week">This Week</option>
+                            <option value="next_week">Next Week</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Listing Duration -->
+                    <div class="form-group">
+                        <label for="duration">
+                            How long should this listing remain active?
+                        </label>
+                        <select id="duration" name="duration" required>
+                            <option value="7" selected>7 days</option>
+                            <option value="14">14 days</option>
+                            <option value="30">30 days</option>
+                        </select>
+                        <small>Your listing will automatically expire after this period. You can always renew it later.</small>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <a href="dashboard.html" class="btn btn-outline">Cancel</a>
+                        <button type="submit" class="btn btn-primary" id="submit-btn">
+                            Create Listing
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <div class="footer-logo">
+                        <img src="../img/logo-white.svg" alt="Hardy Home and Garden">
+                    </div>
+                    <p>Connecting gardeners and building sustainable communities one harvest at a time.</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="browse.html">Browse</a></li>
+                        <li><a href="about.html">About Hardy</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Get Started</h3>
+                    <ul>
+                        <li><a href="auth.html">Create Account</a></li>
+                        <li><a href="create.html">Create Listing</a></li>
+                        <li><a href="dashboard.html">My Dashboard</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="terms.html">Terms of Use</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="coming-soon.html?feature=cookie">Cookie Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>Stay Updated</h3>
+                    <p>Join our mailing list for offers and updates.</p>
+                    <form>
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit" class="btn btn-primary">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Hardy Home and Garden. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Create Listing Scripts -->
+    <script>
+        let editListingId = null; // Track if we're editing
+        let currentUser = null;
+        let userProfile = null;
+        let selectedImages = [];
+        const MAX_IMAGES = 5;
+        const MAX_SIZE_MB = 5;
+        
+        // Check if user is logged in and handle edit mode
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Get current user
+            const { data: { user } } = await window.hardySupabase.auth.getUser();
+            
+            if (!user) {
+                // Redirect to auth page if not logged in
+                window.location.href = 'auth.html?redirect=create';
+                return;
+            }
+            
+            currentUser = user;
+            
+            // Get user profile to check ZIP code
+            const { data: profile } = await window.hardySupabase
+                .from('profiles')
+                .select('*')
+                .eq('id', user.id)
+                .single();
+            
+            userProfile = profile;
+            
+            // Update header with user info - using same pattern as browse.html
+            if (profile) {
+                const displayName = profile.nickname || profile.full_name || profile.email?.split('@')[0] || 'User';
+                const userInitial = displayName.charAt(0).toUpperCase();
+                
+                document.getElementById('user-name').textContent = displayName;
+                document.getElementById('user-avatar').textContent = userInitial;
+            }
+            
+            // Check if user is in service area
+            if (!profile || !VALID_ZIPS.includes(profile.zip_code)) {
+                // Replace the entire page content with out-of-area message
+                document.getElementById('main-container').innerHTML = `
+                    <div class="out-of-area-card">
+                        <h2>Coming Soon to Your Area!</h2>
+                        <p>
+                            Hardy is currently in pilot phase, serving only 
+                            <strong>Kenosha and Racine Counties</strong> for the 2025 growing season.
+                        </p>
+                        <p style="font-size: 1rem; color: #757575;">
+                            Your ZIP code (${profile?.zip_code || 'not set'}) is outside our current service area.
+                        </p>
+                        <div class="actions">
+                            <a href="browse.html" class="btn btn-secondary">Browse Local Listings</a>
+                            <a href="/waitlist.html" class="btn btn-primary">Join Waitlist</a>
+                        </div>
+                    </div>
+                `;
+                return; // Stop here if out of area
+            }
+            
+            // Check for edit parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            editListingId = urlParams.get('edit');
+            
+            if (editListingId) {
+                await loadListingForEdit(editListingId);
+            } else {
+                // Set initial description helper text for new listings
+                updateDescriptionPlaceholder('offering');
+            }
+            
+            // Setup form handlers
+            setupFormHandlers();
+            setupMobileMenu();
+            setupImageUpload();
+        });
+        
+        // Toggle user dropdown menu
+        function toggleUserMenu(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('user-dropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function() {
+            const dropdown = document.getElementById('user-dropdown');
+            if (dropdown) {
+                dropdown.style.display = 'none';
+            }
+        });
+        
+        // Handle sign out
+        async function handleSignOut() {
+            if (confirm('Are you sure you want to sign out?')) {
+                await window.hardySupabase.auth.signOut();
+                window.location.href = '../index.html';
+            }
+        }
+        
+        // Setup image upload handlers
+        function setupImageUpload() {
+            const fileInput = document.getElementById('images');
+            const uploadArea = document.getElementById('image-upload-area');
+            const previewContainer = document.getElementById('image-preview');
+            
+            // Click to upload
+            uploadArea.addEventListener('click', () => fileInput.click());
+            
+            // Drag and drop
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('drag-over');
+            });
+            
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('drag-over');
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('drag-over');
+                handleFiles(e.dataTransfer.files);
+            });
+            
+            // File input change
+            fileInput.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+            });
+        }
+        
+        // Handle file selection
+        function handleFiles(files) {
+            // Check if image upload is allowed (only for "offering")
+            const listingType = document.querySelector('input[name="listing_type"]:checked').value;
+            if (listingType !== 'offering') {
+                return; // Don't process files if not offering
+            }
+            
+            const validFiles = Array.from(files).filter(file => {
+                // Check if image
+                if (!file.type.startsWith('image/')) {
+                    alert(`${file.name} is not an image`);
+                    return false;
+                }
+                // Check size
+                if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+                    alert(`${file.name} is larger than ${MAX_SIZE_MB}MB`);
+                    return false;
+                }
+                return true;
+            });
+            
+            // Add to selected images (max 5)
+            const remainingSlots = MAX_IMAGES - selectedImages.length;
+            const filesToAdd = validFiles.slice(0, remainingSlots);
+            
+            if (validFiles.length > remainingSlots) {
+                alert(`Only ${MAX_IMAGES} images allowed. First ${remainingSlots} images will be used.`);
+            }
+            
+            filesToAdd.forEach(file => {
+                selectedImages.push(file);
+                displayImagePreview(file, selectedImages.length - 1);
+            });
+        }
+        
+        // Display image preview
+        function displayImagePreview(file, index) {
+            const reader = new FileReader();
+            const previewContainer = document.getElementById('image-preview');
+            
+            reader.onload = (e) => {
+                const preview = document.createElement('div');
+                preview.className = 'image-preview-item';
+                preview.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview ${index + 1}">
+                    <button type="button" class="remove-btn" onclick="removeImage(${index})">
+                        <i class="fas fa-times" style="color: var(--text-secondary);"></i>
+                    </button>
+                    ${index === 0 ? '<span class="main-badge">Main</span>' : ''}
+                `;
+                previewContainer.appendChild(preview);
+            };
+            
+            reader.readAsDataURL(file);
+        }
+        
+        // Remove image
+        function removeImage(index) {
+            selectedImages.splice(index, 1);
+            updateImagePreviews();
+        }
+        
+        // Update all previews
+        function updateImagePreviews() {
+            const previewContainer = document.getElementById('image-preview');
+            previewContainer.innerHTML = '';
+            selectedImages.forEach((file, index) => {
+                displayImagePreview(file, index);
+            });
+        }
+        
+        // Upload images to Supabase
+        async function uploadImages(listingId) {
+            const imageUrls = [];
+            
+            for (let i = 0; i < selectedImages.length; i++) {
+                const file = selectedImages[i];
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${listingId}/${Date.now()}_${i}.${fileExt}`;
+                
+                try {
+                    const { data, error } = await window.hardySupabase.storage
+                        .from('listing-images')
+                        .upload(fileName, file);
+                        
+                    if (error) throw error;
+                    
+                    // Get public URL
+                    const { data: { publicUrl } } = window.hardySupabase.storage
+                        .from('listing-images')
+                        .getPublicUrl(fileName);
+                        
+                    imageUrls.push(publicUrl);
+                } catch (error) {
+                    console.error('Error uploading image:', error);
+                }
+            }
+            
+            return imageUrls;
+        }
+        
+        // Load existing listing for editing
+        async function loadListingForEdit(listingId) {
+            try {
+                const { data: listing, error } = await window.hardySupabase
+                    .from('listings')
+                    .select('*')
+                    .eq('id', listingId)
+                    .eq('user_id', currentUser.id) // Security check
+                    .single();
+
+                if (error) throw error;
+                
+                // Update page for edit mode
+                document.getElementById('page-title').textContent = 'Edit Listing';
+                document.getElementById('page-subtitle').textContent = 'Update your listing details';
+                document.getElementById('submit-btn').textContent = 'Update Listing';
+                
+                // Populate form with existing data
+                populateForm(listing);
+                
+                // Load existing images (only if offering type)
+                if (listing.listing_type === 'offering' && listing.image_urls && listing.image_urls.length > 0) {
+                    // For edit mode, we'll show existing images but won't allow re-upload
+                    // This is a simplified version - in production you'd want full edit capabilities
+                    const previewContainer = document.getElementById('image-preview');
+                    listing.image_urls.forEach((url, index) => {
+                        const preview = document.createElement('div');
+                        preview.className = 'image-preview-item';
+                        preview.innerHTML = `
+                            <img src="${url}" alt="Preview ${index + 1}">
+                            ${index === 0 ? '<span class="main-badge">Main</span>' : ''}
+                        `;
+                        previewContainer.appendChild(preview);
+                    });
+                }
+                
+            } catch (error) {
+                console.error('Error loading listing for editing:', error);
+                alert('Error loading listing for editing. Redirecting to dashboard.');
+                window.location.href = 'dashboard.html';
+            }
+        }
+        
+        // Populate form with existing listing data
+        function populateForm(listing) {
+            // Set listing type radio
+            const listingTypeRadio = document.querySelector(`input[name="listing_type"][value="${listing.listing_type}"]`);
+            if (listingTypeRadio) {
+                listingTypeRadio.checked = true;
+                // Trigger change event to update form labels
+                listingTypeRadio.dispatchEvent(new Event('change'));
+            }
+            
+            // Set form fields
+            document.getElementById('title').value = listing.title;
+            document.getElementById('category').value = listing.category;
+            document.getElementById('quantity').value = listing.quantity || '';
+            document.getElementById('description').value = listing.description || '';
+            document.getElementById('availability').value = listing.availability;
+            document.getElementById('trade_for').value = listing.trade_for || '';
+            
+            // Set duration if it exists
+            if (listing.duration_days) {
+                document.getElementById('duration').value = listing.duration_days;
+            }
+            
+            // Set exchange type checkboxes
+            const exchangeTypes = listing.exchange_type.split(',');
+            
+            // Clear existing selections
+            document.getElementById('free').checked = false;
+            document.getElementById('trade').checked = false;
+            
+            // Set correct selections
+            exchangeTypes.forEach(type => {
+                const checkbox = document.getElementById(type.trim());
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+            });
+            
+            // Show trade details if trade is selected
+            if (exchangeTypes.includes('trade')) {
+                document.getElementById('trade-details').style.display = 'block';
+            }
+        }
+        
+        function setupFormHandlers() {
+            // Handle listing type change
+            const listingTypeRadios = document.querySelectorAll('input[name="listing_type"]');
+            const titleLabel = document.getElementById('title-label');
+            const titleInput = document.getElementById('title');
+            const quantityLabel = document.getElementById('quantity-label');
+            const quantityHelp = document.getElementById('quantity-help');
+            const descriptionTextarea = document.getElementById('description');
+            const imageUploadSection = document.getElementById('image-upload-section');
+            
+            listingTypeRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const titleLabel = document.getElementById('title-label');
+                    const titleInput = document.getElementById('title');
+                    const quantityLabel = document.getElementById('quantity-label');
+                    const quantityHelp = document.getElementById('quantity-help');
+                    const descriptionTextarea = document.getElementById('description');
+                    const availabilityLabel = document.getElementById('availability-label');
+                    const availabilitySelect = document.getElementById('availability');
+                    const imageUploadSection = document.getElementById('image-upload-section');
+                    
+                    if (this.value === 'offering') {
+                        // Update labels for offering
+                        titleLabel.textContent = 'What are you offering?';
+                        titleInput.placeholder = 'e.g., Fresh tomatoes, Basil seedlings';
+                        quantityLabel.textContent = 'Quantity available';
+                        quantityHelp.textContent = 'Optional - helps set expectations';
+                        descriptionTextarea.placeholder = 'Briefly tell people what you have to offer. Add any notes about variety, growing methods, or special instructions...';
+                        availabilityLabel.textContent = 'When is this available?';
+                        
+                        // Show image upload section
+                        imageUploadSection.style.display = 'block';
+                        
+                        // Update availability options for offering
+                        availabilitySelect.innerHTML = `
+                            <option value="now">Available Now</option>
+                            <option value="today">Today</option>
+                            <option value="tomorrow">Tomorrow</option>
+                            <option value="this_week">This Week</option>
+                            <option value="next_week">Next Week</option>
+                        `;
+                    } else {
+                        // Update labels for seeking
+                        titleLabel.textContent = 'What are you looking for?';
+                        titleInput.placeholder = 'e.g., Garlic bulbs, Canning jars, Garden mentor';
+                        quantityLabel.textContent = 'Quantity needed';
+                        quantityHelp.textContent = 'Optional - let people know how much you need';
+                        descriptionTextarea.placeholder = 'Briefly tell people what you\'re looking for. Add any notes about variety, growing methods, or special instructions...';
+                        availabilityLabel.textContent = 'When do you need this?';
+                        
+                        // Hide image upload section and clear selected images
+                        imageUploadSection.style.display = 'none';
+                        selectedImages = [];
+                        document.getElementById('image-preview').innerHTML = '';
+                        
+                        // Update availability options for seeking
+                        availabilitySelect.innerHTML = `
+                            <option value="now">Need Now</option>
+                            <option value="today">Today</option>
+                            <option value="tomorrow">Tomorrow</option>
+                            <option value="this_week">This Week</option>
+                            <option value="next_week">Next Week</option>
+                        `;
+                    }
+                    
+                    // Update description helper text
+                    updateDescriptionPlaceholder(this.value);
+                    
+                    // Also update trade details label if trade is selected
+                    const tradeChecked = document.getElementById('trade').checked;
+                    if (tradeChecked) {
+                        updateTradeDetailsLabel(this.value);
+                    }
+                });
+            });
+            
+            // Handle exchange type change (now for checkboxes)
+            const exchangeTypeCheckboxes = document.querySelectorAll('input[name="exchange_type"]');
+            const tradeDetails = document.getElementById('trade-details');
+            
+            exchangeTypeCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const tradeChecked = document.getElementById('trade').checked;
+                    const listingType = document.querySelector('input[name="listing_type"]:checked').value;
+                    
+                    if (tradeChecked) {
+                        tradeDetails.style.display = 'block';
+                        updateTradeDetailsLabel(listingType);
+                    } else {
+                        tradeDetails.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Handle form submission
+            const form = document.getElementById('create-listing-form');
+            form.addEventListener('submit', handleSubmit);
+        }
+        
+        // Update description placeholder and helper text
+        function updateDescriptionPlaceholder(listingType) {
+            const descriptionTextarea = document.getElementById('description');
+            const descriptionGroup = descriptionTextarea.closest('.form-group');
+            let helperText = descriptionGroup.querySelector('small');
+            
+            // Add helper text if it doesn't exist
+            if (!helperText) {
+                helperText = document.createElement('small');
+                descriptionGroup.appendChild(helperText);
+            }
+            
+            if (listingType === 'offering') {
+                descriptionTextarea.placeholder = 'Briefly tell people what you have to offer. Add any notes about variety, growing methods, or special instructions...';
+                helperText.textContent = 'Share details about your produce: variety, organic/conventional, harvest date, or any special care instructions';
+            } else {
+                descriptionTextarea.placeholder = 'Briefly tell people what you\'re looking for. Add any notes about variety, growing methods, or special instructions...';
+                helperText.textContent = 'Be specific about what you need: varieties you prefer, quantity, timeframe, or how you plan to use it';
+            }
+        }
+        
+        // Update trade details label based on listing type
+        function updateTradeDetailsLabel(listingType) {
+            const tradeForLabel = document.getElementById('trade-for-label');
+            const tradeForInput = document.getElementById('trade_for');
+            
+            if (listingType === 'seeking') {
+                tradeForLabel.textContent = 'What can you offer in exchange?';
+                tradeForInput.placeholder = 'e.g., Other vegetables, herbs, canning jars, gardening help';
+            } else {
+                tradeForLabel.textContent = 'What would you like in return?';
+                tradeForInput.placeholder = 'e.g., Other vegetables, herbs, canning jars';
+            }
+        }
+        
+        async function handleSubmit(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const submitBtn = document.getElementById('submit-btn');
+            const errorMsg = document.getElementById('error-message');
+            const successMsg = document.getElementById('success-message');
+            const successText = document.getElementById('success-text');
+            
+            // Hide messages
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+            
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.textContent = editListingId ? 'Updating...' : 'Creating...';
+            
+            try {
+                if (!currentUser) {
+                    throw new Error('You must be logged in to create a listing');
+                }
+                
+                // Get form data
+                const formData = new FormData(form);
+                const listingType = formData.get('listing_type');
+                
+                // Get exchange types (handle multiple checkboxes)
+                const exchangeTypes = [];
+                const exchangeCheckboxes = document.querySelectorAll('input[name="exchange_type"]:checked');
+                exchangeCheckboxes.forEach(cb => exchangeTypes.push(cb.value));
+                
+                // Ensure at least one exchange type is selected
+                if (exchangeTypes.length === 0) {
+                    throw new Error('Please select at least one exchange type');
+                }
+                
+                // Get user profile for location data
+                const { data: profile } = await window.hardySupabase
+                    .from('profiles')
+                    .select('neighborhood, location_coords')
+                    .eq('id', currentUser.id)
+                    .single();
+                
+                // Calculate expiration date based on duration
+                const durationDays = parseInt(formData.get('duration'));
+                const expiresAt = new Date();
+                expiresAt.setDate(expiresAt.getDate() + durationDays);
+                
+                const listingData = {
+                    user_id: currentUser.id,
+                    listing_type: listingType,
+                    title: formData.get('title'),
+                    category: formData.get('category'),
+                    quantity: formData.get('quantity') || null,
+                    description: formData.get('description') || null,
+                    exchange_type: exchangeTypes.join(','),
+                    trade_for: exchangeTypes.includes('trade') ? formData.get('trade_for') : null,
+                    availability: formData.get('availability'),
+                    duration_days: durationDays,
+                    expires_at: expiresAt.toISOString(),
+                    is_active: true,
+                    status: 'active',
+                    location_display: profile?.neighborhood || null,
+                    location_coords: profile?.location_coords || null
+                };
+                
+                let result;
+                if (editListingId) {
+                    // Update existing listing
+                    result = await window.hardySupabase
+                        .from('listings')
+                        .update(listingData)
+                        .eq('id', editListingId)
+                        .eq('user_id', currentUser.id)
+                        .select();
+                } else {
+                    // Create new listing
+                    listingData.created_at = new Date().toISOString();
+                    result = await window.hardySupabase
+                        .from('listings')
+                        .insert([listingData])
+                        .select();
+                }
+                
+                if (result.error) throw result.error;
+                
+                // Upload images if any (only for "offering" type and new listings)
+                if (result.data && result.data[0] && selectedImages.length > 0 && listingType === 'offering' && !editListingId) {
+                    const listingId = result.data[0].id;
+                    const imageUrls = await uploadImages(listingId);
+                    
+                    // Update listing with image URLs
+                    if (imageUrls.length > 0) {
+                        await window.hardySupabase
+                            .from('listings')
+                            .update({ image_urls: imageUrls })
+                            .eq('id', listingId);
+                    }
+                }
+                
+                // Track in analytics
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', editListingId ? 'listing_updated' : 'listing_created', {
+                        'event_category': 'engagement',
+                        'listing_type': listingData.listing_type,
+                        'category': listingData.category,
+                        'duration_days': listingData.duration_days
+                    });
+                }
+                
+                // Show success message
+                const action = editListingId ? 'updated' : 'created';
+                successText.innerHTML = `Your listing has been ${action}. <a href="dashboard.html">Return to dashboard</a>`;
+                successMsg.style.display = 'block';
+                form.style.display = 'none';
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+            } catch (error) {
+                console.error('Error with listing:', error);
+                errorMsg.textContent = error.message || 'Error processing listing. Please try again.';
+                errorMsg.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = editListingId ? 'Update Listing' : 'Create Listing';
+            }
+        }
+        
+        // Mobile menu setup
+        function setupMobileMenu() {
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const mainNav = document.querySelector('.main-nav');
+            
+            if (mobileMenuBtn && mainNav) {
+                let mobileMenuContainer = document.querySelector('.mobile-menu-container');
+                if (!mobileMenuContainer) {
+                    mobileMenuContainer = document.createElement('div');
+                    mobileMenuContainer.className = 'mobile-menu-container';
+                    mobileMenuContainer.style.display = 'none';
+                    mobileMenuContainer.innerHTML = `
+                        <ul class="mobile-nav-links">
+                            <li><a href="../index.html">Home</a></li>
+                            <li><a href="browse.html">Browse</a></li>
+                            <li><a href="dashboard.html">Dashboard</a></li>
+                        </ul>
+                        <div class="mobile-user-actions">
+                            <button class="btn btn-outline btn-block" onclick="handleSignOut()">Sign Out</button>
+                        </div>
+                    `;
+                    mainNav.appendChild(mobileMenuContainer);
+                }
+                
+                mobileMenuBtn.addEventListener('click', function() {
+                    if (mobileMenuContainer.style.display === 'block') {
+                        mobileMenuContainer.style.display = 'none';
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                    } else {
+                        mobileMenuContainer.style.display = 'block';
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

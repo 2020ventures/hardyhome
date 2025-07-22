@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - Hardy Home and Garden</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Hardy Config -->
+    <script src="../hardy-config.js"></script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CJ4MS44MBB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-CJ4MS44MBB');
+    </script>
+    
+    <style>
+        /* CSS Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Variables */
+        :root {
+            /* Brand Colors */
+            --hardy-green: #4CAF50;
+            --hardy-green-dark: #388E3C;
+            --hardy-green-light: #A5D6A7;
+            
+            /* Supporting Colors */
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --text-light: #FFFFFF;
+            --background-light: #F9F9F9;
+            --background-white: #FFFFFF;
+            --border-color: #E0E0E0;
+            --error-color: #f44336;
+            --success-color: #4CAF50;
+            
+            /* Spacing */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-xxl: 3rem;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            
+            /* Box Shadows */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-md: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        }
+        
+        /* Base Styles */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background-color: var(--background-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        a {
+            color: var(--hardy-green);
+            text-decoration: none;
+        }
+        
+        a:hover {
+            color: var(--hardy-green-dark);
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+        
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Lora', serif;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+        }
+        
+        h2 {
+            font-size: 2rem;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+        }
+        
+        p {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--hardy-green);
+            color: var(--text-light);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--hardy-green-dark);
+            color: var(--text-light);
+        }
+        
+        .btn-secondary {
+            background-color: var(--text-light);
+            color: var(--hardy-green);
+            border: 2px solid var(--hardy-green);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-secondary);
+            border: 2px solid var(--border-color);
+        }
+        
+        .btn-outline:hover {
+            border-color: var(--hardy-green);
+            color: var(--hardy-green);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        /* Header */
+        .site-header {
+            background-color: var(--background-white);
+            box-shadow: var(--shadow-sm);
+            padding: var(--spacing-md) 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .site-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            max-width: 150px;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .main-nav ul {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+        
+        .main-nav a {
+            color: var(--text-primary);
+            font-weight: 600;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: var(--hardy-green);
+            background-color: var(--hardy-green-light);
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .user-menu {
+            position: relative;
+        }
+        
+        .user-menu-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            background: none;
+            border: 2px solid var(--border-color);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .user-menu-btn:hover {
+            border-color: var(--hardy-green);
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: var(--hardy-green-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--hardy-green-dark);
+            font-weight: bold;
+        }
+        
+        /* User Dropdown Menu */
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: var(--spacing-xs);
+            background-color: var(--background-white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            min-width: 200px;
+            z-index: 1001;
+            display: none;
+            border: 1px solid var(--border-color);
+        }
+        
+        .user-dropdown.show {
+            display: block;
+        }
+        
+        .user-dropdown a,
+        .user-dropdown button {
+            display: block;
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            text-align: left;
+            color: var(--text-primary);
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+        
+        .user-dropdown a:hover,
+        .user-dropdown button:hover {
+            background-color: var(--background-light);
+            color: var(--hardy-green);
+        }
+        
+        .user-dropdown .divider {
+            height: 1px;
+            background-color: var(--border-color);
+            margin: var(--spacing-xs) 0;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+        
+        /* Main Content */
+        main {
+            flex: 1;
+            padding: var(--spacing-xl) 0;
+        }
+        
+        /* Profile Edit Form */
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .page-header {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .page-header h1 {
+            color: var(--hardy-green-dark);
+        }
+        
+        .breadcrumb {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .breadcrumb a {
+            color: var(--text-secondary);
+        }
+        
+        .breadcrumb a:hover {
+            color: var(--hardy-green);
+        }
+        
+        .profile-form-card {
+            background-color: var(--background-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .form-section {
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-xl);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .form-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            margin-bottom: var(--spacing-lg);
+            color: var(--hardy-green-dark);
+        }
+        
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-primary);
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem var(--spacing-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--hardy-green);
+        }
+        
+        .form-group input[readonly] {
+            background-color: var(--background-light);
+            cursor: not-allowed;
+        }
+        
+        .form-help {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: var(--spacing-xs);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+        
+        /* Avatar Section */
+        .avatar-section {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .avatar-preview {
+            width: 100px;
+            height: 100px;
+            background-color: var(--hardy-green-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--hardy-green-dark);
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        
+        .avatar-info {
+            flex: 1;
+        }
+        
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--spacing-xl);
+            padding-top: var(--spacing-xl);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .form-actions-left,
+        .form-actions-right {
+            display: flex;
+            gap: var(--spacing-md);
+        }
+        
+        /* Alert Messages */
+        .alert {
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-lg);
+            display: none;
+        }
+        
+        .alert.show {
+            display: block;
+        }
+        
+        .alert-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+        }
+        
+        .alert-error {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+        }
+        
+        .alert-info {
+            background-color: #e3f2fd;
+            color: #1565c0;
+            border: 1px solid #90caf9;
+        }
+        
+        /* Loading State */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: var(--spacing-xxl);
+        }
+        
+        .loading.show {
+            display: block;
+        }
+        
+        .spinner {
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--hardy-green);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto var(--spacing-md);
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* ZIP Code Notice */
+        .zip-notice {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+            font-size: 0.9rem;
+        }
+        
+        .zip-notice i {
+            margin-right: var(--spacing-sm);
+        }
+        
+        /* Footer */
+        .site-footer {
+            background-color: var(--text-primary);
+            color: var(--text-light);
+            padding: var(--spacing-xxl) 0 var(--spacing-md);
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-xxl);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .footer-logo {
+            margin-bottom: var(--spacing-md);
+            max-width: 150px;
+        }
+        
+        .footer-logo img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .footer-links h3 {
+            margin-bottom: var(--spacing-md);
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+        
+        .footer-links ul li {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .footer-links a {
+            color: var(--text-light);
+            opacity: 0.8;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--hardy-green-light);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Mobile Menu Styles */
+        .mobile-menu-container {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--background-white);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-md);
+            z-index: 999;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 var(--spacing-md) 0;
+        }
+
+        .mobile-nav-links li {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .mobile-nav-links a {
+            display: block;
+            padding: var(--spacing-sm) var(--spacing-md);
+            color: var(--text-primary);
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav-links a:hover,
+        .mobile-nav-links a.active {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green);
+        }
+
+        .mobile-user-actions {
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .mobile-user-actions .btn {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .main-nav > ul {
+                display: none !important;
+            }
+            
+            .user-actions {
+                display: none !important;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .profile-form-card {
+                padding: var(--spacing-lg);
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .avatar-section {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+            
+            .form-actions-left,
+            .form-actions-right {
+                width: 100%;
+            }
+            
+            .form-actions-left .btn,
+            .form-actions-right .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <a href='/'>
+                    <img src="../img/logo.svg" alt="Hardy Home and Garden">
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-links">
+                    <li><a href='/'>Home</a></li>
+                    <li><a href='/pages/browse'>Browse</a></li>
+                    <li><a href='/pages/dashboard'>My Dashboard</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <div class="user-menu">
+                    <button class="user-menu-btn" id="user-menu-btn">
+                        <div class="user-avatar" id="user-avatar">?</div>
+                        <span id="user-name">User</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <a href='/pages/browse'>
+                            <i class="fas fa-search"></i> Browse Listings
+                        </a>
+                        <a href='/pages/create'>
+                            <i class="fas fa-plus"></i> Create Listing
+                        </a>
+                        <div class="divider"></div>
+                        <a href='/pages/support'>
+                            <i class="fas fa-heart"></i> Support Hardy
+                        </a>
+                        <div class="divider"></div>
+                        <button onclick="handleSignOut()">
+                            <i class="fas fa-sign-out-alt"></i> Sign Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="container profile-container">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <a href="/pages/dashboard">Dashboard</a> / Edit Profile
+            </div>
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>Edit Your Profile</h1>
+                <p>Update your information to help neighbors get to know you better.</p>
+            </div>
+
+            <!-- Alert Messages -->
+            <div class="alert alert-success" id="success-alert"></div>
+            <div class="alert alert-error" id="error-alert"></div>
+            <div class="alert alert-info" id="info-alert"></div>
+
+            <!-- Loading State -->
+            <div class="loading" id="loading-state">
+                <div class="spinner"></div>
+                <p>Loading your profile...</p>
+            </div>
+
+            <!-- Profile Form -->
+            <div class="profile-form-card" id="profile-form-card" style="display: none;">
+                <form id="profile-form">
+                    <!-- Basic Information -->
+                    <div class="form-section">
+                        <h2 class="section-title">Basic Information</h2>
+                        
+                        <div class="avatar-section">
+                            <div class="avatar-preview" id="avatar-preview">
+                                <span id="avatar-initial">?</span>
+                            </div>
+                            <div class="avatar-info">
+                                <p><strong>Profile Picture</strong></p>
+                                <p class="form-help">We use your initials as your avatar. Profile pictures coming soon!</p>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="full_name">Full Name *</label>
+                                <input type="text" id="full_name" name="full_name" required>
+                                <p class="form-help">This is how you'll appear to other gardeners</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="nickname">Nickname (Optional)</label>
+                                <input type="text" id="nickname" name="nickname">
+                                <p class="form-help">A friendly name neighbors can call you</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" readonly>
+                            <p class="form-help">Email cannot be changed. Contact support if you need assistance.</p>
+                        </div>
+                    </div>
+
+                    <!-- Location Information -->
+                    <div class="form-section">
+                        <h2 class="section-title">Location Information</h2>
+                        
+                        <div class="form-group">
+                            <label for="address">Street Address *</label>
+                            <input type="text" id="address" name="address" required>
+                            <p class="form-help">Your address helps us show you nearby listings (never shown publicly)</p>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="city">City *</label>
+                                <input type="text" id="city" name="city" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="zip_code">ZIP Code *</label>
+                                <select id="zip_code" name="zip_code" required>
+                                    <option value="">Select your ZIP code</option>
+                                    <!-- ZIP codes will be populated by JavaScript -->
+                                </select>
+                                <p class="form-help">Hardy 2025 pilot area only</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="neighborhood">Neighborhood Name (Optional)</label>
+                            <input type="text" id="neighborhood" name="neighborhood" placeholder="e.g., Downtown, Harbor Park">
+                            <p class="form-help">Help neighbors know what area you're in</p>
+                        </div>
+
+                        <div class="zip-notice">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Moving?</strong> If you change your ZIP code, all your active listings will be updated to reflect your new location. This helps ensure neighbors can find your offerings in the correct area.
+                        </div>
+                    </div>
+
+                    <!-- Account Security -->
+                    <div class="form-section">
+                        <h2 class="section-title">Account Security</h2>
+                        
+                        <div class="form-group">
+                            <label>Password</label>
+                            <a href="/pages/reset-password" class="btn btn-outline">
+                                <i class="fas fa-lock"></i> Change Password
+                            </a>
+                            <p class="form-help">Keep your account secure with a strong password</p>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <div class="form-actions-left">
+                            <button type="button" class="btn btn-outline" onclick="cancelEdit()">
+                                Cancel
+                            </button>
+                        </div>
+                        <div class="form-actions-right">
+                            <button type="submit" class="btn btn-primary" id="save-btn">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <div class="footer-logo">
+                        <img src="../img/logo-white.svg" alt="Hardy Home and Garden">
+                    </div>
+                    <p>Connecting gardeners and building sustainable communities one harvest at a time.</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href='/'>Home</a></li>
+                        <li><a href='/pages/browse'>Browse</a></li>
+                        <li><a href='/pages/about'>About Hardy</a></li>
+                        <li><a href='/pages/faq'>FAQ</a></li>
+                        <li><a href='/pages/contact'>Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Get Started</h3>
+                    <ul>
+                        <li><a href='/pages/auth'>Create Account</a></li>
+                        <li><a href='/pages/create'>Create Listing</a></li>
+                        <li><a href='/pages/dashboard'>My Dashboard</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href='/pages/terms'>Terms of Use</a></li>
+                        <li><a href='/pages/privacy'>Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Hardy Home and Garden. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global variables
+        let currentUser = null;
+        let userProfile = null;
+        let hasChanges = false;
+
+        // ZIP codes data - using the structure from hardy-config.js
+        // This assumes VALID_ZIPS exists in hardy-config.js
+        // If not, we'll define it here
+        const ZIP_DATA = [
+            // Kenosha County
+            { zip: '53102', name: 'Bassett', county: 'Kenosha' },
+            { zip: '53104', name: 'Bristol', county: 'Kenosha' },
+            { zip: '53105', name: 'Burlington', county: 'Both' },
+            { zip: '53109', name: 'Camp Lake', county: 'Kenosha' },
+            { zip: '53114', name: 'Darien', county: 'Kenosha' },
+            { zip: '53119', name: 'Eagle Lake', county: 'Kenosha' },
+            { zip: '53125', name: 'Fontana', county: 'Kenosha' },
+            { zip: '53128', name: 'Genoa City', county: 'Kenosha' },
+            { zip: '53140', name: 'Kenosha', county: 'Kenosha' },
+            { zip: '53141', name: 'Kenosha', county: 'Kenosha' },
+            { zip: '53142', name: 'Kenosha', county: 'Kenosha' },
+            { zip: '53143', name: 'Kenosha', county: 'Kenosha' },
+            { zip: '53144', name: 'Kenosha', county: 'Kenosha' },
+            { zip: '53152', name: 'New Munster', county: 'Kenosha' },
+            { zip: '53158', name: 'Pleasant Prairie', county: 'Kenosha' },
+            { zip: '53168', name: 'Somers', county: 'Kenosha' },
+            { zip: '53170', name: 'Silver Lake', county: 'Kenosha' },
+            { zip: '53171', name: 'Somers', county: 'Kenosha' },
+            { zip: '53179', name: 'Trevor', county: 'Kenosha' },
+            { zip: '53181', name: 'Twin Lakes', county: 'Kenosha' },
+            { zip: '53182', name: 'Union Grove', county: 'Both' },
+            { zip: '53192', name: 'Wilmot', county: 'Kenosha' },
+            { zip: '53194', name: 'Woodworth', county: 'Kenosha' },
+            { zip: '53195', name: 'Zenda', county: 'Kenosha' },
+            // Racine County
+            { zip: '53108', name: 'Caledonia', county: 'Racine' },
+            { zip: '53126', name: 'Franksville', county: 'Racine' },
+            { zip: '53139', name: 'Kansasville', county: 'Racine' },
+            { zip: '53154', name: 'Mount Pleasant', county: 'Racine' },
+            { zip: '53167', name: 'Rochester', county: 'Racine' },
+            { zip: '53177', name: 'Sturtevant', county: 'Racine' },
+            { zip: '53178', name: 'Sullivan', county: 'Racine' },
+            { zip: '53183', name: 'Union Grove', county: 'Racine' },
+            { zip: '53185', name: 'Waterford', county: 'Racine' },
+            { zip: '53401', name: 'Racine', county: 'Racine' },
+            { zip: '53402', name: 'Racine', county: 'Racine' },
+            { zip: '53403', name: 'Racine', county: 'Racine' },
+            { zip: '53404', name: 'Racine', county: 'Racine' },
+            { zip: '53405', name: 'Racine', county: 'Racine' },
+            { zip: '53406', name: 'Racine', county: 'Racine' },
+            { zip: '53408', name: 'Racine', county: 'Racine' }
+        ];
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Show loading state
+            showLoading(true);
+
+            // Get current user
+            const { data: { user } } = await window.hardySupabase.auth.getUser();
+            
+            if (!user) {
+                // Redirect to auth page if not logged in
+                window.location.href = '/pages/auth?redirect=edit-profile';
+                return;
+            }
+            
+            currentUser = user;
+            
+            // Load user profile
+            await loadUserProfile();
+            
+            // Setup components
+            setupUserDropdown();
+            setupMobileMenu();
+            populateZipCodes();
+            setupFormListeners();
+            
+            // Show form
+            showLoading(false);
+            document.getElementById('profile-form-card').style.display = 'block';
+        });
+
+        // Load user profile
+        async function loadUserProfile() {
+            try {
+                const { data: profile, error } = await window.hardySupabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+                
+                if (error) throw error;
+                
+                userProfile = profile;
+                populateForm(profile);
+                updateHeaderInfo(profile);
+                
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                showAlert('error', 'Error loading profile. Please try again.');
+            }
+        }
+
+        // Populate form with current data
+        function populateForm(profile) {
+            // Basic Information
+            document.getElementById('full_name').value = profile.full_name || '';
+            document.getElementById('nickname').value = profile.nickname || '';
+            document.getElementById('email').value = currentUser.email || '';
+            
+            // Location
+            document.getElementById('address').value = profile.address || '';
+            document.getElementById('city').value = profile.city || '';
+            document.getElementById('neighborhood').value = profile.neighborhood || '';
+            
+            if (profile.zip_code) {
+                document.getElementById('zip_code').value = profile.zip_code;
+            }
+            
+            // Update avatar
+            updateAvatar();
+        }
+
+        // Update header user info
+        function updateHeaderInfo(profile) {
+            const displayName = profile.nickname || profile.full_name || currentUser.email.split('@')[0];
+            document.getElementById('user-name').textContent = displayName;
+            
+            const avatar = document.getElementById('user-avatar');
+            avatar.textContent = displayName.charAt(0).toUpperCase();
+        }
+
+        // Update avatar preview
+        function updateAvatar() {
+            const fullName = document.getElementById('full_name').value;
+            const nickname = document.getElementById('nickname').value;
+            const displayName = nickname || fullName || currentUser.email.split('@')[0];
+            
+            const avatarInitial = document.getElementById('avatar-initial');
+            avatarInitial.textContent = displayName.charAt(0).toUpperCase();
+        }
+
+        // Populate ZIP code dropdown
+        function populateZipCodes() {
+            const select = document.getElementById('zip_code');
+            
+            // Clear existing options except the first one
+            while (select.options.length > 1) {
+                select.remove(1);
+            }
+            
+            // Group by county
+            const kenoshaZips = ZIP_DATA.filter(z => z.county === 'Kenosha');
+            const racineZips = ZIP_DATA.filter(z => z.county === 'Racine');
+            const bothZips = ZIP_DATA.filter(z => z.county === 'Both');
+            
+            // Add Kenosha County options
+            if (kenoshaZips.length > 0) {
+                const kenoshaGroup = document.createElement('optgroup');
+                kenoshaGroup.label = 'Kenosha County';
+                kenoshaZips.forEach(z => {
+                    const option = document.createElement('option');
+                    option.value = z.zip;
+                    option.textContent = `${z.zip} - ${z.name}`;
+                    kenoshaGroup.appendChild(option);
+                });
+                select.appendChild(kenoshaGroup);
+            }
+            
+            // Add Racine County options
+            if (racineZips.length > 0) {
+                const racineGroup = document.createElement('optgroup');
+                racineGroup.label = 'Racine County';
+                racineZips.forEach(z => {
+                    const option = document.createElement('option');
+                    option.value = z.zip;
+                    option.textContent = `${z.zip} - ${z.name}`;
+                    racineGroup.appendChild(option);
+                });
+                select.appendChild(racineGroup);
+            }
+            
+            // Add Both Counties options
+            if (bothZips.length > 0) {
+                const bothGroup = document.createElement('optgroup');
+                bothGroup.label = 'Both Counties';
+                bothZips.forEach(z => {
+                    const option = document.createElement('option');
+                    option.value = z.zip;
+                    option.textContent = `${z.zip} - ${z.name}`;
+                    bothGroup.appendChild(option);
+                });
+                select.appendChild(bothGroup);
+            }
+        }
+
+        // Setup form listeners
+        function setupFormListeners() {
+            // Form submission
+            document.getElementById('profile-form').addEventListener('submit', handleSubmit);
+            
+            // Track changes
+            const form = document.getElementById('profile-form');
+            form.addEventListener('input', () => {
+                hasChanges = true;
+            });
+            
+            // Update avatar on name change
+            document.getElementById('full_name').addEventListener('input', updateAvatar);
+            document.getElementById('nickname').addEventListener('input', updateAvatar);
+            
+            // Warn before leaving with unsaved changes
+            window.addEventListener('beforeunload', (e) => {
+                if (hasChanges) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            });
+        }
+
+        // Handle form submission
+        async function handleSubmit(e) {
+            e.preventDefault();
+            
+            const saveBtn = document.getElementById('save-btn');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            
+            try {
+                // Get form data
+                const formData = new FormData(e.target);
+                const newZipCode = formData.get('zip_code');
+                
+                // Check if ZIP code is changing
+                const zipChanged = userProfile.zip_code !== newZipCode;
+                
+                if (zipChanged && newZipCode) {
+                    // Warn user about the impact
+                    const confirmChange = confirm(
+                        'Changing your ZIP code will update the location for all your active listings. ' +
+                        'This helps ensure other gardeners can find your offerings in the correct area. ' +
+                        '\n\nDo you want to continue?'
+                    );
+                    
+                    if (!confirmChange) {
+                        saveBtn.disabled = false;
+                        saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+                        return;
+                    }
+                }
+                
+                // Build updates object with fields that exist in the database
+                const updates = {
+                    full_name: formData.get('full_name'),
+                    address: formData.get('address'),
+                    city: formData.get('city'),
+                    neighborhood: formData.get('neighborhood'),
+                    zip_code: newZipCode
+                };
+                
+                // Only add nickname if it exists in the current profile
+                if ('nickname' in userProfile) {
+                    updates.nickname = formData.get('nickname');
+                }
+                
+                // Always update the timestamp if it exists
+                if ('updated_at' in userProfile) {
+                    updates.updated_at = new Date().toISOString();
+                }
+                
+                // Debug: Log what we're trying to update
+                console.log('Attempting to update with:', updates);
+                console.log('Current profile fields:', Object.keys(userProfile));
+                
+                // Update profile
+                const { data, error: profileError } = await window.hardySupabase
+                    .from('profiles')
+                    .update(updates)
+                    .eq('id', currentUser.id)
+                    .select();
+                
+                if (profileError) throw profileError;
+                
+                // If ZIP changed, update all user's active listings
+                if (zipChanged && newZipCode) {
+                    const { error: listingsError } = await window.hardySupabase
+                        .from('listings')
+                        .update({ 
+                            zip_code: newZipCode,
+                            updated_at: new Date().toISOString()
+                        })
+                        .eq('user_id', currentUser.id)
+                        .eq('is_active', true);
+                    
+                    if (listingsError) {
+                        console.error('Error updating listings:', listingsError);
+                        showAlert('error', 'Profile updated but there was an error updating your listings. Please contact support.');
+                    } else {
+                        showAlert('success', 'Profile and listing locations updated successfully!');
+                    }
+                } else {
+                    showAlert('success', 'Profile updated successfully!');
+                }
+                
+                // Success
+                hasChanges = false;
+                userProfile = { ...userProfile, ...updates };
+                
+                // Update header
+                updateHeaderInfo(updates);
+                
+                // Analytics
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'profile_updated', {
+                        'event_category': 'engagement',
+                        'zip_changed': zipChanged
+                    });
+                }
+                
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                console.error('Error details:', error.message);
+                console.error('Error code:', error.code);
+                console.error('Error details:', error.details);
+                console.error('Error hint:', error.hint);
+                
+                // Provide more specific error messages
+                let errorMessage = 'Error updating profile. ';
+                if (error.message) {
+                    if (error.message.includes('column') && error.message.includes('does not exist')) {
+                        errorMessage += 'Some fields are not available in the database. Please contact support.';
+                    } else {
+                        errorMessage += error.message;
+                    }
+                } else {
+                    errorMessage += 'Please try again.';
+                }
+                
+                showAlert('error', errorMessage);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+            }
+        }
+
+        // Cancel editing
+        function cancelEdit() {
+            if (hasChanges) {
+                if (confirm('You have unsaved changes. Are you sure you want to leave?')) {
+                    window.location.href = '/pages/dashboard';
+                }
+            } else {
+                window.location.href = '/pages/dashboard';
+            }
+        }
+
+        // Show/hide loading state
+        function showLoading(show) {
+            const loading = document.getElementById('loading-state');
+            if (show) {
+                loading.classList.add('show');
+            } else {
+                loading.classList.remove('show');
+            }
+        }
+
+        // Show alert message
+        function showAlert(type, message) {
+            // Hide all alerts first
+            document.querySelectorAll('.alert').forEach(alert => {
+                alert.classList.remove('show');
+            });
+            
+            const alertEl = document.getElementById(`${type}-alert`);
+            alertEl.textContent = message;
+            alertEl.classList.add('show');
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                alertEl.classList.remove('show');
+            }, 5000);
+        }
+
+        // Sign out function
+        async function handleSignOut() {
+            if (confirm('Are you sure you want to sign out?')) {
+                await window.hardySupabase.auth.signOut();
+                window.location.href = '/';
+            }
+        }
+
+        // Setup user dropdown
+        function setupUserDropdown() {
+            const userMenuBtn = document.getElementById('user-menu-btn');
+            const userDropdown = document.getElementById('user-dropdown');
+            
+            if (userMenuBtn && userDropdown) {
+                userMenuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    userDropdown.classList.toggle('show');
+                });
+                
+                document.addEventListener('click', function() {
+                    userDropdown.classList.remove('show');
+                });
+                
+                userDropdown.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
+        }
+
+        // Setup mobile menu
+        function setupMobileMenu() {
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const mainNav = document.querySelector('.main-nav');
+            
+            if (mobileMenuBtn && mainNav) {
+                let mobileMenuContainer = document.querySelector('.mobile-menu-container');
+                if (!mobileMenuContainer) {
+                    mobileMenuContainer = document.createElement('div');
+                    mobileMenuContainer.className = 'mobile-menu-container';
+                    mobileMenuContainer.style.display = 'none';
+                    mobileMenuContainer.innerHTML = `
+                        <ul class="mobile-nav-links">
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/pages/browse">Browse</a></li>
+                            <li><a href="/pages/dashboard">My Dashboard</a></li>
+                        </ul>
+                        <div class="mobile-user-actions">
+                            <button class="btn btn-outline btn-block" onclick="handleSignOut()">Sign Out</button>
+                        </div>
+                    `;
+                    mainNav.appendChild(mobileMenuContainer);
+                }
+                
+                mobileMenuBtn.addEventListener('click', function() {
+                    if (mobileMenuContainer.style.display === 'block') {
+                        mobileMenuContainer.style.display = 'none';
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                    } else {
+                        mobileMenuContainer.style.display = 'block';
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Listings - Hardy</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Hardy Config -->
+    <script src="../hardy-config.js"></script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CJ4MS44MBB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-CJ4MS44MBB');
+    </script>
+    
+    <style>
+        /* CSS Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Variables */
+        :root {
+            /* Brand Colors */
+            --hardy-green: #4CAF50;
+            --hardy-green-dark: #388E3C;
+            --hardy-green-light: #A5D6A7;
+            
+            /* Supporting Colors */
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --text-light: #FFFFFF;
+            --background-light: #F9F9F9;
+            --background-white: #FFFFFF;
+            --border-color: #E0E0E0;
+            
+            /* Spacing */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-xxl: 3rem;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            
+            /* Box Shadows */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-md: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        }
+        
+        /* Base Styles */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background-color: var(--background-light);
+        }
+        
+        a {
+            color: var(--hardy-green);
+            text-decoration: none;
+        }
+        
+        a:hover {
+            color: var(--hardy-green-dark);
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+        
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Lora', serif;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+        }
+        
+        h2 {
+            font-size: 2rem;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+        }
+        
+        p {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .page-header {
+            text-align: center;
+            margin: var(--spacing-xxl) 0;
+        }
+        
+        .page-header h1 {
+            color: var(--hardy-green-dark);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        /* Service Area Notice */
+        .service-area-notice {
+            background-color: #f9f3e9;
+            border: 1px solid #e8dcc6;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            color: #5a4a3a;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .service-area-notice h3 {
+            margin: 0 0 8px 0;
+            color: #4a7c2e;
+            font-size: 18px;
+        }
+        
+        .service-area-notice p {
+            margin: 0;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--hardy-green);
+            color: var(--text-light);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--hardy-green-dark);
+            color: var(--text-light);
+        }
+        
+        .btn-secondary {
+            background-color: var(--text-light);
+            color: var(--hardy-green);
+            border: 2px solid var(--hardy-green);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        /* Header */
+        .site-header {
+            background-color: var(--background-white);
+            box-shadow: var(--shadow-sm);
+            padding: var(--spacing-md) 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .site-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            max-width: 150px;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .main-nav ul {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+        
+        .main-nav a {
+            color: var(--text-primary);
+            font-weight: 600;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: var(--hardy-green);
+            background-color: var(--hardy-green-light);
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+        
+        /* Personal Header */
+        .personal-header {
+            background: linear-gradient(135deg, var(--hardy-green-light), var(--hardy-green));
+            padding: var(--spacing-lg) 0;
+            color: var(--hardy-green-dark);
+        }
+        
+        .personal-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+        
+        .welcome-text h2 {
+            font-family: 'Lora', serif;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .user-stats {
+            display: flex;
+            gap: var(--spacing-lg);
+            font-size: 0.9rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .user-menu-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            background: none;
+            border: 2px solid var(--border-color);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: var(--hardy-green-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--hardy-green-dark);
+            font-weight: bold;
+        }
+        
+        /* Main Content Layout */
+        .browse-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: var(--spacing-xl);
+            margin-top: var(--spacing-xl);
+        }
+        
+        /* Sidebar */
+        .browse-sidebar {
+            background-color: var(--background-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            padding: var(--spacing-lg);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .sidebar-section {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .sidebar-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .sidebar-section h3 {
+            font-family: 'Lora', serif;
+            font-size: 1.1rem;
+            margin-bottom: var(--spacing-md);
+            color: var(--hardy-green-dark);
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: var(--spacing-sm);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-sm);
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--hardy-green);
+        }
+        
+        .cta-button-sidebar {
+            display: block;
+            background: var(--hardy-green);
+            color: var(--text-light);
+            padding: 0.875rem 1.5rem;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .cta-button-sidebar:hover {
+            background: var(--hardy-green-dark);
+            color: var(--text-light);
+            transform: translateY(-1px);
+        }
+        
+        /* Main Content */
+        .browse-content {
+            min-height: 500px;
+        }
+        
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .results-info {
+            color: var(--text-secondary);
+        }
+        
+        .view-toggle {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .view-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        
+        .view-btn.active {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+            border-color: var(--hardy-green);
+        }
+        
+        /* Listings Grid */
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: var(--spacing-lg);
+        }
+        
+        .listing-card {
+            background-color: var(--background-white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .listing-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .listing-image {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            background-color: var(--hardy-green-light);
+            position: relative;
+        }
+        
+        /* Your Listing Banner */
+        .your-listing-banner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #2196F3;
+            color: white;
+            padding: var(--spacing-xs) var(--spacing-md);
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .listing-details {
+            padding: var(--spacing-md);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .listing-type {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            margin-bottom: var(--spacing-sm);
+            font-weight: 600;
+        }
+        
+        .listing-type.offering {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+        }
+        
+        .listing-type.seeking {
+            background-color: #FFF176;
+            color: #F57F17;
+        }
+        
+        .transaction-type {
+            display: inline-block;
+            padding: 0.2rem 0.4rem;
+            background-color: var(--background-light);
+            color: var(--text-secondary);
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            margin-left: var(--spacing-xs);
+            font-weight: 500;
+        }
+        
+        .listing-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .listing-info {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        /* New ZIP code badge style */
+        .location-with-zip {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+        
+        .zip-badge {
+            background-color: #f0f0f0;
+            color: var(--text-secondary);
+            padding: 0.1rem 0.4rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .listing-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: var(--spacing-md);
+            flex: 1;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        
+        .listing-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+        
+        .listing-user {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .user-avatar-small {
+            width: 24px;
+            height: 24px;
+            background-color: var(--hardy-green-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--hardy-green-dark);
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        
+        .btn-small {
+            padding: var(--spacing-xs) var(--spacing-md);
+            font-size: 0.9rem;
+        }
+        
+        /* Loading State */
+        .loading-message {
+            text-align: center;
+            padding: var(--spacing-xxl);
+            color: var(--text-secondary);
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-color);
+            border-top-color: var(--hardy-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* No Results */
+        .no-results {
+            text-align: center;
+            padding: var(--spacing-xxl);
+            color: var(--text-secondary);
+            grid-column: 1 / -1;
+        }
+        
+        /* Footer */
+        .site-footer {
+            background-color: var(--text-primary);
+            color: var(--text-light);
+            padding: var(--spacing-xxl) 0 var(--spacing-md);
+            margin-top: var(--spacing-xxl);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-xxl);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .footer-logo {
+            margin-bottom: var(--spacing-md);
+            max-width: 150px;
+        }
+        
+        .footer-logo img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .footer-links h3 {
+            margin-bottom: var(--spacing-md);
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+        
+        .footer-links ul li {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .footer-links a {
+            color: var(--text-light);
+            opacity: 0.8;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--hardy-green-light);
+        }
+        
+        .footer-newsletter p {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .footer-newsletter form {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .footer-newsletter input {
+            flex: 1;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: none;
+            border-radius: var(--radius-sm);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Mobile Menu Styles */
+        .mobile-menu-container {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--background-white);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-md);
+            z-index: 999;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 var(--spacing-md) 0;
+        }
+
+        .mobile-nav-links li {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .mobile-nav-links a {
+            display: block;
+            padding: var(--spacing-sm) var(--spacing-md);
+            color: var(--text-primary);
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav-links a:hover,
+        .mobile-nav-links a.active {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green);
+        }
+
+        .mobile-user-actions {
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .mobile-user-actions .btn {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-nav > ul {
+                display: none !important;
+            }
+            
+            .user-actions {
+                display: none !important;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .browse-layout {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+            }
+
+            .browse-sidebar {
+                position: static;
+                order: -1;
+            }
+
+            .personal-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .user-stats {
+                justify-content: center;
+            }
+            
+            .footer-newsletter form {
+                flex-direction: column;
+            }
+            
+            .footer-newsletter input {
+                margin-bottom: var(--spacing-sm);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <a href="../index.html">
+                    <img src="../img/logo.svg" alt="Hardy Home and Garden">
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="browse.html" class="active">Browse</a></li>
+                    <li><a href="#" onclick="navigateToDashboard(event)">My Dashboard</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions" id="user-actions">
+                <!-- Will be populated by JavaScript based on auth state -->
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Personal Header (only shows when logged in) -->
+    <div class="personal-header" id="personal-header" style="display: none;">
+        <div class="container">
+            <div class="personal-info">
+                <div class="welcome-text">
+                    <h2>Welcome back, <span id="welcome-name">Friend</span>!</h2>
+                    <div style="display: flex; align-items: center; gap: var(--spacing-md); justify-content: center;">
+                        <span style="background: rgba(255,255,255,0.8); padding: var(--spacing-xs) var(--spacing-sm); border-radius: var(--radius-sm);">
+                            <i class="fas fa-map-marker-alt"></i> <span id="user-neighborhood">Your Neighborhood</span>
+                        </span>
+                        <span style="font-size: 0.9rem;">Member since <span id="member-date">Jan 2025</span></span>
+                    </div>
+                </div>
+                <div class="user-stats" id="user-stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="active-listings">0</div>
+                        <div>Active Listings</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="completed-listings">0</div>
+                        <div>Completed</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="message-count">0</div>
+                        <div>Messages</div>
+                    </div>
+                </div>
+                <div>
+                    <a href="create.html" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Create Listing
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="page-header" id="public-header">
+            <h1>Browse Listings</h1>
+            <p>Find garden- and farm-fresh produce available for sharing and trading in your community</p>
+        </div>
+        
+        <!-- Service Area Notice -->
+        <div class="service-area-notice">
+            <h3>🌱 2025 Pilot Program</h3>
+            <p>
+                During our pilot season, Hardy listings are available exclusively for gardeners in
+                <strong>Kenosha and Racine Counties</strong>.
+            </p>
+        </div>
+        
+        <div class="browse-layout">
+            <!-- Sidebar -->
+            <aside class="browse-sidebar">
+                <!-- Filters -->
+                <div class="sidebar-section">
+                    <h3>Filter Listings</h3>
+                    
+                    <div style="margin-bottom: var(--spacing-md);">
+                        <label style="display: block; margin-bottom: var(--spacing-xs); font-weight: 600; font-size: 0.9rem;">Listing Type</label>
+                        <select class="filter-select" id="filter-listing-type">
+                            <option value="">All</option>
+                            <option value="offering">Offering</option>
+                            <option value="seeking">Seeking</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-bottom: var(--spacing-md);">
+                        <label style="display: block; margin-bottom: var(--spacing-xs); font-weight: 600; font-size: 0.9rem;">Transaction Type</label>
+                        <select class="filter-select" id="filter-transaction-type">
+                            <option value="">All</option>
+                            <option value="free">Free</option>
+                            <option value="trade">Trade</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-bottom: var(--spacing-md);">
+                        <label style="display: block; margin-bottom: var(--spacing-xs); font-weight: 600; font-size: 0.9rem;">Category</label>
+                        <select class="filter-select" id="filter-category">
+                            <option value="">All Categories</option>
+                            <option value="vegetables">Vegetables</option>
+                            <option value="fruits">Fruits</option>
+                            <option value="herbs">Herbs</option>
+                            <option value="seeds">Seeds & Seedlings</option>
+                            <option value="plants">Plants & Cuttings</option>
+                            <option value="eggs">Eggs</option>
+                            <option value="honey">Honey</option>
+                            <option value="gardening">Gardening Supplies</option>
+                            <option value="knowledge">Knowledge & Help</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Dashboard Link -->
+                <div class="sidebar-section">
+                    <a href="#" onclick="navigateToDashboard(event)" class="cta-button-sidebar">
+                        Manage My Listings
+                    </a>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="browse-content">
+                <div class="content-header">
+                    <div class="results-info">
+                        <strong id="results-count">0</strong> listings found
+                    </div>
+                    <div class="view-toggle">
+                        <button class="view-btn active" id="grid-view-btn"><i class="fas fa-th-large"></i></button>
+                        <button class="view-btn" id="list-view-btn"><i class="fas fa-list"></i></button>
+                    </div>
+                </div>
+
+                <div class="listings-grid" id="listings-grid">
+                    <div class="loading-message">
+                        <div class="loading-spinner"></div>
+                        <p>Loading listings...</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <div class="footer-logo">
+                        <img src="../img/logo-white.svg" alt="Hardy Home and Garden">
+                    </div>
+                    <p>Connecting gardeners and building sustainable communities one harvest at a time.</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="browse.html">Browse</a></li>
+                        <li><a href="about.html">About Hardy</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Get Started</h3>
+                    <ul>
+                        <li><a href="auth.html">Create Account</a></li>
+                        <li><a href="create.html">Create Listing</a></li>
+                        <li><a href="auth.html">Log In</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="terms.html">Terms of Use</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="coming-soon.html?feature=cookie">Cookie Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>Stay Updated</h3>
+                    <p>Join our mailing list for offers and updates.</p>
+                    <form id="newsletter-form">
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit" class="btn btn-primary">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Hardy Home and Garden. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- App Scripts -->
+    <script>
+        // State management
+        let allListings = [];
+        let filteredListings = [];
+        let currentUser = null;
+        let userProfile = null;
+        
+        // Check authentication and load content
+        document.addEventListener('DOMContentLoaded', async function() {
+            await checkAuthState();
+            await loadListings();
+            setupEventListeners();
+            setupMobileMenu();
+            
+            // Check for expired listings
+            try {
+                await window.hardySupabase.rpc('mark_expired_listings_inactive');
+            } catch (err) {
+                // Silent fail - not critical if this doesn't work
+                console.log('Could not check expired listings');
+            }
+        });
+        
+        // Check if user is logged in and update UI accordingly
+        async function checkAuthState() {
+            try {
+                const { data: { user } } = await window.hardySupabase.auth.getUser();
+                currentUser = user;
+                
+                if (user) {
+                    // Get user profile - FIXED to properly fetch from profiles table
+                    const { data: profile, error } = await window.hardySupabase
+                        .from('profiles')
+                        .select('*')
+                        .eq('id', user.id)
+                        .single();
+                    
+                    if (error) {
+                        console.error('Error fetching profile:', error);
+                        // Create basic profile display from user email
+                        userProfile = {
+                            full_name: user.email.split('@')[0],
+                            email: user.email,
+                            created_at: user.created_at
+                        };
+                    } else {
+                        userProfile = profile;
+                    }
+                    
+                    // Show personal header with actual profile data
+                    showPersonalHeader(userProfile);
+                    
+                    // Update main header actions
+                    updateHeaderActions(true);
+                    
+                    // Hide public header
+                    document.getElementById('public-header').style.display = 'none';
+                } else {
+                    // Show public header and default actions
+                    document.getElementById('personal-header').style.display = 'none';
+                    document.getElementById('public-header').style.display = 'block';
+                    updateHeaderActions(false);
+                }
+            } catch (error) {
+                console.error('Auth check error:', error);
+                updateHeaderActions(false);
+            }
+        }
+        
+        // Show personal header for logged-in users - FIXED to use actual names
+        function showPersonalHeader(profile) {
+            if (!profile) return;
+            
+            document.getElementById('personal-header').style.display = 'block';
+            
+            // Use nickname if available, otherwise full_name, otherwise email prefix
+            const displayName = profile.nickname || profile.full_name || profile.email?.split('@')[0] || 'Friend';
+            document.getElementById('welcome-name').textContent = displayName;
+            
+            if (profile.neighborhood) {
+                document.getElementById('user-neighborhood').textContent = profile.neighborhood;
+            } else if (profile.zip_code) {
+                // If no neighborhood, show ZIP code
+                document.getElementById('user-neighborhood').textContent = `ZIP ${profile.zip_code}`;
+            }
+            
+            // Format member date
+            const memberDate = new Date(profile.created_at);
+            const monthYear = memberDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+            document.getElementById('member-date').textContent = monthYear;
+            
+            // Load user stats (placeholder for now)
+            loadUserStats();
+        }
+        
+        // Update header actions based on auth state - FIXED to show actual user name
+        function updateHeaderActions(isLoggedIn) {
+            const userActions = document.getElementById('user-actions');
+            
+            if (isLoggedIn && userProfile) {
+                // Get display name and initial
+                const displayName = userProfile.nickname || userProfile.full_name || userProfile.email?.split('@')[0] || 'User';
+                const userInitial = displayName.charAt(0).toUpperCase();
+                
+                userActions.innerHTML = `
+                    <div style="position: relative;">
+                        <button class="user-menu-btn" onclick="toggleUserMenu(event)">
+                            <div class="user-avatar">${userInitial}</div>
+                            <span>${displayName}</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="user-dropdown" id="user-dropdown" style="position: absolute; top: 100%; right: 0; margin-top: 0.25rem; background: white; border-radius: 8px; box-shadow: 0 3px 6px rgba(0,0,0,0.16); min-width: 200px; display: none; z-index: 1001;">
+                            <a href="dashboard.html" style="display: block; padding: 0.5rem 1rem; color: #212121; border-bottom: 1px solid #E0E0E0;">
+                                <i class="fas fa-tachometer-alt" style="width: 20px; margin-right: 0.5rem;"></i> Dashboard
+                            </a>
+                            <a href="create.html" style="display: block; padding: 0.5rem 1rem; color: #212121; border-bottom: 1px solid #E0E0E0;">
+                                <i class="fas fa-plus" style="width: 20px; margin-right: 0.5rem;"></i> Create Listing
+                            </a>
+                            <a href="support.html" style="display: block; padding: 0.5rem 1rem; color: #212121; border-bottom: 1px solid #E0E0E0;">
+                                <i class="fas fa-heart" style="width: 20px; margin-right: 0.5rem;"></i> Support Hardy
+                            </a>
+                            <button onclick="handleSignOut()" style="display: block; width: 100%; padding: 0.5rem 1rem; color: #212121; background: none; border: none; text-align: left; cursor: pointer;">
+                                <i class="fas fa-sign-out-alt" style="width: 20px; margin-right: 0.5rem;"></i> Sign Out
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                userActions.innerHTML = `
+                    <a href="auth.html" class="btn btn-primary">Sign In / Join</a>
+                    <a href="support.html" class="btn btn-secondary">Support Hardy</a>
+                `;
+            }
+        }
+        
+        // Load user stats (placeholder)
+        async function loadUserStats() {
+            try {
+                // Count active listings
+                const { count: activeCount } = await window.hardySupabase
+                    .from('listings')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('user_id', currentUser.id)
+                    .eq('is_active', true);
+                
+                document.getElementById('active-listings').textContent = activeCount || '0';
+                
+                // Count unread messages
+                const { data: unreadConversations } = await window.hardySupabase
+                    .from('conversation_participants')
+                    .select(`
+                        conversation_id,
+                        conversations!inner(
+                            id,
+                            messages(
+                                id,
+                                created_at,
+                                sender_id
+                            )
+                        )
+                    `)
+                    .eq('user_id', currentUser.id);
+                
+                let unreadCount = 0;
+                if (unreadConversations) {
+                    unreadConversations.forEach(participant => {
+                        const messages = participant.conversations?.messages || [];
+                        const unreadMessages = messages.filter(msg => 
+                            msg.sender_id !== currentUser.id && 
+                            (!participant.last_read_at || new Date(msg.created_at) > new Date(participant.last_read_at))
+                        );
+                        unreadCount += unreadMessages.length;
+                    });
+                }
+                
+                document.getElementById('message-count').textContent = unreadCount;
+                
+            } catch (error) {
+                console.error('Error loading user stats:', error);
+            }
+        }
+        
+        // Load listings from database - UPDATED to include zip_code
+        async function loadListings() {
+            try {
+                const { data: listings, error } = await window.hardySupabase
+                    .from('listings')
+                    .select(`
+                        *,
+                        profiles:user_id (
+                            full_name,
+                            nickname,
+                            neighborhood,
+                            zip_code
+                        )
+                    `)
+                    .eq('is_active', true)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                allListings = listings || [];
+                applyFilters();
+                
+            } catch (error) {
+                console.error('Error loading listings:', error);
+                document.getElementById('listings-grid').innerHTML = `
+                    <div class="no-results">
+                        <h3>Unable to load listings</h3>
+                        <p>There was an issue connecting to the database.</p>
+                        <button class="btn btn-primary" onclick="location.reload()">Retry</button>
+                    </div>
+                `;
+            }
+        }
+        
+        // Apply filters and update display
+        function applyFilters() {
+            const listingTypeFilter = document.getElementById('filter-listing-type').value;
+            const transactionTypeFilter = document.getElementById('filter-transaction-type').value;
+            const categoryFilter = document.getElementById('filter-category').value;
+            
+            filteredListings = allListings.filter(listing => {
+                // No longer filter out user's own listings
+                
+                // Listing type filter
+                if (listingTypeFilter && listing.listing_type !== listingTypeFilter) {
+                    return false;
+                }
+                
+                // Transaction type filter
+                if (transactionTypeFilter) {
+                    const exchangeTypes = listing.exchange_type.split(',');
+                    if (!exchangeTypes.includes(transactionTypeFilter)) {
+                        return false;
+                    }
+                }
+                
+                // Category filter
+                if (categoryFilter && listing.category !== categoryFilter) {
+                    return false;
+                }
+                
+                return true;
+            });
+            
+            displayListings();
+        }
+        
+        // Display listings in the grid
+        function displayListings() {
+            const listingsGrid = document.getElementById('listings-grid');
+            const resultsCount = document.getElementById('results-count');
+            
+            resultsCount.textContent = filteredListings.length;
+            listingsGrid.innerHTML = '';
+            
+            if (filteredListings.length === 0) {
+                listingsGrid.innerHTML = `
+                    <div class="no-results">
+                        <h3>No listings found</h3>
+                        <p>Try adjusting your filters or be the first to share from your garden!</p>
+                        <a href="create.html" class="btn btn-primary">Create a Listing</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            filteredListings.forEach(listing => {
+                const listingCard = createListingCard(listing);
+                listingsGrid.appendChild(listingCard);
+            });
+        }
+        
+        // Create a listing card element - UPDATED to show ZIP code
+        function createListingCard(listing) {
+            const card = document.createElement('div');
+            card.className = 'listing-card';
+            
+            // Check if this is the current user's listing
+            const isUserListing = currentUser && listing.user_id === currentUser.id;
+            
+            // Get display name and initial for the listing owner
+            const ownerName = listing.profiles?.nickname || listing.profiles?.full_name || 'Gardener';
+            const userInitial = ownerName.charAt(0).toUpperCase();
+            
+            // Get ZIP code - use profile zip_code or listing zip_code
+            const zipCode = listing.profiles?.zip_code || listing.zip_code || '';
+            
+            // Determine primary listing type and transaction types
+            const listingTypeClass = listing.listing_type === 'seeking' ? 'seeking' : 'offering';
+            const listingTypeText = listing.listing_type === 'seeking' ? 'Seeking' : 'Offering';
+            
+            // Format transaction types
+            const exchangeTypes = listing.exchange_type.split(',');
+            let transactionText = '';
+            if (exchangeTypes.length === 2) {
+                transactionText = 'Free or Trade';
+            } else {
+                transactionText = exchangeTypes[0] === 'free' ? 'Free' : 'Trade';
+            }
+            
+            // Get placeholder image based on category
+            const imageUrls = {
+                'vegetables': 'https://images.unsplash.com/photo-1540148426945-6cf22a6b2383?w=300&h=180&fit=crop',
+                'fruits': 'https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=300&h=180&fit=crop',
+                'herbs': 'https://images.unsplash.com/photo-1515023115689-589c33041d3c?w=300&h=180&fit=crop',
+                'seeds': 'https://images.unsplash.com/photo-1535231540604-72e8fbaf8cdb?w=300&h=180&fit=crop',
+                'plants': 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=300&h=180&fit=crop',
+                'eggs': 'https://images.unsplash.com/photo-1569127959161-2b1297b2d9a6?w=300&h=180&fit=crop',
+                'honey': 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=300&h=180&fit=crop',
+                'gardening': 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=300&h=180&fit=crop',
+                'knowledge': 'https://images.unsplash.com/photo-1559060664-fcd4d334d86b?w=300&h=180&fit=crop',
+                'other': 'https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2?w=300&h=180&fit=crop'
+            };
+            
+            const imageUrl = listing.image_urls && listing.image_urls[0] 
+                ? listing.image_urls[0] 
+                : (imageUrls[listing.category] || imageUrls['other']);
+            
+            // Truncate description
+            let description = listing.description || 'No description provided';
+            if (description.length > 150) {
+                description = description.substring(0, 150) + '...';
+            }
+            
+            // Format availability
+            const availabilityMap = {
+                'now': 'Now',
+                'today': 'Today',
+                'tomorrow': 'Tomorrow',
+                'this_week': 'This Week',
+                'next_week': 'Next Week'
+            };
+            const availabilityText = availabilityMap[listing.availability] || listing.availability;
+            
+            // Change button text and behavior for user's own listings
+            const buttonHtml = isUserListing 
+                ? '<a href="dashboard.html" class="btn btn-primary btn-small">Manage</a>'
+                : `<button class="btn btn-primary btn-small" onclick="contactUser('${listing.id}', event)">Contact</button>`;
+            
+            // Create location display with ZIP code
+            const locationDisplay = `
+                <div class="location-with-zip">
+                    <span>${listing.profiles?.neighborhood || 'Nearby'}</span>
+                    ${zipCode ? `<span class="zip-badge">${zipCode}</span>` : ''}
+                </div>
+            `;
+            
+            card.innerHTML = `
+                ${isUserListing ? '<div class="your-listing-banner">Your Listing</div>' : ''}
+                <div class="listing-image" style="background-image: url('${imageUrl}')"></div>
+                <div class="listing-details">
+                    <div>
+                        <span class="listing-type ${listingTypeClass}">${listingTypeText}</span>
+                        <span class="transaction-type">${transactionText}</span>
+                    </div>
+                    <h3 class="listing-title">${escapeHtml(listing.title)}</h3>
+                    <div class="listing-info">
+                        ${locationDisplay}
+                        <span>Available: ${availabilityText}</span>
+                    </div>
+                    <p class="listing-description">${escapeHtml(description)}</p>
+                    <div class="listing-footer">
+                        <div class="listing-user">
+                            <div class="user-avatar-small">${userInitial}</div>
+                            <span>${ownerName}</span>
+                        </div>
+                        ${buttonHtml}
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Handle contact button click - NOW WITH MESSAGING FUNCTIONALITY!
+        async function contactUser(listingId, event) {
+            if (!currentUser) {
+                alert('Please sign in to contact other gardeners!');
+                window.location.href = 'auth.html?redirect=browse';
+                return;
+            }
+            
+            try {
+                // Get the listing details
+                const listing = allListings.find(l => l.id === listingId);
+                if (!listing) {
+                    alert('Listing not found');
+                    return;
+                }
+                
+                // Get owner's name for the prompt
+                const ownerName = listing.profiles?.nickname || listing.profiles?.full_name || 'the gardener';
+                
+                // Ask user for their message
+                const message = prompt(`Send a message to ${ownerName} about "${listing.title}":`);
+                
+                if (!message || message.trim() === '') {
+                    return; // User cancelled or entered empty message
+                }
+                
+                // Show loading state on button
+                const button = event.target;
+                const originalText = button.textContent;
+                button.disabled = true;
+                button.textContent = 'Sending...';
+                
+                // Use the start_conversation function we created in the database
+                const { data: conversationId, error } = await window.hardySupabase
+                    .rpc('start_conversation', {
+                        p_listing_id: listingId,
+                        p_message_content: message.trim()
+                    });
+                
+                if (error) {
+                    // Check if it's because they're messaging themselves
+                    if (error.message.includes('Cannot start a conversation with yourself')) {
+                        alert("You can't message yourself about your own listing!");
+                    } else {
+                        throw error;
+                    }
+                    // Reset button
+                    button.disabled = false;
+                    button.textContent = originalText;
+                    return;
+                }
+                
+                // Success! Redirect to dashboard messages tab with the conversation
+                window.location.href = `dashboard.html?tab=messages&conversation=${conversationId}`;
+                
+            } catch (error) {
+                console.error('Error starting conversation:', error);
+                alert('Unable to send message. Please try again.');
+                
+                // Reset button if there's an error
+                if (event.target) {
+                    event.target.disabled = false;
+                    event.target.textContent = 'Contact';
+                }
+            }
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Filter change listeners
+            document.getElementById('filter-listing-type').addEventListener('change', applyFilters);
+            document.getElementById('filter-transaction-type').addEventListener('change', applyFilters);
+            document.getElementById('filter-category').addEventListener('change', applyFilters);
+            
+            // Newsletter form
+            document.getElementById('newsletter-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const emailInput = this.querySelector('input[type="email"]');
+                if (emailInput && emailInput.value) {
+                    alert('Thanks for subscribing! We\'ll keep you updated on Hardy\'s development.');
+                    emailInput.value = '';
+                }
+            });
+        }
+        
+        // Navigation functions
+        async function navigateToDashboard(event) {
+            event.preventDefault();
+            
+            if (currentUser) {
+                window.location.href = 'dashboard.html';
+            } else {
+                window.location.href = 'auth.html?redirect=dashboard';
+            }
+        }
+        
+        // User menu functions
+        function toggleUserMenu(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('user-dropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function() {
+            const dropdown = document.getElementById('user-dropdown');
+            if (dropdown) {
+                dropdown.style.display = 'none';
+            }
+        });
+        
+        async function handleSignOut() {
+            if (confirm('Are you sure you want to sign out?')) {
+                await window.hardySupabase.auth.signOut();
+                window.location.reload();
+            }
+        }
+        
+        // Mobile menu setup
+        function setupMobileMenu() {
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const mainNav = document.querySelector('.main-nav');
+            
+            if (mobileMenuBtn && mainNav) {
+                let mobileMenuContainer = document.querySelector('.mobile-menu-container');
+                if (!mobileMenuContainer) {
+                    mobileMenuContainer = document.createElement('div');
+                    mobileMenuContainer.className = 'mobile-menu-container';
+                    mobileMenuContainer.style.display = 'none';
+                    mobileMenuContainer.innerHTML = `
+                        <ul class="mobile-nav-links">
+                            <li><a href="../index.html">Home</a></li>
+                            <li><a href="browse.html" class="active">Browse</a></li>
+                            <li><a href="#" onclick="navigateToDashboard(event)">My Dashboard</a></li>
+                        </ul>
+                        <div class="mobile-user-actions">
+                            <a href="auth.html" class="btn btn-primary btn-block">Sign In / Join</a>
+                            <a href="support.html" class="btn btn-secondary btn-block">Support Hardy</a>
+                        </div>
+                    `;
+                    mainNav.appendChild(mobileMenuContainer);
+                }
+                
+                mobileMenuBtn.addEventListener('click', function() {
+                    if (mobileMenuContainer.style.display === 'block') {
+                        mobileMenuContainer.style.display = 'none';
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                    } else {
+                        mobileMenuContainer.style.display = 'block';
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

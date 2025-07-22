@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Hardy Home and Garden</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Hardy Config -->
+    <script src="../hardy-config.js"></script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CJ4MS44MBB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-CJ4MS44MBB');
+    </script>
+    
+    <style>
+        /* CSS Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Variables */
+        :root {
+            /* Brand Colors */
+            --hardy-green: #4CAF50;
+            --hardy-green-dark: #388E3C;
+            --hardy-green-light: #A5D6A7;
+            
+            /* Supporting Colors */
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --text-light: #FFFFFF;
+            --background-light: #F9F9F9;
+            --background-white: #FFFFFF;
+            --border-color: #E0E0E0;
+            
+            /* Spacing */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-xxl: 3rem;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            
+            /* Box Shadows */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-md: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        }
+        
+        /* Base Styles */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background-color: var(--background-light);
+        }
+        
+        a {
+            color: var(--hardy-green);
+            text-decoration: none;
+        }
+        
+        a:hover {
+            color: var(--hardy-green-dark);
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+        
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Lora', serif;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+        }
+        
+        h2 {
+            font-size: 2rem;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+        }
+        
+        p {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .page-header {
+            text-align: center;
+            margin: var(--spacing-xxl) 0;
+        }
+        
+        .page-header h1 {
+            color: var(--hardy-green-dark);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--hardy-green);
+            color: var(--text-light);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--hardy-green-dark);
+            color: var(--text-light);
+        }
+        
+        .btn-secondary {
+            background-color: var(--text-light);
+            color: var(--hardy-green);
+            border: 2px solid var(--hardy-green);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        /* Header */
+        .site-header {
+            background-color: var(--background-white);
+            box-shadow: var(--shadow-sm);
+            padding: var(--spacing-md) 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .site-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            max-width: 150px;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .main-nav ul {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+        
+        .main-nav a {
+            color: var(--text-primary);
+            font-weight: 600;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: var(--hardy-green);
+            background-color: var(--hardy-green-light);
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+        
+        /* Privacy Page Specific Content */
+        .privacy-content {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: var(--background-white);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .last-updated {
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .highlight-box {
+            background-color: var(--hardy-green-light);
+            border-left: 4px solid var(--hardy-green);
+            padding: var(--spacing-lg);
+            margin: var(--spacing-xl) 0;
+            border-radius: var(--radius-sm);
+        }
+        
+        .highlight-box h3 {
+            margin-top: 0;
+            color: var(--hardy-green-dark);
+        }
+        
+        .privacy-content ul {
+            list-style: disc;
+            margin-left: var(--spacing-xl);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .privacy-content li {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--spacing-lg) 0;
+        }
+        
+        th, td {
+            text-align: left;
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: var(--background-light);
+            font-weight: 600;
+        }
+        
+        .contact-info {
+            background-color: var(--background-light);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            margin: var(--spacing-xl) 0;
+        }
+        
+        /* Footer */
+        .site-footer {
+            background-color: var(--text-primary);
+            color: var(--text-light);
+            padding: var(--spacing-xxl) 0 var(--spacing-md);
+            margin-top: var(--spacing-xxl);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-xxl);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .footer-logo {
+            margin-bottom: var(--spacing-md);
+            max-width: 150px;
+        }
+        
+        .footer-logo img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .footer-links h3 {
+            margin-bottom: var(--spacing-md);
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+        
+        .footer-links ul li {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .footer-links a {
+            color: var(--text-light);
+            opacity: 0.8;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--hardy-green-light);
+        }
+        
+        .footer-newsletter p {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .footer-newsletter form {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .footer-newsletter input {
+            flex: 1;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: none;
+            border-radius: var(--radius-sm);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Mobile Menu Styles */
+        .mobile-menu-container {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--background-white);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-md);
+            z-index: 999;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 var(--spacing-md) 0;
+        }
+
+        .mobile-nav-links li {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .mobile-nav-links a {
+            display: block;
+            padding: var(--spacing-sm) var(--spacing-md);
+            color: var(--text-primary);
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav-links a:hover,
+        .mobile-nav-links a.active {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green);
+        }
+
+        .mobile-user-actions {
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .mobile-user-actions .btn {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-nav > ul {
+                display: none !important;
+            }
+            
+            .user-actions {
+                display: none !important;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .footer-newsletter form {
+                flex-direction: column;
+            }
+            
+            .footer-newsletter input {
+                margin-bottom: var(--spacing-sm);
+            }
+            
+            .privacy-content {
+                padding: var(--spacing-md);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <a href="../index.html">
+                    <img src="../img/logo.svg" alt="Hardy Home and Garden">
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="../index.html">Home</a></li>
+			<li><a href="browse.html">Browse</a></li>
+			<li><a href="#" onclick="navigateToDashboard(event)">My Dashboard</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <a href="auth.html" class="btn btn-primary">Sign In / Join</a>
+                <a href="support.html" class="btn btn-secondary">Support Hardy</a>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Privacy Policy</h1>
+            <p class="last-updated">Last Updated: June 3, 2025</p>
+        </div>
+        
+        <div class="privacy-content">
+            <div class="highlight-box">
+                <h3>Our Privacy Commitment</h3>
+                <p>At Hardy, we believe in transparency and respect for your privacy. We collect only what we need to connect gardeners in your community, and we'll never sell your personal information to third parties.</p>
+            </div>
+
+            <h2>1. Information We Collect</h2>
+            
+            <h3>1.1 Information You Provide</h3>
+            <p>When you create an account or use Hardy, you may provide:</p>
+            <ul>
+                <li><strong>Account Information:</strong> Name, email address, password, and profile photo</li>
+                <li><strong>Location Information:</strong> Your address and neighborhood (only neighborhood shown publicly)</li>
+                <li><strong>Listing Information:</strong> Descriptions and photos of produce, plants, or garden items you're sharing</li>
+                <li><strong>Communication:</strong> Messages between you and other users</li>
+                <li><strong>Payment Information:</strong> (Future feature) Payment details for Hardy Pro subscriptions or transaction fees</li>
+            </ul>
+
+            <h3>1.2 Information We Collect Automatically</h3>
+            <p>When you use Hardy, we automatically collect:</p>
+            <ul>
+                <li><strong>Usage Data:</strong> How you interact with our platform (pages visited, features used)</li>
+                <li><strong>Device Information:</strong> Browser type, operating system, device type</li>
+                <li><strong>IP Address:</strong> To determine your general location and prevent fraud</li>
+                <li><strong>Cookies and Analytics:</strong> We use Google Analytics to understand how people use Hardy</li>
+            </ul>
+
+            <h2>2. How We Use Your Information</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Purpose</th>
+                        <th>Information Used</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Connect you with nearby gardeners</td>
+                        <td>Location, listings, profile info</td>
+                    </tr>
+                    <tr>
+                        <td>Facilitate communication</td>
+                        <td>Contact info, messages</td>
+                    </tr>
+                    <tr>
+                        <td>Improve Hardy's features</td>
+                        <td>Usage data, feedback</td>
+                    </tr>
+                    <tr>
+                        <td>Send important updates</td>
+                        <td>Email address</td>
+                    </tr>
+                    <tr>
+                        <td>Process payments (future)</td>
+                        <td>Payment information</td>
+                    </tr>
+                    <tr>
+                        <td>Ensure safety and prevent fraud</td>
+                        <td>IP address, usage patterns</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>3. How We Share Your Information</h2>
+            
+            <h3>3.1 With Other Users</h3>
+            <p>To facilitate garden sharing, certain information is visible to other Hardy users:</p>
+            <ul>
+                <li>Your display name and profile photo</li>
+                <li>Your general location (neighborhood, not exact address)</li>
+                <li>Your active listings</li>
+                <li>Your response time and activity status</li>
+            </ul>
+            <p><strong>Your exact address and contact information are NEVER publicly displayed.</strong> You choose when and with whom to share these details.</p>
+
+            <h3>3.2 With Service Providers</h3>
+            <p>We work with trusted service providers who help us operate Hardy:</p>
+            <ul>
+                <li><strong>Hosting:</strong> Netlify (website hosting)</li>
+                <li><strong>Analytics:</strong> Google Analytics (usage statistics)</li>
+                <li><strong>Database:</strong> Supabase (data storage)</li>
+                <li><strong>Payments:</strong> Stripe (future - payment processing)</li>
+                <li><strong>Email:</strong> Email service provider (future - transactional emails)</li>
+            </ul>
+
+            <h3>3.3 We Do NOT:</h3>
+            <ul>
+                <li>Sell your personal information to anyone</li>
+                <li>Share your data with advertisers</li>
+                <li>Use your garden listings for any purpose other than connecting you with other gardeners</li>
+            </ul>
+
+            <h2>4. Your Location Information</h2>
+            <div class="highlight-box">
+                <h3>How We Handle Location Data</h3>
+                <p>Hardy is all about local connections. We use your location to show you nearby garden shares and connect you with neighbors. You control how specific your location appears to others - from just your city to your neighborhood. We'll never show your exact address publicly.</p>
+            </div>
+
+            <h2>5. Cookies and Tracking</h2>
+            <p>We use cookies and similar technologies to:</p>
+            <ul>
+                <li>Keep you logged in</li>
+                <li>Remember your preferences</li>
+                <li>Understand how you use Hardy</li>
+                <li>Improve our services</li>
+            </ul>
+            
+            <h3>Google Analytics</h3>
+            <p>We use Google Analytics (ID: G-CJ4MS44MBB) to understand general usage patterns. This helps us improve Hardy for everyone. Google Analytics uses cookies and collects anonymized data about your visits.</p>
+
+            <h2>6. Your Rights and Choices</h2>
+            <p>You have the right to:</p>
+            <ul>
+                <li><strong>Access:</strong> Request a copy of your personal information</li>
+                <li><strong>Update:</strong> Correct inaccurate information</li>
+                <li><strong>Delete:</strong> Request deletion of your account and data</li>
+                <li><strong>Opt-out:</strong> Unsubscribe from marketing emails</li>
+                <li><strong>Export:</strong> Download your data in a portable format</li>
+            </ul>
+
+            <h2>7. Data Security</h2>
+            <p>We take security seriously and use industry-standard measures to protect your information:</p>
+            <ul>
+                <li>Encrypted passwords</li>
+                <li>Secure HTTPS connections</li>
+                <li>Regular security updates</li>
+                <li>Limited access to personal data</li>
+            </ul>
+            <p>However, no online service is 100% secure. Please use a strong password and be cautious when meeting other users in person.</p>
+
+            <h2>8. Children's Privacy</h2>
+            <p>Hardy is not intended for children under 18. We do not knowingly collect information from children. If you believe a child has provided us with personal information, please contact us.</p>
+
+            <h2>9. Changes to This Policy</h2>
+            <p>As Hardy grows, we may update this Privacy Policy. We'll notify you of significant changes via:</p>
+            <ul>
+                <li>Email notification</li>
+                <li>Prominent notice on our website</li>
+                <li>In-app notification (when available)</li>
+            </ul>
+
+            <h2>10. International Users</h2>
+            <p>Hardy is based in the United States. If you use Hardy from another country, your information may be transferred to and stored in the US.</p>
+
+            <h2>11. California Privacy Rights</h2>
+            <p>California residents have additional rights under the California Consumer Privacy Act (CCPA), including the right to:</p>
+            <ul>
+                <li>Know what personal information is collected</li>
+                <li>Know whether personal information is sold or disclosed</li>
+                <li>Say no to the sale of personal information</li>
+                <li>Access personal information</li>
+                <li>Request deletion of personal information</li>
+                <li>Not be discriminated against for exercising privacy rights</li>
+            </ul>
+
+            <h2>12. Future Features and Data Use</h2>
+            <p>As we introduce new features like Hardy Pro subscriptions, marketplace functionality, and payment processing, we'll update this policy to reflect how we handle additional data. We'll always notify you of significant changes.</p>
+
+            <h2>13. Contact Us</h2>
+            <div class="contact-info">
+                <h3>Questions About Privacy?</h3>
+                <p>We're here to help! If you have questions or concerns about your privacy:</p>
+                <ul>
+                    <li>Visit our <a href="contact.html">Contact Page</a></li>
+                    <li>Email: privacy@hardyhome.app (coming soon)</li>
+                    <li>Response time: Within 48 hours</li>
+                </ul>
+            </div>
+
+            <div class="highlight-box">
+                <h3>Remember</h3>
+                <p>Your trust is essential to building a thriving garden-sharing community. We're committed to being transparent about how we handle your information and giving you control over your privacy.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <div class="footer-logo">
+                        <img src="../img/logo-white.svg" alt="Hardy Home and Garden">
+                    </div>
+                    <p>Connecting gardeners and building sustainable communities one harvest at a time.</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="browse.html">Browse</a></li>
+                        <li><a href="about.html">About Hardy</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Get Started</h3>
+                    <ul>
+                        <li><a href="auth.html">Create Account</a></li>
+                        <li><a href="coming-soon.html?feature=create">Create Listing</a></li>
+                        <li><a href="auth.html">Log In</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="terms.html">Terms of Use</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="coming-soon.html">Cookie Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>Stay Updated</h3>
+                    <p>Join our mailing list for offers and updates.</p>
+                    <form>
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit" class="btn btn-primary">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Hardy Home and Garden. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- App Scripts -->
+    <script>
+        async function navigateToDashboard(event) {
+            event.preventDefault();
+            
+            try {
+                const { data: { user } } = await window.hardySupabase.auth.getUser();
+                
+                if (user) {
+                    window.location.href = 'dashboard.html';
+                } else {
+                    window.location.href = 'auth.html?redirect=dashboard';
+                }
+            } catch (error) {
+                window.location.href = 'auth.html?redirect=dashboard';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Enhanced mobile menu with Sign In and Support buttons
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const mainNav = document.querySelector('.main-nav');
+            
+            if (mobileMenuBtn && mainNav) {
+                // Create mobile menu container if it doesn't exist
+                let mobileMenuContainer = document.querySelector('.mobile-menu-container');
+                if (!mobileMenuContainer) {
+                    mobileMenuContainer = document.createElement('div');
+                    mobileMenuContainer.className = 'mobile-menu-container';
+                    mobileMenuContainer.style.display = 'none';
+                    mobileMenuContainer.innerHTML = `
+                        <ul class="mobile-nav-links">
+                            <li><a href="../index.html">Home</a></li>
+				<li><a href="browse.html">Browse</a></li>
+				<li><a href="#" onclick="navigateToDashboard(event)">My Dashboard</a></li>
+                        </ul>
+                        <div class="mobile-user-actions">
+                            <a href="auth.html" class="btn btn-primary btn-block">Sign In / Join</a>
+                            <a href="support.html" class="btn btn-secondary btn-block">Support Hardy</a>
+                        </div>
+                    `;
+                    mainNav.appendChild(mobileMenuContainer);
+                }
+                
+                mobileMenuBtn.addEventListener('click', function() {
+                    if (mobileMenuContainer.style.display === 'block') {
+                        mobileMenuContainer.style.display = 'none';
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                    } else {
+                        mobileMenuContainer.style.display = 'block';
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    }
+                });
+            }
+            
+            // Newsletter form handling
+            const newsletterForms = document.querySelectorAll('.footer-newsletter form');
+            newsletterForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const emailInput = form.querySelector('input[type="email"]');
+                    if (emailInput && emailInput.value) {
+                        alert('Thanks for subscribing! We\'ll keep you updated on Hardy\'s development.');
+                        emailInput.value = '';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

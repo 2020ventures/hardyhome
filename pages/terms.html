@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Use - Hardy Home and Garden</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Hardy Config -->
+    <script src="../hardy-config.js"></script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CJ4MS44MBB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-CJ4MS44MBB');
+    </script>
+    
+    <style>
+        /* CSS Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Variables */
+        :root {
+            /* Brand Colors */
+            --hardy-green: #4CAF50;
+            --hardy-green-dark: #388E3C;
+            --hardy-green-light: #A5D6A7;
+            
+            /* Supporting Colors */
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --text-light: #FFFFFF;
+            --background-light: #F9F9F9;
+            --background-white: #FFFFFF;
+            --border-color: #E0E0E0;
+            
+            /* Spacing */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-xxl: 3rem;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            
+            /* Box Shadows */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-md: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        }
+        
+        /* Base Styles */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background-color: var(--background-light);
+        }
+        
+        a {
+            color: var(--hardy-green);
+            text-decoration: none;
+        }
+        
+        a:hover {
+            color: var(--hardy-green-dark);
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+        
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Lora', serif;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+        }
+        
+        h2 {
+            font-size: 2rem;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+        }
+        
+        p {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .page-header {
+            text-align: center;
+            margin: var(--spacing-xxl) 0;
+        }
+        
+        .page-header h1 {
+            color: var(--hardy-green-dark);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--hardy-green);
+            color: var(--text-light);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--hardy-green-dark);
+            color: var(--text-light);
+        }
+        
+        .btn-secondary {
+            background-color: var(--text-light);
+            color: var(--hardy-green);
+            border: 2px solid var(--hardy-green);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        /* Header */
+        .site-header {
+            background-color: var(--background-white);
+            box-shadow: var(--shadow-sm);
+            padding: var(--spacing-md) 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .site-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            max-width: 150px;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .main-nav ul {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+        
+        .main-nav a {
+            color: var(--text-primary);
+            font-weight: 600;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: var(--hardy-green);
+            background-color: var(--hardy-green-light);
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+        
+        /* Terms Page Specific Content */
+        .terms-content {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: var(--background-white);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .last-updated {
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .warning-box {
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin: var(--spacing-xl) 0;
+        }
+        
+        .warning-box h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        
+        .warning-box p {
+            color: #856404;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .terms-content ul {
+            list-style: disc;
+            margin-left: var(--spacing-xl);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .terms-content li {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        /* Footer */
+        .site-footer {
+            background-color: var(--text-primary);
+            color: var(--text-light);
+            padding: var(--spacing-xxl) 0 var(--spacing-md);
+            margin-top: var(--spacing-xxl);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-xxl);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .footer-logo {
+            margin-bottom: var(--spacing-md);
+            max-width: 150px;
+        }
+        
+        .footer-logo img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .footer-links h3 {
+            margin-bottom: var(--spacing-md);
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+        
+        .footer-links ul li {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .footer-links a {
+            color: var(--text-light);
+            opacity: 0.8;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--hardy-green-light);
+        }
+        
+        .footer-newsletter p {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .footer-newsletter form {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .footer-newsletter input {
+            flex: 1;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: none;
+            border-radius: var(--radius-sm);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Mobile Menu Styles */
+        .mobile-menu-container {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--background-white);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-md);
+            z-index: 999;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 var(--spacing-md) 0;
+        }
+
+        .mobile-nav-links li {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .mobile-nav-links a {
+            display: block;
+            padding: var(--spacing-sm) var(--spacing-md);
+            color: var(--text-primary);
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav-links a:hover,
+        .mobile-nav-links a.active {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green);
+        }
+
+        .mobile-user-actions {
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .mobile-user-actions .btn {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-nav > ul {
+                display: none !important;
+            }
+            
+            .user-actions {
+                display: none !important;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .footer-newsletter form {
+                flex-direction: column;
+            }
+            
+            .footer-newsletter input {
+                margin-bottom: var(--spacing-sm);
+            }
+            
+            .terms-content {
+                padding: var(--spacing-md);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <a href="../index.html">
+                    <img src="../img/logo.svg" alt="Hardy Home and Garden">
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="../index.html">Home</a></li>
+			<li><a href="browse.html">Browse</a></li>
+			<li><a href="#" onclick="navigateToDashboard(event)">My Dashboard</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <a href="auth.html" class="btn btn-primary">Sign In / Join</a>
+                <a href="support.html" class="btn btn-secondary">Support Hardy</a>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Terms of Use</h1>
+            <p class="last-updated">Last Updated: June 3, 2025</p>
+        </div>
+        
+        <div class="terms-content">
+            <div class="warning-box">
+                <h3>⚠️ IMPORTANT SAFETY NOTICE</h3>
+                <p><strong>Hardy is a platform that connects gardeners and community members. We do NOT inspect, verify, test, or guarantee the safety, quality, or suitability of ANY produce, plants, or other items shared through our platform.</strong></p>
+                <p>You are solely responsible for evaluating the safety and quality of anything you receive through Hardy. This includes checking for allergens, pesticides, proper handling, and safe consumption practices.</p>
+                <p>By using Hardy, you acknowledge and accept all risks associated with consuming or using items shared by other community members.</p>
+            </div>
+
+            <h2>1. Acceptance of Terms</h2>
+            <p>By accessing or using Hardy ("the Platform"), you agree to be bound by these Terms of Use ("Terms"). If you do not agree to these Terms, please do not use our Platform.</p>
+
+            <h2>2. Platform Description</h2>
+            <p>Hardy is an online platform that facilitates connections between local gardeners and community members who wish to share, trade, or (in the future) sell garden produce, plants, and related items. Hardy serves only as a venue for these connections and is not a party to any exchanges between users.</p>
+
+            <h2>3. User Eligibility</h2>
+            <p>You must be at least 18 years old to use Hardy. By using our Platform, you represent and warrant that you meet this age requirement and have the legal capacity to enter into these Terms.</p>
+
+            <h2>4. User Accounts</h2>
+            <h3>4.1 Account Creation</h3>
+            <ul>
+                <li>You must provide accurate, current, and complete information when creating an account</li>
+                <li>You are responsible for maintaining the confidentiality of your account credentials</li>
+                <li>You are responsible for all activities that occur under your account</li>
+                <li>You must notify us immediately of any unauthorized use of your account</li>
+            </ul>
+
+            <h3>4.2 Account Termination</h3>
+            <p>We reserve the right to suspend or terminate accounts that violate these Terms or engage in prohibited activities.</p>
+
+            <h2>5. Food Safety and Quality Disclaimer</h2>
+            <h3>5.1 No Guarantees or Warranties</h3>
+            <p><strong>HARDY MAKES NO REPRESENTATIONS, WARRANTIES, OR GUARANTEES REGARDING:</strong></p>
+            <ul>
+                <li>The safety, quality, or freshness of any produce or food items</li>
+                <li>Whether items are organic, pesticide-free, or grown using any particular methods</li>
+                <li>The absence of allergens, contaminants, or harmful substances</li>
+                <li>The proper handling, storage, or transportation of items</li>
+                <li>The health or disease status of plants, seeds, or cuttings</li>
+                <li>The accuracy of any descriptions provided by users</li>
+            </ul>
+
+            <h3>5.2 User Responsibility</h3>
+            <p>As a recipient of items through Hardy, you are solely responsible for:</p>
+            <ul>
+                <li>Inspecting all items before consumption or use</li>
+                <li>Asking providers about growing methods, pesticide use, and handling practices</li>
+                <li>Properly washing, preparing, and storing all items</li>
+                <li>Determining whether items are safe for your consumption, especially if you have allergies or dietary restrictions</li>
+                <li>Following all applicable food safety guidelines</li>
+                <li>Quarantining new plants to prevent spread of pests or diseases</li>
+            </ul>
+
+            <h2>6. User Conduct and Prohibited Activities</h2>
+            <p>Users agree NOT to:</p>
+            <ul>
+                <li>Share items that are spoiled, contaminated, or known to be unsafe</li>
+                <li>Misrepresent the nature, quality, or growing methods of items</li>
+                <li>Share items that are illegal or regulated (such as raw milk in certain jurisdictions)</li>
+                <li>Engage in discriminatory practices</li>
+                <li>Harass, threaten, or abuse other users</li>
+                <li>Use the Platform for commercial spam or unauthorized advertising</li>
+                <li>Violate any local, state, or federal laws</li>
+                <li>Create multiple accounts to circumvent restrictions</li>
+                <li>Attempt to hack, disable, or interfere with the Platform</li>
+            </ul>
+
+            <h2>7. Listings and Content</h2>
+            <h3>7.1 User-Generated Content</h3>
+            <p>By posting listings or content on Hardy, you grant us a non-exclusive, worldwide, royalty-free license to use, display, and distribute your content on the Platform.</p>
+
+            <h3>7.2 Content Standards</h3>
+            <p>All listings must:</p>
+            <ul>
+                <li>Be accurate and honest</li>
+                <li>Include clear descriptions and, when available, photos</li>
+                <li>Disclose any known issues or concerns</li>
+                <li>Comply with all applicable laws</li>
+            </ul>
+
+            <h2>8. Transactions Between Users</h2>
+            <h3>8.1 Hardy's Role</h3>
+            <p>Hardy is not a party to any transactions between users. We do not:</p>
+            <ul>
+                <li>Take possession of any items</li>
+                <li>Verify the identity of users beyond basic account information</li>
+                <li>Guarantee any transactions will be completed</li>
+                <li>Mediate disputes (though we may provide communication tools)</li>
+            </ul>
+
+            <h3>8.2 Future Monetization</h3>
+            <p>While Hardy currently facilitates free sharing and trades, we reserve the right to introduce:</p>
+            <ul>
+                <li>Transaction fees for paid exchanges</li>
+                <li>Premium subscription services (Hardy Pro)</li>
+                <li>Featured listing options</li>
+                <li>Marketplace features for gardening supplies</li>
+                <li>Other monetization features as the Platform evolves</li>
+            </ul>
+            <p>Users will be notified of any changes to fee structures before they take effect.</p>
+
+            <h2>9. Privacy and Data Use</h2>
+            <p>Your use of Hardy is also governed by our <a href="privacy.html">Privacy Policy</a>. By using the Platform, you consent to the collection and use of your information as described in our Privacy Policy.</p>
+
+            <h2>10. Intellectual Property</h2>
+            <p>The Hardy name, logo, and all related designs and content are the property of Hardy. Users may not use our intellectual property without written permission.</p>
+
+            <h2>11. Limitation of Liability</h2>
+            <p><strong>TO THE MAXIMUM EXTENT PERMITTED BY LAW:</strong></p>
+            <ul>
+                <li>Hardy shall not be liable for any indirect, incidental, special, consequential, or punitive damages</li>
+                <li>Hardy shall not be liable for any illness, injury, or harm resulting from items shared through the Platform</li>
+                <li>Hardy's total liability shall not exceed $100 or the amount you have paid to Hardy in the past 12 months, whichever is greater</li>
+            </ul>
+
+            <h2>12. Indemnification</h2>
+            <p>You agree to indemnify and hold Hardy, its officers, directors, employees, and agents harmless from any claims, damages, losses, or expenses arising from:</p>
+            <ul>
+                <li>Your use of the Platform</li>
+                <li>Your violation of these Terms</li>
+                <li>Your sharing or receipt of items through Hardy</li>
+                <li>Any dispute with another user</li>
+            </ul>
+
+            <h2>13. Assumption of Risk</h2>
+            <p>By using Hardy, you acknowledge and assume all risks associated with:</p>
+            <ul>
+                <li>Consuming home-grown produce</li>
+                <li>Meeting strangers to exchange items</li>
+                <li>Planting or propagating shared plants in your garden</li>
+                <li>Any other activities facilitated by the Platform</li>
+            </ul>
+
+            <h2>14. Local Laws and Regulations</h2>
+            <p>Users are responsible for complying with all local laws and regulations regarding:</p>
+            <ul>
+                <li>Food sharing and safety</li>
+                <li>Plant diseases and invasive species</li>
+                <li>Business licensing (if selling)</li>
+                <li>Tax obligations</li>
+                <li>Zoning and land use</li>
+            </ul>
+
+            <h2>15. Dispute Resolution</h2>
+            <p>Any disputes arising from these Terms or your use of Hardy shall be resolved through binding arbitration in accordance with the rules of the American Arbitration Association. The arbitration shall be conducted in Wisconsin.</p>
+
+            <h2>16. Changes to Terms</h2>
+            <p>We reserve the right to modify these Terms at any time. We will notify users of material changes via email or Platform notification. Continued use of Hardy after changes constitutes acceptance of the new Terms.</p>
+
+            <h2>17. Severability</h2>
+            <p>If any provision of these Terms is found to be unenforceable, the remaining provisions shall continue in full force and effect.</p>
+
+            <h2>18. Governing Law</h2>
+            <p>These Terms shall be governed by the laws of the State of Wisconsin, without regard to conflict of law principles.</p>
+
+            <h2>19. Contact Information</h2>
+            <p>For questions about these Terms, please contact us through our <a href="contact.html">Contact Page</a>.</p>
+
+            <div class="warning-box">
+                <h3>Remember: Your Safety is Your Responsibility</h3>
+                <p>Hardy connects neighbors who want to share their garden's abundance, but we cannot guarantee the safety or quality of any items shared. Always use caution, ask questions, and trust your judgment when participating in exchanges.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <div class="footer-logo">
+                        <img src="../img/logo-white.svg" alt="Hardy Home and Garden">
+                    </div>
+                    <p>Connecting gardeners and building sustainable communities one harvest at a time.</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="browse.html">Browse</a></li>
+                        <li><a href="about.html">About Hardy</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Get Started</h3>
+                    <ul>
+                        <li><a href="auth.html">Create Account</a></li>
+                        <li><a href="coming-soon.html?feature=create">Create Listing</a></li>
+                        <li><a href="auth.html">Log In</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="terms.html">Terms of Use</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="coming-soon.html">Cookie Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>Stay Updated</h3>
+                    <p>Join our mailing list for offers and updates.</p>
+                    <form>
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit" class="btn btn-primary">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Hardy Home and Garden. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- App Scripts -->
+    <script>
+        // Navigation function for dashboard
+        async function navigateToDashboard(event) {
+            event.preventDefault();
+           
+            try {
+                const { data: { user } } = await window.hardySupabase.auth.getUser();
+               
+                if (user) {
+                    window.location.href = 'dashboard.html';
+                } else {
+                    window.location.href = 'auth.html?redirect=dashboard';
+                }
+            } catch (error) {
+                window.location.href = 'auth.html?redirect=dashboard';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Enhanced mobile menu with Sign In and Support buttons
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const mainNav = document.querySelector('.main-nav');
+            
+            if (mobileMenuBtn && mainNav) {
+                // Create mobile menu container if it doesn't exist
+                let mobileMenuContainer = document.querySelector('.mobile-menu-container');
+                if (!mobileMenuContainer) {
+                    mobileMenuContainer = document.createElement('div');
+                    mobileMenuContainer.className = 'mobile-menu-container';
+                    mobileMenuContainer.style.display = 'none';
+                    mobileMenuContainer.innerHTML = `
+                        <ul class="mobile-nav-links">
+                            <li><a href="../index.html">Home</a></li>
+				<li><a href="browse.html">Browse</a></li>
+				<li><a href="#" onclick="navigateToDashboard(event)">My Dashboard</a></li>
+                        </ul>
+                        <div class="mobile-user-actions">
+                            <a href="auth.html" class="btn btn-primary btn-block">Sign In / Join</a>
+                            <a href="support.html" class="btn btn-secondary btn-block">Support Hardy</a>
+                        </div>
+                    `;
+                    mainNav.appendChild(mobileMenuContainer);
+                }
+                
+                mobileMenuBtn.addEventListener('click', function() {
+                    if (mobileMenuContainer.style.display === 'block') {
+                        mobileMenuContainer.style.display = 'none';
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                    } else {
+                        mobileMenuContainer.style.display = 'block';
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    }
+                });
+            }
+            
+            // Newsletter form handling
+            const newsletterForms = document.querySelectorAll('.footer-newsletter form');
+            newsletterForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const emailInput = form.querySelector('input[type="email"]');
+                    if (emailInput && emailInput.value) {
+                        alert('Thanks for subscribing! We\'ll keep you updated on Hardy\'s development.');
+                        emailInput.value = '';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
