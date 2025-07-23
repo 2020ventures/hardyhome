@@ -1354,7 +1354,7 @@
             return div.innerHTML;
         }
         
-        // Handle contact button click - NOW WITH MESSAGING FUNCTIONALITY!
+        // Handle contact button click - NOW WITH EMAIL NOTIFICATIONS!
         async function contactUser(listingId, event) {
             if (!currentUser) {
                 alert('Please sign in to contact other gardeners!');
@@ -1404,6 +1404,37 @@
                     button.disabled = false;
                     button.textContent = originalText;
                     return;
+                }
+                
+                // Now send the email notification to the listing owner
+                try {
+                    // Get listing owner's email and profile info
+                    const { data: ownerProfile, error: profileError } = await window.hardySupabase
+                        .from('profiles')
+                        .select('email, full_name, nickname')
+                        .eq('id', listing.user_id)
+                        .single();
+                    
+                    if (!profileError && ownerProfile?.email) {
+                        // Get sender's name
+                        const senderName = userProfile?.nickname || userProfile?.full_name || currentUser.email.split('@')[0];
+                        const recipientName = ownerProfile.nickname || ownerProfile.full_name || 'Gardener';
+                        
+                        // Send the email notification
+                        await sendMessageNotification(
+                            ownerProfile.email,
+                            recipientName,
+                            senderName,
+                            listing.title,
+                            message.trim(),
+                            conversationId
+                        );
+                        
+                        console.log('Email notification sent to listing owner');
+                    }
+                } catch (emailError) {
+                    // Don't let email failure block the conversation
+                    console.error('Failed to send email notification:', emailError);
                 }
                 
                 // Success! Redirect to dashboard messages tab with the conversation

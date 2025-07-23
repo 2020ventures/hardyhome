@@ -2047,7 +2047,7 @@
             `;
         }
         
-        // Send a message
+        // Send a message - WITH EMAIL NOTIFICATION!
         async function sendMessage(event) {
             event.preventDefault();
             console.log('Send message called');
@@ -2095,6 +2095,52 @@
                 if (convError) {
                     console.error('Conversation update error:', convError);
                     throw convError;
+                }
+                
+                // Send email notification to the other participant
+                try {
+                    // Get the other participant's ID
+                    const otherUser = currentConversation.otherUser;
+                    
+                    if (otherUser) {
+                        // Fetch the other user's email if we don't have it
+                        let recipientEmail = otherUser.email;
+                        
+                        if (!recipientEmail && otherUser.id) {
+                            // Try to get email from profiles table
+                            const { data: profileWithEmail } = await window.hardySupabase
+                                .from('profiles')
+                                .select('email')
+                                .eq('id', otherUser.id)
+                                .single();
+                            
+                            recipientEmail = profileWithEmail?.email;
+                        }
+                        
+                        if (recipientEmail) {
+                            // Get sender's name
+                            const senderName = userProfile?.nickname || userProfile?.full_name || currentUser.email.split('@')[0];
+                            const recipientName = otherUser.nickname || otherUser.full_name || 'Gardener';
+                            const listingTitle = currentConversation.listings?.title || 'your listing';
+                            
+                            // Send the email notification
+                            await sendMessageNotification(
+                                recipientEmail,
+                                recipientName,
+                                senderName,
+                                listingTitle,
+                                content,
+                                currentConversation.id
+                            );
+                            
+                            console.log('Email notification sent to recipient');
+                        } else {
+                            console.log('Could not find recipient email address');
+                        }
+                    }
+                } catch (emailError) {
+                    // Don't let email failure block the message
+                    console.error('Failed to send email notification:', emailError);
                 }
                 
                 // Clear input
