@@ -2099,8 +2099,17 @@
                 
                 // Send email notification to the other participant
                 try {
+                    console.log('Attempting to send email notification...');
+                    
+                    // Check if sendMessageNotification function exists
+                    if (typeof sendMessageNotification !== 'function') {
+                        console.error('sendMessageNotification function not found! Make sure hardy-config.js is loaded.');
+                        return;
+                    }
+                    
                     // Get the other participant's ID
                     const otherUser = currentConversation.otherUser;
+                    console.log('Other user in conversation:', otherUser);
                     
                     if (otherUser) {
                         // Fetch the other user's email if we don't have it
@@ -2115,6 +2124,7 @@
                                 .single();
                             
                             recipientEmail = profileWithEmail?.email;
+                            console.log('Fetched email from profile:', recipientEmail);
                         }
                         
                         if (recipientEmail) {
@@ -2122,6 +2132,10 @@
                             const senderName = userProfile?.nickname || userProfile?.full_name || currentUser.email.split('@')[0];
                             const recipientName = otherUser.nickname || otherUser.full_name || 'Gardener';
                             const listingTitle = currentConversation.listings?.title || 'your listing';
+                            
+                            console.log('Sending email to:', recipientEmail);
+                            console.log('From:', senderName);
+                            console.log('About listing:', listingTitle);
                             
                             // Send the email notification
                             await sendMessageNotification(
@@ -2133,14 +2147,22 @@
                                 currentConversation.id
                             );
                             
-                            console.log('Email notification sent to recipient');
+                            console.log('✅ Email notification sent successfully!');
+                            
+                            // Show success feedback (optional - remove if too intrusive)
+                            // You can uncomment this line to show a brief notification
+                            // showNotification('Email notification sent!', 'success');
                         } else {
-                            console.log('Could not find recipient email address');
+                            console.warn('⚠️ Could not find recipient email address');
+                            console.log('Other user data:', otherUser);
                         }
+                    } else {
+                        console.warn('⚠️ No other user found in conversation');
                     }
                 } catch (emailError) {
                     // Don't let email failure block the message
-                    console.error('Failed to send email notification:', emailError);
+                    console.error('❌ Failed to send email notification:', emailError);
+                    console.error('Full error details:', emailError.message);
                 }
                 
                 // Clear input
@@ -2484,6 +2506,38 @@
                     }
                 });
             }
+        }
+        
+        // Show notification helper (optional visual feedback)
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#4CAF50' : '#2196F3'};
+                color: white;
+                padding: 16px 24px;
+                border-radius: 8px;
+                box-shadow: 0 3px 6px rgba(0,0,0,0.16);
+                z-index: 9999;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+                max-width: 300px;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Fade in
+            setTimeout(() => notification.style.opacity = '1', 10);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
         }
     </script>
 </body>
