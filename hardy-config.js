@@ -229,6 +229,42 @@ function createListingConfirmationEmail(userName, listingTitle, listingId) {
     };
 }
 
+// NEW: Newsletter welcome email template
+function createNewsletterWelcomeEmail() {
+    return {
+        subject: 'Welcome to Hardy Updates! 🌱',
+        html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background-color: #4CAF50; color: white; padding: 30px; text-align: center;">
+                    <h1 style="margin: 0;">Welcome to Hardy Updates! 🌱</h1>
+                </div>
+                <div style="padding: 30px; background-color: #f9f9f9;">
+                    <h2 style="color: #388E3C; margin-top: 0;">Thanks for joining our community!</h2>
+                    <p>You're now signed up to receive updates about Hardy, including:</p>
+                    <ul style="margin: 20px 0; padding-left: 20px;">
+                        <li style="margin-bottom: 10px;">🚀 Launch announcements for your area</li>
+                        <li style="margin-bottom: 10px;">🌿 Gardening tips and seasonal reminders</li>
+                        <li style="margin-bottom: 10px;">🏆 Community success stories</li>
+                        <li style="margin-bottom: 10px;">✨ New feature updates</li>
+                    </ul>
+                    <div style="background-color: #E8F5E9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                        <p style="margin: 0;"><strong>Coming in 2025:</strong> Hardy is launching in Kenosha and Racine Counties, Wisconsin. If you're in our pilot area, you'll be the first to know when we go live and/or about new features!</p>
+                    </div>
+                    <p>We're excited to help you connect with fellow gardeners in your neighborhood and make the most of your garden's bounty.</p>
+                    <p style="margin-top: 30px;">Happy gardening! 🌻</p>
+                    <p>The Hardy Team</p>
+                    <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
+                    <p style="font-size: 12px; color: #666; text-align: center;">
+                        Hardy Home and Garden · The Community Garden in Your Pocket<br>
+                        You're receiving this because you signed up for Hardy updates.<br>
+                        <a href="#" style="color: #4CAF50;">Unsubscribe</a> at any time.
+                    </p>
+                </div>
+            </div>
+        `
+    };
+}
+
 // Helper function to send welcome email (updated to use new format)
 async function sendWelcomeEmail(userEmail, userName) {
     try {
@@ -276,3 +312,124 @@ async function sendListingConfirmationEmail(userEmail, userName, listingTitle, l
         // Don't re-throw here - we don't want email failure to block listing creation
     }
 }
+
+// NEW: Helper function to send newsletter welcome email
+async function sendNewsletterWelcomeEmail(userEmail) {
+    try {
+        const emailData = createNewsletterWelcomeEmail();
+        await sendEmail({
+            to: userEmail,
+            subject: emailData.subject,
+            html: emailData.html
+        });
+        console.log('Newsletter welcome email sent successfully');
+    } catch (error) {
+        console.error('Failed to send newsletter welcome email:', error);
+        // Don't re-throw here - we don't want email failure to block newsletter signup
+    }
+}
+
+// NEW: Newsletter signup functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle all newsletter forms on the page
+    const newsletterForms = document.querySelectorAll('.footer-newsletter form');
+    
+    newsletterForms.forEach(form => {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const emailInput = form.querySelector('input[type="email"]');
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            if (!emailInput || !emailInput.value) return;
+            
+            const email = emailInput.value;
+            const originalButtonText = submitButton.textContent;
+            
+            // Disable form while submitting
+            emailInput.disabled = true;
+            submitButton.disabled = true;
+            submitButton.textContent = 'Subscribing...';
+            
+            try {
+                // Store email in waitlist table with 'newsletter' feature
+                const { error } = await window.hardySupabase
+                    .from('waitlist')
+                    .insert({
+                        email: email,
+                        feature: 'newsletter',
+                        created_at: new Date().toISOString()
+                    });
+                
+                if (error) {
+                    // Check if it's a duplicate error
+                    if (error.code === '23505') { // Postgres unique violation
+                        // Email already exists - still show success
+                        console.log('Email already subscribed');
+                    } else {
+                        throw error;
+                    }
+                }
+                
+                // Send welcome email
+                try {
+                    await sendNewsletterWelcomeEmail(email);
+                } catch (emailError) {
+                    console.error('Newsletter welcome email failed:', emailError);
+                    // Don't block the signup if email fails
+                }
+                
+                // Replace form with success message
+                form.innerHTML = `
+                    <div style="color: #4CAF50; padding: 10px; text-align: center;">
+                        <i class="fas fa-check-circle" style="font-size: 1.5rem; margin-bottom: 5px;"></i>
+                        <p style="margin: 0; font-weight: 600;">Thanks for subscribing! 🌱</p>
+                        <small style="display: block; margin-top: 5px; opacity: 0.8;">Check your email for confirmation.</small>
+                    </div>
+                `;
+                
+                // Track the signup with Google Analytics if available
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'newsletter_signup', { 
+                        'event_category': 'engagement',
+                        'event_label': 'footer'
+                    });
+                }
+                
+            } catch (error) {
+                console.error('Newsletter signup error:', error);
+                
+                // Re-enable form
+                emailInput.disabled = false;
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
+                
+                // Show error message
+                let errorMessage = 'Sorry, there was an error. Please try again.';
+                
+                // Check for specific error types
+                if (error.message && error.message.includes('network')) {
+                    errorMessage = 'Network error. Please check your connection and try again.';
+                }
+                
+                // Create error element if it doesn't exist
+                let errorElement = form.querySelector('.newsletter-error');
+                if (!errorElement) {
+                    errorElement = document.createElement('div');
+                    errorElement.className = 'newsletter-error';
+                    errorElement.style.cssText = 'color: #d32f2f; font-size: 0.875rem; margin-top: 5px;';
+                    form.appendChild(errorElement);
+                }
+                
+                errorElement.textContent = errorMessage;
+                
+                // Remove error after 5 seconds
+                setTimeout(() => {
+                    if (errorElement) {
+                        errorElement.remove();
+                    }
+                }, 5000);
+            }
+        });
+    });
+});
