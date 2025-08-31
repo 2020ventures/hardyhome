@@ -237,23 +237,118 @@
             color: var(--text-primary);
         }
         
-        /* Hero Section */
+        /* Enhanced Hero Section */
         .hero {
-            background: linear-gradient(135deg, var(--hardy-green) 0%, var(--hardy-green-dark) 100%);
+            position: relative;
             color: var(--text-light);
             padding: var(--spacing-xxl) 0;
             text-align: center;
+            overflow: hidden;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.6);
+            transition: opacity 1s ease-in-out;
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.8) 0%, rgba(56, 142, 60, 0.8) 100%);
+            z-index: -1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
         }
         
         .hero h1 {
             font-size: 3rem;
             margin-bottom: var(--spacing-lg);
+            line-height: 1.3;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .rotating-word {
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            vertical-align: bottom;
+            height: 1.2em;
+            width: 400px;
+            text-align: center;
+            color: var(--text-light);
+            font-weight: 700;
+        }
+        
+        .rotating-word span {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            opacity: 0;
+        }
+        
+        .rotating-word span:nth-child(1) {
+            animation: rotateWordTwice 18s ease-in-out forwards;
+        }
+        
+        .rotating-word span:nth-child(2) {
+            animation: rotateWordTwice 18s ease-in-out 3s forwards;
+        }
+        
+        .rotating-word span:nth-child(3) {
+            animation: rotateWordFinalTwice 18s ease-in-out 6s forwards;
+        }
+        
+        @keyframes rotateWordTwice {
+            0% { opacity: 0; transform: translateY(20px); }
+            2%, 14% { opacity: 1; transform: translateY(0); }
+            16.67% { opacity: 0; transform: translateY(-20px); }
+            50% { opacity: 0; transform: translateY(20px); }
+            52%, 64% { opacity: 1; transform: translateY(0); }
+            66.67%, 100% { opacity: 0; transform: translateY(-20px); }
+        }
+        
+        @keyframes rotateWordFinalTwice {
+            0% { opacity: 0; transform: translateY(20px); }
+            2%, 14% { opacity: 1; transform: translateY(0); }
+            16.67% { opacity: 0; transform: translateY(-20px); }
+            50% { opacity: 0; transform: translateY(20px); }
+            52%, 100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .hero p {
             font-size: 1.25rem;
             margin-bottom: var(--spacing-xl);
             opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.3s both;
         }
         
         .hero-actions {
@@ -261,6 +356,7 @@
             gap: var(--spacing-md);
             justify-content: center;
             flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 0.6s both;
         }
         
         /* CTA Cards Section */
@@ -524,6 +620,10 @@
                 font-size: 2rem;
             }
             
+            .rotating-word {
+                width: 300px;
+            }
+            
             .hero-actions {
                 flex-direction: column;
                 align-items: center;
@@ -577,8 +677,17 @@
     </header>
 
     <section class="hero">
-        <div class="container">
-            <h1>The Community Garden In Your Pocket</h1>
+        <div class="hero-background" id="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+            <h1>
+                The Community Garden<br>
+                <span class="rotating-word">
+                    <span>Next Door</span>
+                    <span>Down the Street</span>
+                    <span>In Your Pocket</span>
+                </span>
+            </h1>
             <p>Connect with local gardeners to share, trade, and grow together</p>
             <div class="hero-actions">
                 <a href="pages/browse.html" class="btn btn-secondary">Browse Listings</a>
@@ -702,6 +811,27 @@
 
     <!-- Homepage Scripts -->
     <script>
+        // Hero background rotation
+        const backgrounds = [
+            'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=1600',
+            'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1600',
+            'https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=1600',
+            'https://images.unsplash.com/photo-1471193945509-9ad0617afabf?w=1600'
+        ];
+        
+        let currentBg = 0;
+        const heroBg = document.getElementById('hero-bg');
+        
+        function rotateBackground() {
+            heroBg.style.backgroundImage = `url('${backgrounds[currentBg]}')`;
+            currentBg = (currentBg + 1) % backgrounds.length;
+        }
+        
+        // Set initial background
+        rotateBackground();
+        // Rotate every 5 seconds
+        setInterval(rotateBackground, 5000);
+        
         // Check authentication state on load
         document.addEventListener('DOMContentLoaded', async function() {
             await checkAuthState();
