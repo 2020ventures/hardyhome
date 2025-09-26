@@ -688,8 +688,8 @@
             <nav class="main-nav">
                 <ul class="nav-links">
                     <li><a href='/'>Home</a></li>
-                    <li><a href='/pages/browse'>Browse</a></li>
-                    <li><a href='/pages/dashboard'>My Dashboard</a></li>
+                    <li><a href='/pages/browse.html'>Browse</a></li>
+                    <li><a href='/pages/dashboard.html'>My Dashboard</a></li>
                 </ul>
             </nav>
             <div class="user-actions">
@@ -700,14 +700,14 @@
                         <i class="fas fa-chevron-down"></i>
                     </button>
                     <div class="user-dropdown" id="user-dropdown">
-                        <a href='/pages/browse'>
+                        <a href='/pages/browse.html'>
                             <i class="fas fa-search"></i> Browse Listings
                         </a>
-                        <a href='/pages/create'>
+                        <a href='/pages/create.html'>
                             <i class="fas fa-plus"></i> Create Listing
                         </a>
                         <div class="divider"></div>
-                        <a href='/pages/support'>
+                        <a href='/pages/support.html'>
                             <i class="fas fa-heart"></i> Support Hardy
                         </a>
                         <div class="divider"></div>
@@ -727,7 +727,7 @@
         <div class="container profile-container">
             <!-- Breadcrumb -->
             <div class="breadcrumb">
-                <a href="/pages/dashboard">Dashboard</a> / Edit Profile
+                <a href="/pages/dashboard.html">Dashboard</a> / Edit Profile
             </div>
 
             <!-- Page Header -->
@@ -760,7 +760,7 @@
                             </div>
                             <div class="avatar-info">
                                 <p><strong>Profile Picture</strong></p>
-                                <p class="form-help">We use your initials as your avatar. Profile pictures coming soon!</p>
+                                <p class="form-help">We use your initials as your avatar. Your nickname initial will be shown if you have one.</p>
                             </div>
                         </div>
 
@@ -768,19 +768,19 @@
                             <div class="form-group">
                                 <label for="full_name">Full Name *</label>
                                 <input type="text" id="full_name" name="full_name" required>
-                                <p class="form-help">This is how you'll appear to other gardeners</p>
+                                <p class="form-help">Your private name for account management</p>
                             </div>
                             <div class="form-group">
-                                <label for="nickname">Nickname (Optional)</label>
-                                <input type="text" id="nickname" name="nickname">
-                                <p class="form-help">A friendly name neighbors can call you</p>
+                                <label for="nickname">Nickname *</label>
+                                <input type="text" id="nickname" name="nickname" required>
+                                <p class="form-help">This is how you'll appear on listings</p>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="email">Email Address</label>
                             <input type="email" id="email" name="email" readonly>
-                            <p class="form-help">Email cannot be changed. Contact support if you need assistance.</p>
+                            <p class="form-help">Your login email. Cannot be changed.</p>
                         </div>
                     </div>
 
@@ -821,19 +821,6 @@
                         </div>
                     </div>
 
-                    <!-- Account Security -->
-                    <div class="form-section">
-                        <h2 class="section-title">Account Security</h2>
-                        
-                        <div class="form-group">
-                            <label>Password</label>
-                            <a href="/pages/reset-password" class="btn btn-outline">
-                                <i class="fas fa-lock"></i> Change Password
-                            </a>
-                            <p class="form-help">Keep your account secure with a strong password</p>
-                        </div>
-                    </div>
-
                     <!-- Form Actions -->
                     <div class="form-actions">
                         <div class="form-actions-left">
@@ -865,25 +852,25 @@
                     <h3>Quick Links</h3>
                     <ul>
                         <li><a href='/'>Home</a></li>
-                        <li><a href='/pages/browse'>Browse</a></li>
-                        <li><a href='/pages/about'>About Hardy</a></li>
-                        <li><a href='/pages/faq'>FAQ</a></li>
-                        <li><a href='/pages/contact'>Contact</a></li>
+                        <li><a href='/pages/browse.html'>Browse</a></li>
+                        <li><a href='/pages/about.html'>About Hardy</a></li>
+                        <li><a href='/pages/faq.html'>FAQ</a></li>
+                        <li><a href='/pages/contact.html'>Contact</a></li>
                     </ul>
                 </div>
                 <div class="footer-links">
                     <h3>Get Started</h3>
                     <ul>
-                        <li><a href='/pages/auth'>Create Account</a></li>
-                        <li><a href='/pages/create'>Create Listing</a></li>
-                        <li><a href='/pages/dashboard'>My Dashboard</a></li>
+                        <li><a href='/pages/auth.html'>Create Account</a></li>
+                        <li><a href='/pages/create.html'>Create Listing</a></li>
+                        <li><a href='/pages/dashboard.html'>My Dashboard</a></li>
                     </ul>
                 </div>
                 <div class="footer-links">
                     <h3>Legal</h3>
                     <ul>
-                        <li><a href='/pages/terms'>Terms of Use</a></li>
-                        <li><a href='/pages/privacy'>Privacy Policy</a></li>
+                        <li><a href='/pages/terms.html'>Terms of Use</a></li>
+                        <li><a href='/pages/privacy.html'>Privacy Policy</a></li>
                     </ul>
                 </div>
             </div>
@@ -957,7 +944,7 @@
             
             if (!user) {
                 // Redirect to auth page if not logged in
-                window.location.href = '/pages/auth?redirect=edit-profile';
+                window.location.href = '/pages/auth.html?redirect=edit-profile';
                 return;
             }
             
@@ -1027,10 +1014,10 @@
             avatar.textContent = displayName.charAt(0).toUpperCase();
         }
 
-        // Update avatar preview
+        // Update avatar preview - prioritize nickname for display
         function updateAvatar() {
-            const fullName = document.getElementById('full_name').value;
             const nickname = document.getElementById('nickname').value;
+            const fullName = document.getElementById('full_name').value;
             const displayName = nickname || fullName || currentUser.email.split('@')[0];
             
             const avatarInitial = document.getElementById('avatar-initial');
@@ -1102,7 +1089,7 @@
                 hasChanges = true;
             });
             
-            // Update avatar on name change
+            // Update avatar on name change - prioritize nickname
             document.getElementById('full_name').addEventListener('input', updateAvatar);
             document.getElementById('nickname').addEventListener('input', updateAvatar);
             
@@ -1146,28 +1133,16 @@
                     }
                 }
                 
-                // Build updates object with fields that exist in the database
+                // Build updates object
                 const updates = {
                     full_name: formData.get('full_name'),
+                    nickname: formData.get('nickname'),  // Now required
                     address: formData.get('address'),
                     city: formData.get('city'),
                     neighborhood: formData.get('neighborhood'),
-                    zip_code: newZipCode
+                    zip_code: newZipCode,
+                    updated_at: new Date().toISOString()
                 };
-                
-                // Only add nickname if it exists in the current profile
-                if ('nickname' in userProfile) {
-                    updates.nickname = formData.get('nickname');
-                }
-                
-                // Always update the timestamp if it exists
-                if ('updated_at' in userProfile) {
-                    updates.updated_at = new Date().toISOString();
-                }
-                
-                // Debug: Log what we're trying to update
-                console.log('Attempting to update with:', updates);
-                console.log('Current profile fields:', Object.keys(userProfile));
                 
                 // Update profile
                 const { data, error: profileError } = await window.hardySupabase
@@ -1217,18 +1192,11 @@
             } catch (error) {
                 console.error('Error updating profile:', error);
                 console.error('Error details:', error.message);
-                console.error('Error code:', error.code);
-                console.error('Error details:', error.details);
-                console.error('Error hint:', error.hint);
                 
                 // Provide more specific error messages
                 let errorMessage = 'Error updating profile. ';
                 if (error.message) {
-                    if (error.message.includes('column') && error.message.includes('does not exist')) {
-                        errorMessage += 'Some fields are not available in the database. Please contact support.';
-                    } else {
-                        errorMessage += error.message;
-                    }
+                    errorMessage += error.message;
                 } else {
                     errorMessage += 'Please try again.';
                 }
@@ -1244,10 +1212,10 @@
         function cancelEdit() {
             if (hasChanges) {
                 if (confirm('You have unsaved changes. Are you sure you want to leave?')) {
-                    window.location.href = '/pages/dashboard';
+                    window.location.href = '/pages/dashboard.html';
                 }
             } else {
-                window.location.href = '/pages/dashboard';
+                window.location.href = '/pages/dashboard.html';
             }
         }
 
@@ -1321,8 +1289,8 @@
                     mobileMenuContainer.innerHTML = `
                         <ul class="mobile-nav-links">
                             <li><a href="/">Home</a></li>
-                            <li><a href="/pages/browse">Browse</a></li>
-                            <li><a href="/pages/dashboard">My Dashboard</a></li>
+                            <li><a href="/pages/browse.html">Browse</a></li>
+                            <li><a href="/pages/dashboard.html">My Dashboard</a></li>
                         </ul>
                         <div class="mobile-user-actions">
                             <button class="btn btn-outline btn-block" onclick="handleSignOut()">Sign Out</button>

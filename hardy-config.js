@@ -1,5 +1,5 @@
-const SUPABASE_URL = 'https://asfinbvecejglhfojclp.supabase.co'; // 
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzZmluYnZlY2VqZ2xoZm9qY2xwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMDYyODcsImV4cCI6MjA2NDU4MjI4N30.5NBfuWhO55DgFJvu4BXygrdJlRm5KkC8lwr3C7t8JGA'; // 
+const SUPABASE_URL = 'https://asfinbvecejglhfojclp.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzZmluYnZlY2VqZ2xoZm9qY2xwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMDYyODcsImV4cCI6MjA2NDU4MjI4N30.5NBfuWhO55DgFJvu4BXygrdJlRm5KkC8lwr3C7t8JGA';
 
 // Email configuration (Resend)
 const RESEND_API_KEY = 're_eq5Wx4ZK_ACmt9g7GvKBmZ4KzHvJoSGKd';
@@ -26,6 +26,18 @@ const KENOSHA_RACINE_ZIPS = [
 
 // Remove duplicates (some ZIPs serve both counties)
 const VALID_ZIPS = [...new Set(KENOSHA_RACINE_ZIPS)];
+
+// V2 SIMPLIFIED CATEGORIES (reduced from 10 to 8)
+const LISTING_CATEGORIES = [
+  'Vegetables',
+  'Fruits',
+  'Herbs',
+  'Seeds & Seedlings',
+  'Plants & Cuttings',
+  'Eggs',
+  'Honey',
+  'Other'
+];
 
 // Helper function to check if user can create listings
 async function canUserCreateListings() {
@@ -67,24 +79,335 @@ function getZipDisplayName(zip) {
   return zipNames[zip] || zip;
 }
 
-// Email function using Netlify Function (updated to accept object format)
+// ==========================================
+// V2 AUTHENTICATION - MAGIC LINK
+// ==========================================
+
+// Send magic link
+async function sendMagicLink(email, rememberMe = true) {
+  try {
+    const { data, error } = await supabase.auth.signInWithOtp({
+      email: email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/pages/auth-callback.html`,
+        shouldCreateUser: true,
+        data: {
+          remember_me: rememberMe
+        }
+      }
+    });
+    
+    if (error) throw error;
+    
+    // Store remember preference locally
+    if (rememberMe) {
+      localStorage.setItem('hardy_remember_preference', 'true');
+    }
+    
+    return { success: true };
+  } catch (error) {
+    console.error('Magic link error:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Handle magic link callback
+async function handleMagicLinkCallback() {
+  try {
+    const { data: { session }, error } = await supabase.auth.getSession();
+    
+    if (error) throw error;
+    if (!session) throw new Error('No session found');
+    
+    // Check if user has a profile
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', session.user.id)
+      .single();
+    
+    // Set remember token if requested
+    const rememberMe = localStorage.getItem('hardy_remember_preference') === 'true';
+    if (rememberMe) {
+      const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+      const expiry = new Date(Date.now() + thirtyDays);
+      localStorage.setItem('hardy_remember_token', session.access_token);
+      localStorage.setItem('hardy_token_expiry', expiry.toISOString());
+      localStorage.setItem('hardy_user_token', session.access_token);
+    } else {
+      // Session only
+      localStorage.setItem('hardy_user_token', session.access_token);
+    }
+    
+    // If no profile, redirect to profile completion
+    if (!profile || !profile.nickname) {
+      return { needsProfile: true, userId: session.user.id };
+    }
+    
+    return { success: true, hasProfile: true };
+  } catch (error) {
+    console.error('Magic link callback error:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Check current auth status
+async function checkAuth() {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      // Check remember token
+      const rememberToken = localStorage.getItem('hardy_remember_token');
+      const tokenExpiry = localStorage.getItem('hardy_token_expiry');
+      
+      if (rememberToken && tokenExpiry) {
+        const now = new Date().getTime();
+        const expiry = new Date(tokenExpiry).getTime();
+        
+        if (now < expiry) {
+          // Token still valid, restore session
+          const { data: { user: restoredUser }, error } = await supabase.auth.setSession({
+            access_token: rememberToken,
+            refresh_token: rememberToken
+          });
+          
+          if (!error && restoredUser) {
+            return { isAuthenticated: true, user: restoredUser };
+          }
+        }
+      }
+      
+      // No valid session
+      return { isAuthenticated: false, user: null };
+    }
+    
+    return { isAuthenticated: true, user };
+  } catch (error) {
+    console.error('Auth check error:', error);
+    return { isAuthenticated: false, user: null };
+  }
+}
+
+// Sign out
+async function signOut() {
+  try {
+    await supabase.auth.signOut();
+    // Clear all local storage
+    localStorage.removeItem('hardy_user_token');
+    localStorage.removeItem('hardy_remember_token');
+    localStorage.removeItem('hardy_token_expiry');
+    localStorage.removeItem('hardy_remember_preference');
+    localStorage.removeItem('hardy_message_listing');
+    
+    window.location.href = '/';
+  } catch (error) {
+    console.error('Sign out error:', error);
+  }
+}
+
+// ==========================================
+// V2 MESSAGING - SIMPLIFIED SINGLE TABLE
+// ==========================================
+
+// Send a message (v2 simplified)
+async function sendMessage(listingId, recipientId, content) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
+    
+    // Insert message into simplified table
+    const { data: message, error } = await supabase
+      .from('messages_v2')
+      .insert({
+        listing_id: listingId,
+        sender_id: user.id,
+        recipient_id: recipientId,
+        content: content
+      })
+      .select()
+      .single();
+    
+    if (error) throw error;
+    
+    // Get recipient info for email notification
+    const { data: recipient } = await supabase
+      .from('profiles')
+      .select('email, full_name, nickname')
+      .eq('id', recipientId)
+      .single();
+    
+    // Get listing info
+    const { data: listing } = await supabase
+      .from('listings')
+      .select('title')
+      .eq('id', listingId)
+      .single();
+    
+    // Get sender info
+    const { data: sender } = await supabase
+      .from('profiles')
+      .select('nickname, full_name')
+      .eq('id', user.id)
+      .single();
+    
+    // Send email notification if recipient has email
+    if (recipient?.email) {
+      try {
+        await sendMessageNotification(
+          recipient.email,
+          recipient.nickname || recipient.full_name,
+          sender.nickname || sender.full_name,
+          listing.title,
+          content.substring(0, 100) + (content.length > 100 ? '...' : '')
+        );
+      } catch (emailError) {
+        console.error('Failed to send email notification:', emailError);
+        // Don't fail the message send if email fails
+      }
+    }
+    
+    return { success: true, message };
+  } catch (error) {
+    console.error('Send message error:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Get messages for current user (v2 simplified)
+async function getMyMessages() {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
+    
+    // Get all messages where user is sender or recipient
+    const { data: messages, error } = await supabase
+      .from('messages_v2')
+      .select(`
+        *,
+        listing:listings(id, title, user_id),
+        sender:profiles!sender_id(nickname, full_name),
+        recipient:profiles!recipient_id(nickname, full_name)
+      `)
+      .or(`sender_id.eq.${user.id},recipient_id.eq.${user.id}`)
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    
+    // Group messages by listing
+    const messagesByListing = {};
+    messages.forEach(msg => {
+      if (!messagesByListing[msg.listing_id]) {
+        messagesByListing[msg.listing_id] = {
+          listing: msg.listing,
+          messages: [],
+          otherUser: msg.sender_id === user.id ? msg.recipient : msg.sender,
+          unreadCount: 0
+        };
+      }
+      messagesByListing[msg.listing_id].messages.push(msg);
+      if (!msg.is_read && msg.recipient_id === user.id) {
+        messagesByListing[msg.listing_id].unreadCount++;
+      }
+    });
+    
+    return { success: true, messagesByListing };
+  } catch (error) {
+    console.error('Get messages error:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Mark messages as read (v2 simplified)
+async function markMessagesRead(listingId) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
+    
+    const { error } = await supabase
+      .from('messages_v2')
+      .update({ is_read: true })
+      .eq('listing_id', listingId)
+      .eq('recipient_id', user.id)
+      .eq('is_read', false);
+    
+    if (error) throw error;
+    
+    return { success: true };
+  } catch (error) {
+    console.error('Mark messages read error:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// ==========================================
+// LISTINGS WITH AUTO-EXPIRE (V2)
+// ==========================================
+
+// Get active listings with auto-expire filter
+async function getActiveListings(filters = {}) {
+  try {
+    let query = supabase
+      .from('listings')
+      .select(`
+        *,
+        profiles (nickname, full_name, neighborhood)
+      `)
+      .eq('is_active', true)
+      .in('zip_code', VALID_ZIPS);
+    
+    // Apply filters
+    if (filters.category && filters.category !== 'all') {
+      query = query.eq('category', filters.category);
+    }
+    if (filters.listing_type) {
+      query = query.eq('listing_type', filters.listing_type);
+    }
+    if (filters.exchange_type) {
+      if (filters.exchange_type === 'free') {
+        query = query.or('exchange_type.eq.free,exchange_type.eq.free\\,trade');
+      } else if (filters.exchange_type === 'trade') {
+        query = query.or('exchange_type.eq.trade,exchange_type.eq.free\\,trade');
+      }
+    }
+    
+    const { data: listings, error } = await query.order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    
+    // Filter out expired listings (auto-expire logic)
+    const now = new Date();
+    const activeListings = listings.filter(listing => {
+      if (!listing.expires_at) return true; // No expiry set
+      const expiryDate = new Date(listing.expires_at);
+      return expiryDate > now;
+    });
+    
+    return { success: true, listings: activeListings };
+  } catch (error) {
+    console.error('Get listings error:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// ==========================================
+// EMAIL FUNCTIONS (Updated for v2)
+// ==========================================
+
+// Email function using Netlify Function
 async function sendEmail(emailData) {
     try {
-        // Handle both old format (3 params) and new format (object)
         let to, subject, html;
         
         if (typeof emailData === 'object' && emailData.to) {
-            // New format: { to, subject, html }
             to = emailData.to;
             subject = emailData.subject;
             html = emailData.html;
-        } else if (typeof emailData === 'string') {
-            // Old format: sendEmail(to, subject, html)
+        } else {
+            // Legacy support
             to = arguments[0];
             subject = arguments[1];
             html = arguments[2];
-        } else {
-            throw new Error('Invalid email data format');
         }
         
         const response = await fetch('/.netlify/functions/send-email', {
@@ -118,7 +441,7 @@ async function sendEmail(emailData) {
     }
 }
 
-// Email template functions (updated to return object with subject and html)
+// Email templates (keeping existing ones)
 function createWelcomeEmail(userName) {
     return {
         subject: 'Welcome to Hardy! 🌱',
@@ -151,7 +474,7 @@ function createWelcomeEmail(userName) {
     };
 }
 
-function createMessageNotificationEmail(recipientName, senderName, listingTitle, messageContent, conversationId) {
+function createMessageNotificationEmail(recipientName, senderName, listingTitle, messagePreview) {
     return {
         subject: `New message from ${senderName} on Hardy`,
         html: `
@@ -164,7 +487,7 @@ function createMessageNotificationEmail(recipientName, senderName, listingTitle,
                     <p>You have a new message from <strong>${senderName}</strong> about your listing:</p>
                     <div style="background-color: white; padding: 15px; border-left: 4px solid #4CAF50; margin: 20px 0;">
                         <h3 style="margin: 0 0 10px 0; color: #4CAF50;">${listingTitle}</h3>
-                        <p style="margin: 0; color: #666;">"${messageContent}"</p>
+                        <p style="margin: 0; color: #666;">"${messagePreview}"</p>
                     </div>
                     <div style="text-align: center; margin: 30px 0;">
                         <a href="https://hardyhome.us/pages/dashboard.html#messages" 
@@ -175,18 +498,12 @@ function createMessageNotificationEmail(recipientName, senderName, listingTitle,
                     </div>
                     <p>Happy gardening!</p>
                     <p>The Hardy Team</p>
-                    <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
-                    <p style="font-size: 12px; color: #666;">
-                        To stop receiving message notifications, visit your 
-                        <a href="https://hardyhome.us/pages/dashboard.html#settings">account settings</a>.
-                    </p>
                 </div>
             </div>
         `
     };
 }
 
-// Listing confirmation email template
 function createListingConfirmationEmail(userName, listingTitle, listingId) {
     return {
         subject: 'Your Hardy listing is live!',
@@ -197,39 +514,29 @@ function createListingConfirmationEmail(userName, listingTitle, listingId) {
                 </div>
                 <div style="padding: 30px; background-color: #f9f9f9;">
                     <p>Hi ${userName},</p>
-                    <p>Great news! Your listing is now live on Hardy and visible to your neighbors.</p>
-                    <div style="background-color: white; padding: 20px; border-radius: 8px; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                        <h3 style="margin: 0 0 10px 0; color: #4CAF50;">${listingTitle}</h3>
-                        <p style="margin: 0; color: #666;">Your neighbors can now see your listing and contact you about it.</p>
-                    </div>
+                    <p>Great news! Your listing "${listingTitle}" is now live on Hardy.</p>
                     <p><strong>What happens next?</strong></p>
-                    <ul style="margin: 15px 0; padding-left: 20px;">
-                        <li style="margin-bottom: 8px;">🏡 Neighbors in your area can view your listing</li>
-                        <li style="margin-bottom: 8px;">💬 You'll receive email notifications when someone messages you</li>
-                        <li style="margin-bottom: 8px;">✏️ You can edit or remove your listing anytime from your dashboard</li>
-                        <li style="margin-bottom: 8px;">⏰ Your listing will remain active for the duration you selected</li>
+                    <ul>
+                        <li>🏡 Neighbors in your area can view your listing</li>
+                        <li>💬 You'll receive email notifications for messages</li>
+                        <li>✏️ Edit or remove your listing anytime from your dashboard</li>
                     </ul>
                     <div style="text-align: center; margin: 30px 0;">
                         <a href="https://hardyhome.us/pages/dashboard.html" 
                            style="background-color: #4CAF50; color: white; padding: 12px 30px; 
                                   text-decoration: none; border-radius: 5px; display: inline-block;">
-                            View Your Listing
+                            View Your Dashboard
                         </a>
                     </div>
-                    <p style="margin-top: 30px;">Happy sharing!</p>
+                    <p>Happy sharing!</p>
                     <p>The Hardy Team</p>
-                    <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
-                    <p style="font-size: 12px; color: #666; text-align: center;">
-                        Hardy Home and Garden · Kenosha & Racine Counties, WI<br>
-                        <a href="https://hardyhome.us/pages/dashboard.html#settings" style="color: #666;">Manage email preferences</a>
-                    </p>
                 </div>
             </div>
         `
     };
 }
 
-// Helper function to send welcome email
+// Helper email functions
 async function sendWelcomeEmail(userEmail, userName) {
     try {
         const emailData = createWelcomeEmail(userName);
@@ -241,14 +548,13 @@ async function sendWelcomeEmail(userEmail, userName) {
         console.log('Welcome email sent successfully');
     } catch (error) {
         console.error('Failed to send welcome email:', error);
-        throw error; // Re-throw so the calling function knows it failed
+        // Don't throw - email failure shouldn't block signup
     }
 }
 
-// Helper function to send message notification
-async function sendMessageNotification(recipientEmail, recipientName, senderName, listingTitle, messageContent, conversationId) {
+async function sendMessageNotification(recipientEmail, recipientName, senderName, listingTitle, messagePreview) {
     try {
-        const emailData = createMessageNotificationEmail(recipientName, senderName, listingTitle, messageContent, conversationId);
+        const emailData = createMessageNotificationEmail(recipientName, senderName, listingTitle, messagePreview);
         await sendEmail({
             to: recipientEmail,
             subject: emailData.subject,
@@ -257,11 +563,10 @@ async function sendMessageNotification(recipientEmail, recipientName, senderName
         console.log('Message notification sent successfully');
     } catch (error) {
         console.error('Failed to send message notification:', error);
-        throw error; // Re-throw so the calling function knows it failed
+        // Don't throw - email failure shouldn't block messaging
     }
 }
 
-// Helper function to send listing confirmation email
 async function sendListingConfirmationEmail(userEmail, userName, listingTitle, listingId) {
     try {
         const emailData = createListingConfirmationEmail(userName, listingTitle, listingId);
@@ -273,6 +578,6 @@ async function sendListingConfirmationEmail(userEmail, userName, listingTitle, l
         console.log('Listing confirmation email sent successfully');
     } catch (error) {
         console.error('Failed to send listing confirmation email:', error);
-        // Don't re-throw here - we don't want email failure to block listing creation
+        // Don't throw - email failure shouldn't block listing creation
     }
 }

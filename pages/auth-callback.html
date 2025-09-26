@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Completing Sign In - Hardy</title>
+    
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="Hardy - The Community Garden in Your Pocket">
+    <meta name="description" content="Connect with neighbors to share your garden's harvest. Free local produce exchange in Kenosha & Racine Counties.">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CJ4MS44MBB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-CJ4MS44MBB');
+    </script>
+    
+    <style>
+        /* CSS Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Variables */
+        :root {
+            /* Brand Colors */
+            --hardy-green: #4CAF50;
+            --hardy-green-dark: #388E3C;
+            --hardy-green-light: #A5D6A7;
+            
+            /* Supporting Colors */
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --text-light: #FFFFFF;
+            --background-light: #F9F9F9;
+            --background-white: #FFFFFF;
+            --border-color: #E0E0E0;
+            
+            /* Spacing */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-xxl: 3rem;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            
+            /* Box Shadows */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-md: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        }
+        
+        /* Base Styles */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background-color: var(--background-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        a {
+            color: var(--hardy-green);
+            text-decoration: none;
+        }
+        
+        a:hover {
+            color: var(--hardy-green-dark);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+            flex: 1;
+        }
+        
+        /* Typography */
+        h1, h2, h3 {
+            font-family: 'Lora', serif;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+        }
+        
+        h2 {
+            font-size: 2rem;
+        }
+        
+        p {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        /* Forms */
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--hardy-green);
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background-color: var(--hardy-green);
+            color: var(--text-light);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background-color: var(--hardy-green-dark);
+            color: var(--text-light);
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        /* Loading State */
+        .loading-container {
+            max-width: 400px;
+            margin: var(--spacing-xxl) auto;
+            text-align: center;
+            padding: var(--spacing-xl);
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(76, 175, 80, 0.3);
+            border-top-color: var(--hardy-green);
+            border-radius: 50%;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Auth Container */
+        .auth-container {
+            max-width: 400px;
+            margin: var(--spacing-xxl) auto;
+            background-color: var(--background-white);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            display: none;
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .auth-header h1 {
+            color: var(--hardy-green-dark);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: var(--spacing-md);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-md);
+            display: none;
+        }
+        
+        .success-message {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-md);
+            display: none;
+        }
+        
+        .email-display {
+            background-color: var(--background-light);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        
+        small {
+            color: var(--text-secondary);
+            display: block;
+            margin-top: var(--spacing-xs);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .auth-container {
+                margin: var(--spacing-lg) auto;
+                padding: var(--spacing-lg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Loading State -->
+        <div id="loading-state" class="loading-container">
+            <div class="spinner"></div>
+            <h2>Signing you in...</h2>
+            <p>Please wait while we verify your magic link.</p>
+        </div>
+        
+        <!-- Profile Completion Form -->
+        <div id="profile-form-container" class="auth-container">
+            <div class="auth-header">
+                <h1>Complete Your Profile</h1>
+                <p>Just a few more details to get started!</p>
+            </div>
+            
+            <div class="email-display">
+                <strong>Email:</strong> <span id="user-email"></span>
+            </div>
+            
+            <div class="error-message" id="profile-error"></div>
+            <div class="success-message" id="profile-success"></div>
+            
+            <form id="profile-form">
+                <div class="form-group">
+                    <label for="nickname">Nickname*</label>
+                    <input type="text" id="nickname" required>
+                    <small>This is what will display on your listings</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="full_name">Full Name*</label>
+                    <input type="text" id="full_name" required>
+                    <small>For your account only, not shown publicly</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="zip_code">ZIP Code*</label>
+                    <select id="zip_code" required>
+                        <option value="">Select your ZIP code</option>
+                        <optgroup label="Kenosha County">
+                            <option value="53102">53102 - Salem</option>
+                            <option value="53104">53104 - Bristol</option>
+                            <option value="53105">53105 - Burlington</option>
+                            <option value="53109">53109 - Camp Lake</option>
+                            <option value="53140">53140 - Kenosha</option>
+                            <option value="53141">53141 - Kenosha</option>
+                            <option value="53142">53142 - Kenosha</option>
+                            <option value="53143">53143 - Kenosha</option>
+                            <option value="53144">53144 - Kenosha</option>
+                            <option value="53152">53152 - New Munster</option>
+                            <option value="53158">53158 - Pleasant Prairie</option>
+                            <option value="53168">53168 - Somers</option>
+                            <option value="53170">53170 - Silver Lake</option>
+                            <option value="53171">53171 - Somers</option>
+                            <option value="53179">53179 - Trevor</option>
+                            <option value="53181">53181 - Twin Lakes</option>
+                            <option value="53182">53182 - Union Grove</option>
+                        </optgroup>
+                        <optgroup label="Racine County">
+                            <option value="53108">53108 - Caledonia</option>
+                            <option value="53126">53126 - Franksville</option>
+                            <option value="53139">53139 - Kansasville</option>
+                            <option value="53154">53154 - Mount Pleasant</option>
+                            <option value="53167">53167 - Rochester</option>
+                            <option value="53177">53177 - Sturtevant</option>
+                            <option value="53185">53185 - Waterford</option>
+                            <option value="53401">53401 - Racine</option>
+                            <option value="53402">53402 - Racine</option>
+                            <option value="53403">53403 - Racine</option>
+                            <option value="53404">53404 - Racine</option>
+                            <option value="53405">53405 - Racine</option>
+                            <option value="53406">53406 - Racine</option>
+                        </optgroup>
+                        <optgroup label="Out of Area">
+                            <option value="other">My ZIP code isn't listed</option>
+                        </optgroup>
+                    </select>
+                    <small id="zip-help">Hardy is currently serving Kenosha & Racine Counties</small>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block" id="profile-submit">
+                    Complete Profile
+                </button>
+            </form>
+        </div>
+        
+        <!-- Error State -->
+        <div id="error-container" class="auth-container">
+            <div class="auth-header">
+                <h1>Something went wrong</h1>
+            </div>
+            <div class="error-message" style="display: block;" id="main-error"></div>
+            <a href="auth.html" class="btn btn-primary btn-block">
+                Back to Sign In
+            </a>
+        </div>
+    </div>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Hardy Config -->
+    <script src="../hardy-config.js"></script>
+    
+    <!-- Page Scripts -->
+    <script>
+        let currentUser = null;
+        
+        async function init() {
+            try {
+                // Handle the magic link callback
+                const result = await handleMagicLinkCallback();
+                
+                if (!result.success) {
+                    showError(result.error || 'Invalid or expired magic link');
+                    return;
+                }
+                
+                // Get current user
+                const { data: { user } } = await window.hardySupabase.auth.getUser();
+                if (!user) {
+                    showError('No user found. Please sign in again.');
+                    return;
+                }
+                
+                currentUser = user;
+                
+                if (result.needsProfile) {
+                    // Show profile completion form
+                    showProfileForm(user.email);
+                } else {
+                    // User has profile, redirect
+                    redirectUser();
+                }
+                
+            } catch (error) {
+                console.error('Auth callback error:', error);
+                showError(error.message || 'An error occurred during sign in');
+            }
+        }
+        
+        function showProfileForm(email) {
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('profile-form-container').style.display = 'block';
+            document.getElementById('user-email').textContent = email;
+        }
+        
+        function showError(message) {
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('error-container').style.display = 'block';
+            document.getElementById('main-error').textContent = message;
+        }
+        
+        function redirectUser() {
+            // Check for stored redirect
+            const storedRedirect = localStorage.getItem('hardy_auth_redirect');
+            localStorage.removeItem('hardy_auth_redirect');
+            
+            let redirectTo = 'browse.html';
+            
+            if (storedRedirect === 'dashboard') {
+                redirectTo = 'dashboard.html';
+            } else if (storedRedirect === 'create') {
+                redirectTo = 'create.html';
+            }
+            
+            // Show success message briefly
+            document.getElementById('loading-state').innerHTML = `
+                <div style="color: var(--hardy-green); font-size: 3rem; margin-bottom: var(--spacing-md);">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2>Success!</h2>
+                <p>Redirecting you now...</p>
+            `;
+            
+            setTimeout(() => {
+                window.location.href = redirectTo;
+            }, 1500);
+        }
+        
+        // Handle profile form submission
+        document.getElementById('profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('profile-submit');
+            const errorMsg = document.getElementById('profile-error');
+            
+            errorMsg.style.display = 'none';
+            
+            const nickname = document.getElementById('nickname').value.trim();
+            const fullName = document.getElementById('full_name').value.trim();
+            const zipCode = document.getElementById('zip_code').value;
+            
+            if (zipCode === 'other') {
+                errorMsg.innerHTML = 'Hardy is currently available only in Kenosha and Racine Counties. <a href="waitlist.html">Join our waitlist</a> to be notified when we expand!';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Creating profile...';
+            
+            try {
+                // Create/update profile
+                const { error } = await window.hardySupabase
+                    .from('profiles')
+                    .upsert({
+                        id: currentUser.id,
+                        nickname: nickname,
+                        full_name: fullName,
+                        zip_code: zipCode,
+                        neighborhood: getZipDisplayName(zipCode),
+                        email: currentUser.email,
+                        updated_at: new Date().toISOString()
+                    });
+                
+                if (error) throw error;
+                
+                // Send welcome email
+                try {
+                    await sendWelcomeEmail(currentUser.email, fullName);
+                } catch (emailError) {
+                    console.error('Welcome email failed:', emailError);
+                    // Don't block on email failure
+                }
+                
+                // Track signup
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'sign_up', { 'event_category': 'engagement' });
+                }
+                
+                // Redirect
+                redirectUser();
+                
+            } catch (error) {
+                console.error('Profile creation error:', error);
+                errorMsg.textContent = error.message || 'Failed to create profile. Please try again.';
+                errorMsg.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Complete Profile';
+            }
+        });
+        
+        // Start the process when page loads
+        init();
+    </script>
+</body>
+</html>

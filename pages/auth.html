@@ -3,26 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In or Join - Hardy</title>
-<!-- Primary Meta Tags -->
-<meta name="title" content="Hardy - The Community Garden in Your Pocket">
-<meta name="description" content="Connect with neighbors to share your garden's harvest. Free local produce exchange in Kenosha & Racine Counties.">
+    <title>Sign In - Hardy</title>
+    
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="Hardy - The Community Garden in Your Pocket">
+    <meta name="description" content="Connect with neighbors to share your garden's harvest. Free local produce exchange in Kenosha & Racine Counties.">
 
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://hardyhome.us/">
-<meta property="og:title" content="Hardy - The Community Garden in Your Pocket">
-<meta property="og:description" content="Connect with neighbors to share your garden's harvest. Free local produce exchange in Kenosha & Racine Counties.">
-<meta property="og:image" content="https://hardyhome.us/img/hardy-social-preview.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://hardyhome.us/">
+    <meta property="og:title" content="Hardy - The Community Garden in Your Pocket">
+    <meta property="og:description" content="Connect with neighbors to share your garden's harvest. Free local produce exchange in Kenosha & Racine Counties.">
+    <meta property="og:image" content="https://hardyhome.us/img/hardy-social-preview.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
 
-<!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:url" content="https://hardyhome.us/">
-<meta property="twitter:title" content="Hardy - The Community Garden in Your Pocket">
-<meta property="twitter:description" content="Connect with neighbors to share your garden's harvest. Free local produce exchange in Kenosha & Racine Counties.">
-<meta property="twitter:image" content="https://hardyhome.us/img/hardy-social-preview.png">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://hardyhome.us/">
+    <meta property="twitter:title" content="Hardy - The Community Garden in Your Pocket">
+    <meta property="twitter:description" content="Connect with neighbors to share your garden's harvest. Free local produce exchange in Kenosha & Racine Counties.">
+    <meta property="twitter:image" content="https://hardyhome.us/img/hardy-social-preview.png">
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -159,6 +160,26 @@
         .form-group select:focus {
             outline: none;
             border-color: var(--hardy-green);
+        }
+        
+        /* Checkbox styling */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+            cursor: pointer;
+        }
+        
+        .checkbox-group label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
         }
         
         /* Buttons */
@@ -310,22 +331,6 @@
             color: var(--hardy-green-light);
         }
         
-        .footer-newsletter p {
-            margin-bottom: var(--spacing-md);
-        }
-        
-        .footer-newsletter form {
-            display: flex;
-            gap: var(--spacing-sm);
-        }
-        
-        .footer-newsletter input {
-            flex: 1;
-            padding: var(--spacing-sm) var(--spacing-md);
-            border: none;
-            border-radius: var(--radius-sm);
-        }
-        
         .footer-bottom {
             text-align: center;
             padding-top: var(--spacing-lg);
@@ -334,97 +339,69 @@
             opacity: 0.8;
         }
         
-        /* Mobile Menu Styles */
-        .mobile-menu-container {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background-color: var(--background-white);
-            box-shadow: var(--shadow-md);
-            padding: var(--spacing-md);
-            z-index: 999;
-        }
-
-        .mobile-nav-links {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 var(--spacing-md) 0;
-        }
-
-        .mobile-nav-links li {
-            margin-bottom: var(--spacing-sm);
-        }
-
-        .mobile-nav-links a {
-            display: block;
-            padding: var(--spacing-sm) var(--spacing-md);
-            color: var(--text-primary);
-            font-weight: 600;
-            text-decoration: none;
-            border-radius: var(--radius-sm);
-            transition: all 0.3s ease;
-        }
-
-        .mobile-nav-links a:hover,
-        .mobile-nav-links a.active {
-            background-color: var(--hardy-green-light);
-            color: var(--hardy-green);
-        }
-
-        .mobile-user-actions {
-            padding-top: var(--spacing-md);
-            border-top: 1px solid var(--border-color);
-        }
-
-        .mobile-user-actions .btn {
-            margin-bottom: var(--spacing-sm);
-        }
-        
-        /* Auth Specific Styles */
-        .auth-choice-container {
-            max-width: 800px;
+        /* Auth Specific Styles for V2 */
+        .auth-container {
+            max-width: 400px;
             margin: var(--spacing-xxl) auto;
-            text-align: center;
-        }
-        
-        .auth-choice-header {
-            margin-bottom: var(--spacing-xxl);
-        }
-        
-        .auth-choice-header h1 {
-            color: var(--hardy-green-dark);
-            margin-bottom: var(--spacing-sm);
-        }
-        
-        .auth-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--spacing-xl);
-            margin-bottom: var(--spacing-xxl);
-        }
-        
-        .auth-option {
             background-color: var(--background-white);
             padding: var(--spacing-xl);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-sm);
-            transition: all 0.3s ease;
+            text-align: center;
         }
         
-        .auth-option:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateY(-2px);
+        .auth-header {
+            margin-bottom: var(--spacing-xl);
         }
         
-        .auth-option h2 {
+        .auth-header h1 {
             color: var(--hardy-green-dark);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .auth-header p {
+            color: var(--text-secondary);
+        }
+        
+        .magic-link-sent {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .magic-link-sent h3 {
             margin-bottom: var(--spacing-md);
         }
         
-        .auth-option p {
-            color: var(--text-secondary);
-            margin-bottom: var(--spacing-lg);
+        .magic-link-sent p {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: var(--spacing-md);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-md);
+            display: none;
+            text-align: left;
+        }
+        
+        .success-message {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-md);
+            display: none;
+            text-align: left;
+        }
+        
+        .loading {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
         
         .divider {
@@ -452,72 +429,10 @@
             right: 0;
         }
         
-        .auth-form-container {
-            max-width: 400px;
-            margin: 0 auto;
-            background-color: var(--background-white);
-            padding: var(--spacing-xl);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-sm);
-            display: none;
-        }
-        
-        .auth-form-container.active {
-            display: block;
-        }
-        
-        .back-button {
-            display: inline-flex;
-            align-items: center;
-            gap: var(--spacing-xs);
-            color: var(--text-secondary);
-            margin-bottom: var(--spacing-lg);
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-        
-        .back-button:hover {
+        .email-icon {
+            font-size: 3rem;
             color: var(--hardy-green);
-        }
-        
-        .error-message {
-            background-color: #ffebee;
-            color: #c62828;
-            padding: var(--spacing-md);
-            border-radius: var(--radius-sm);
             margin-bottom: var(--spacing-md);
-            display: none;
-        }
-        
-        .success-message {
-            background-color: var(--hardy-green-light);
-            color: var(--hardy-green-dark);
-            padding: var(--spacing-md);
-            border-radius: var(--radius-sm);
-            margin-bottom: var(--spacing-md);
-            display: none;
-        }
-        
-        .forgot-password {
-            text-align: right;
-            margin-top: var(--spacing-xs);
-            font-size: 0.9rem;
-        }
-        
-        .loading {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        #zip-help {
-            display: block;
-            margin-top: var(--spacing-xs);
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
-
-        #zip-help.error {
-            color: #d9534f;
         }
         
         /* Responsive */
@@ -538,17 +453,9 @@
                 font-size: 2rem;
             }
             
-            .footer-newsletter form {
-                flex-direction: column;
-            }
-            
-            .footer-newsletter input {
-                margin-bottom: var(--spacing-sm);
-            }
-            
-            .auth-options {
-                grid-template-columns: 1fr;
-                gap: var(--spacing-md);
+            .auth-container {
+                margin: var(--spacing-lg) auto;
+                padding: var(--spacing-lg);
             }
         }
     </style>
@@ -578,205 +485,64 @@
     </header>
 
     <div class="container">
-        <!-- Choice Screen -->
-        <div class="auth-choice-container" id="choice-screen">
-            <div class="auth-choice-header">
-                <h1>Welcome to Hardy</h1>
-                <p>Join our community of gardeners sharing their harvest</p>
-            </div>
-            
-            <div class="auth-options">
-                <div class="auth-option">
-                    <h2>I'm New Here</h2>
-                    <p>Create your Hardy account to start sharing your garden's bounty with neighbors</p>
-                    <button class="btn btn-primary btn-block" onclick="showSignupForm()">
-                        Sign Up
-                    </button>
+        <div class="auth-container">
+            <!-- Email Entry Screen -->
+            <div id="email-screen">
+                <div class="auth-header">
+                    <h1>Welcome to Hardy</h1>
+                    <p>Sign in or create an account with your email</p>
                 </div>
                 
-                <div class="auth-option">
-                    <h2>Welcome Back</h2>
-                    <p>Sign in to your account to manage listings and connect with other gardeners</p>
-                    <button class="btn btn-secondary btn-block" onclick="showLoginForm()">
-                        Sign In
-                    </button>
-                </div>
-            </div>
-            
-            <div class="divider">or</div>
-            
-            <p>
-                <a href="browse.html" style="font-size: 1.1rem;">
-                    <i class="fas fa-eye"></i> Continue browsing without an account
-                </a>
-            </p>
-        </div>
-        
-        <!-- Login Form -->
-        <div class="auth-form-container" id="login-form-container">
-            <a class="back-button" onclick="showChoiceScreen()">
-                <i class="fas fa-arrow-left"></i> Back
-            </a>
-            
-            <h2>Sign In</h2>
-            <p style="color: var(--text-secondary); margin-bottom: var(--spacing-lg);">
-                Welcome back to Hardy
-            </p>
-            
-            <div class="error-message" id="login-error"></div>
-            <div class="success-message" id="login-success"></div>
-            
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="login-email">Email Address</label>
-                    <input type="email" id="login-email" required>
-                </div>
+                <div class="error-message" id="email-error"></div>
+                <div class="success-message" id="email-success"></div>
                 
-                <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" required>
-                    <div class="forgot-password">
-                        <a href="#" id="forgot-link">Forgot password?</a>
+                <form id="email-form">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" required placeholder="you@example.com">
                     </div>
-                </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="remember-me" checked>
+                        <label for="remember-me">Remember me for 30 days</label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block" id="email-submit">
+                        Continue with Email
+                    </button>
+                </form>
                 
-                <button type="submit" class="btn btn-primary btn-block" id="login-submit">
-                    Sign In
-                </button>
-            </form>
-        </div>
-        
-        <!-- Signup Form -->
-        <div class="auth-form-container" id="signup-form-container">
-            <a class="back-button" onclick="showChoiceScreen()">
-                <i class="fas fa-arrow-left"></i> Back
-            </a>
-            
-            <h2>Create Account</h2>
-            <p style="color: var(--text-secondary); margin-bottom: var(--spacing-lg);">
-                Join the Hardy community
-            </p>
-            
-            <div class="error-message" id="signup-error"></div>
-            <div class="success-message" id="signup-success"></div>
-            
-            <!-- Email Notification Notice -->
-            <div style="background-color: #f0f8f1; border: 1px solid #c3e6c7; border-radius: var(--radius-md); padding: var(--spacing-md); margin-bottom: var(--spacing-lg); color: var(--text-primary);">
-                <p style="margin: 0; font-size: 0.9rem;">
-                    <i class="fas fa-envelope" style="color: var(--hardy-green); margin-right: var(--spacing-xs);"></i>
-                    <strong style="color: var(--hardy-green-dark);">Email notifications:</strong> Messages are sent to your registered email. Corporate or business email users may need to ask their IT department to whitelist <strong>notifications@hardyhome.us</strong>.
+                <div class="divider">or</div>
+                
+                <p>
+                    <a href="browse.html">
+                        <i class="fas fa-eye"></i> Continue browsing without an account
+                    </a>
                 </p>
             </div>
             
-            <form id="signup-form">
-                <div class="form-group">
-                    <label for="nickname">Nickname</label>
-                    <input type="text" id="nickname" required>
-                    <small style="color: var(--text-secondary);">This is what will display on your listings</small>
+            <!-- Magic Link Sent Screen -->
+            <div id="magic-link-sent" style="display: none;">
+                <div class="email-icon">
+                    <i class="fas fa-envelope-open-text"></i>
                 </div>
                 
-                <div class="form-group">
-                    <label for="fullname">Full Name</label>
-                    <input type="text" id="fullname" required>
+                <div class="magic-link-sent">
+                    <h3>Check Your Email!</h3>
+                    <p><strong>We've sent a sign-in link to:</strong></p>
+                    <p id="sent-to-email" style="font-weight: bold;"></p>
+                    <p>Click the link in the email to sign in or create your account.</p>
                 </div>
                 
-                <div class="form-group">
-                    <label for="signup-email">Email Address</label>
-                    <input type="email" id="signup-email" required>
-                </div>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                    Can't find it? Check your spam folder or 
+                    <a href="#" id="resend-link">send a new link</a>
+                </p>
                 
-                <div class="form-group">
-                    <label for="signup-password">Password</label>
-                    <input type="password" id="signup-password" required minlength="6">
-                    <small style="color: var(--text-secondary);">At least 6 characters</small>
-                </div>
-                
-                <div class="form-group">
-                    <label for="address">Street Address</label>
-                    <input type="text" id="address" placeholder="123 Main Street" required>
-                    <small style="color: var(--text-secondary);">Your exact address is never shown publicly</small>
-                </div>
-                
-                <div class="form-group">
-                    <label for="city">City</label>
-                    <input type="text" id="city" placeholder="Kenosha" value="Kenosha" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="zipcode">ZIP Code*</label>
-                    <select id="zipcode" name="zipcode" required>
-                        <option value="">Select your ZIP code</option>
-                        <optgroup label="Kenosha County">
-                            <option value="53102">53102 - Salem</option>
-                            <option value="53104">53104 - Bristol</option>
-                            <option value="53105">53105 - Burlington</option>
-                            <option value="53109">53109 - Camp Lake</option>
-                            <option value="53114">53114 - Darien</option>
-                            <option value="53119">53119 - Eagle</option>
-                            <option value="53125">53125 - Fontana</option>
-                            <option value="53128">53128 - Genoa City</option>
-                            <option value="53140">53140 - Kenosha</option>
-                            <option value="53141">53141 - Kenosha</option>
-                            <option value="53142">53142 - Kenosha</option>
-                            <option value="53143">53143 - Kenosha</option>
-                            <option value="53144">53144 - Kenosha</option>
-                            <option value="53152">53152 - New Munster</option>
-                            <option value="53158">53158 - Pleasant Prairie</option>
-                            <option value="53168">53168 - Somers</option>
-                            <option value="53170">53170 - Silver Lake</option>
-                            <option value="53171">53171 - Somers</option>
-                            <option value="53179">53179 - Trevor</option>
-                            <option value="53181">53181 - Twin Lakes</option>
-                            <option value="53182">53182 - Union Grove</option>
-                            <option value="53192">53192 - Winthrop Harbor</option>
-                            <option value="53194">53194 - Woodworth</option>
-                            <option value="53195">53195 - Zenda</option>
-                        </optgroup>
-                        <optgroup label="Racine County">
-                            <option value="53108">53108 - Caledonia</option>
-                            <option value="53126">53126 - Franksville</option>
-                            <option value="53139">53139 - Kansasville</option>
-                            <option value="53154">53154 - Mount Pleasant</option>
-                            <option value="53167">53167 - Rochester</option>
-                            <option value="53177">53177 - Sturtevant</option>
-                            <option value="53178">53178 - Union Grove</option>
-                            <option value="53183">53183 - Union Grove</option>
-                            <option value="53185">53185 - Waterford</option>
-                            <option value="53401">53401 - Racine</option>
-                            <option value="53402">53402 - Racine</option>
-                            <option value="53403">53403 - Racine</option>
-                            <option value="53404">53404 - Racine</option>
-                            <option value="53405">53405 - Racine</option>
-                            <option value="53406">53406 - Racine</option>
-                            <option value="53408">53408 - Racine</option>
-                        </optgroup>
-                        <optgroup label="Both Counties">
-                            <option value="53105">53105 - Burlington</option>
-                            <option value="53182">53182 - Union Grove</option>
-                        </optgroup>
-                        <optgroup label="Other">
-                            <option value="other">My ZIP code isn't listed</option>
-                        </optgroup>
-                    </select>
-                    <small id="zip-help" class="form-text">
-    Hardy is currently serving Kenosha & Racine Counties for the 2025 / 2026 pilot seasons. 
-    <span id="waitlist-link" style="display: none;">
-        <br>
-        <a href="mailto:hello@hardyhomeandgarden.com?subject=Hardy%20Waitlist&body=Hi!%20I'd%20like%20to%20join%20the%20waitlist%20for%20Hardy.%20My%20ZIP%20code%20is:%20">Join our waitlist</a> to be notified when we expand to your area!
-    </span>
-</small>
-                </div>
-                
-                <div class="form-group">
-                    <label for="neighborhood">Neighborhood Name (Optional)</label>
-                    <input type="text" id="neighborhood" placeholder="e.g., Downtown, Uptown, etc.">
-                    <small style="color: var(--text-secondary);">This is what other users will see</small>
-                </div>
-                
-                <button type="submit" class="btn btn-primary btn-block" id="signup-submit">
-                    Create Account
+                <button class="btn btn-secondary btn-block" onclick="showEmailScreen()">
+                    Use a different email
                 </button>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -802,7 +568,7 @@
                 <div class="footer-links">
                     <h3>Get Started</h3>
                     <ul>
-                        <li><a href="auth.html">Create Account</a></li>
+                        <li><a href="auth.html">Sign In</a></li>
                         <li><a href="create.html">Create Listing</a></li>
                         <li><a href="dashboard.html">My Dashboard</a></li>
                     </ul>
@@ -812,7 +578,6 @@
                     <ul>
                         <li><a href="terms.html">Terms of Use</a></li>
                         <li><a href="privacy.html">Privacy Policy</a></li>
-                        <li><a href="coming-soon.html?feature=cookie">Cookie Policy</a></li>
                     </ul>
                 </div>
             </div>
@@ -828,384 +593,111 @@
     <!-- Hardy Config -->
     <script src="../hardy-config.js"></script>
     
-    <!-- App Scripts -->
+    <!-- Page Scripts -->
     <script>
-        // Enhanced mobile menu with Sign In and Support buttons
+        // Mobile menu functionality
         document.addEventListener('DOMContentLoaded', function() {
             const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
             const mainNav = document.querySelector('.main-nav');
             
             if (mobileMenuBtn && mainNav) {
-                // Create mobile menu container if it doesn't exist
-                let mobileMenuContainer = document.querySelector('.mobile-menu-container');
-                if (!mobileMenuContainer) {
-                    mobileMenuContainer = document.createElement('div');
-                    mobileMenuContainer.className = 'mobile-menu-container';
-                    mobileMenuContainer.style.display = 'none';
-                    mobileMenuContainer.innerHTML = `
-                        <ul class="mobile-nav-links">
-                            <li><a href="../index.html">Home</a></li>
-                            <li><a href="browse.html">Browse</a></li>
-                            <li><a href="dashboard.html">My Dashboard</a></li>
-                        </ul>
-                        <div class="mobile-user-actions">
-                            <a href="support.html" class="btn btn-secondary btn-block">Support Hardy</a>
-                        </div>
-                    `;
-                    mainNav.appendChild(mobileMenuContainer);
-                }
-                
                 mobileMenuBtn.addEventListener('click', function() {
-                    if (mobileMenuContainer.style.display === 'block') {
-                        mobileMenuContainer.style.display = 'none';
+                    if (mainNav.style.display === 'block') {
+                        mainNav.style.display = 'none';
                         mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
                     } else {
-                        mobileMenuContainer.style.display = 'block';
+                        mainNav.style.display = 'block';
                         mobileMenuBtn.innerHTML = '<i class="fas fa-times"></i>';
                     }
                 });
             }
-            
-            // Newsletter form handling
-            const newsletterForms = document.querySelectorAll('.footer-newsletter form');
-            newsletterForms.forEach(form => {
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const emailInput = form.querySelector('input[type="email"]');
-                    if (emailInput && emailInput.value) {
-                        alert('Thanks for subscribing! We\'ll keep you updated on Hardy\'s development.');
-                        emailInput.value = '';
-                    }
-                });
-            });
-
-            // Handle ZIP code selection change
-            const zipSelect = document.getElementById('zipcode');
-            if (zipSelect) {
-                zipSelect.addEventListener('change', function() {
-                    const zipHelp = document.getElementById('zip-help');
-                    if (this.value === 'other') {
-                        zipHelp.innerHTML = 'Hardy is coming to your area soon! <a href="/waitlist.html">Join our waitlist</a>';
-                        zipHelp.classList.add('error');
-                    } else {
-                        zipHelp.innerHTML = 'Hardy is currently serving Kenosha & Racine Counties for the 2025 pilot season';
-                        zipHelp.classList.remove('error');
-                    }
-                });
-            }
         });
         
-        // Function to determine where to redirect after successful auth
-        function getRedirectUrl() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const redirect = urlParams.get('redirect');
-            
-            // Priority order for redirects:
-            // 1. Specific redirect parameter (dashboard, create, etc.)
-            // 2. Default to browse page (since CTAs point here)
-            
-            if (redirect === 'dashboard') {
-                return 'dashboard.html';
-            } else if (redirect === 'create') {
-                return 'create.html';
-            } else {
-                // Default redirect for CTA users - go to browse to see listings
-                return 'browse.html';
-            }
+        // Show email screen
+        function showEmailScreen() {
+            document.getElementById('email-screen').style.display = 'block';
+            document.getElementById('magic-link-sent').style.display = 'none';
+            document.getElementById('email').value = '';
+            document.getElementById('email-error').style.display = 'none';
+            document.getElementById('email-success').style.display = 'none';
         }
         
-        // Function to resend confirmation email
-        async function resendConfirmation(email) {
-            try {
-                const { error } = await window.hardySupabase.auth.resend({
-                    type: 'signup',
-                    email: email
-                });
-                
-                if (error) throw error;
-                alert('Confirmation email resent! Please check your inbox.');
-            } catch (error) {
-                alert('Error resending email: ' + error.message);
-            }
+        // Show magic link sent screen
+        function showMagicLinkSent(email) {
+            document.getElementById('email-screen').style.display = 'none';
+            document.getElementById('magic-link-sent').style.display = 'block';
+            document.getElementById('sent-to-email').textContent = email;
         }
         
-        // Show/hide form functions
-        function showChoiceScreen() {
-            document.getElementById('choice-screen').style.display = 'block';
-            document.getElementById('login-form-container').classList.remove('active');
-            document.getElementById('signup-form-container').classList.remove('active');
-        }
-        
-        function showLoginForm() {
-            document.getElementById('choice-screen').style.display = 'none';
-            document.getElementById('login-form-container').classList.add('active');
-            document.getElementById('signup-form-container').classList.remove('active');
-        }
-        
-        function showSignupForm() {
-            document.getElementById('choice-screen').style.display = 'none';
-            document.getElementById('login-form-container').classList.remove('active');
-            document.getElementById('signup-form-container').classList.add('active');
-        }
-        
-        // Handle login form
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
+        // Handle email form submission
+        document.getElementById('email-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const submitBtn = document.getElementById('login-submit');
-            const errorMsg = document.getElementById('login-error');
-            const successMsg = document.getElementById('login-success');
+            const submitBtn = document.getElementById('email-submit');
+            const errorMsg = document.getElementById('email-error');
+            const email = document.getElementById('email').value.trim();
+            const rememberMe = document.getElementById('remember-me').checked;
             
             errorMsg.style.display = 'none';
-            successMsg.style.display = 'none';
-            
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
             
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Signing In...';
+            submitBtn.textContent = 'Sending magic link...';
             submitBtn.classList.add('loading');
             
             try {
-                const { data, error } = await window.hardySupabase.auth.signInWithPassword({
-                    email: email,
-                    password: password
-                });
+                // Use the sendMagicLink function from hardy-config.js
+                const result = await sendMagicLink(email, rememberMe);
                 
-                if (error) throw error;
-                
-                successMsg.textContent = 'Success! Redirecting to listings...';
-                successMsg.style.display = 'block';
-                
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'login', { 'event_category': 'engagement' });
+                if (!result.success) {
+                    throw new Error(result.error || 'Failed to send magic link');
                 }
                 
-                setTimeout(() => {
-                    window.location.href = getRedirectUrl();
-                }, 1500);
+                // Show success screen
+                showMagicLinkSent(email);
+                
+                // Track event
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'magic_link_sent', { 'event_category': 'engagement' });
+                }
                 
             } catch (error) {
-                errorMsg.textContent = error.message || 'Invalid email or password.';
+                console.error('Magic link error:', error);
+                errorMsg.textContent = error.message || 'Failed to send magic link. Please try again.';
                 errorMsg.style.display = 'block';
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Sign In';
+                submitBtn.textContent = 'Continue with Email';
                 submitBtn.classList.remove('loading');
             }
         });
         
-        // Handle signup form - WITH EMAIL INTEGRATION AND BETTER ERROR HANDLING
-        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+        // Handle resend link
+        document.getElementById('resend-link').addEventListener('click', async (e) => {
             e.preventDefault();
             
-            const submitBtn = document.getElementById('signup-submit');
-            const errorMsg = document.getElementById('signup-error');
-            const successMsg = document.getElementById('signup-success');
-            
-            errorMsg.style.display = 'none';
-            successMsg.style.display = 'none';
-            
-            // Get form values
-            const nickname = document.getElementById('nickname').value;
-            const fullName = document.getElementById('fullname').value;
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            const address = document.getElementById('address').value;
-            const city = document.getElementById('city').value;
-            const zipcode = document.getElementById('zipcode').value;
-            const neighborhood = document.getElementById('neighborhood').value || getZipDisplayName(zipcode);
-
-            // Handle out-of-area selection
-            if (zipcode === 'other') {
-                errorMsg.innerHTML = 'Hardy is currently available only in Kenosha and Racine Counties. <a href="/waitlist.html">Join our waitlist</a> to be notified when we expand to your area!';
-                errorMsg.style.display = 'block';
-                return;
-            }
-            
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Creating Account...';
-            submitBtn.classList.add('loading');
+            const email = document.getElementById('sent-to-email').textContent;
+            const rememberMe = document.getElementById('remember-me').checked;
             
             try {
-                // Step 1: Create auth user
-                console.log('Creating auth user...');
-                const { data: authData, error: authError } = await window.hardySupabase.auth.signUp({
-                    email: email,
-                    password: password,
-                    options: {
-                        data: {
-                            full_name: fullName,
-                            nickname: nickname
-                        }
-                    }
-                });
+                const result = await sendMagicLink(email, rememberMe);
                 
-                if (authError) throw authError;
-                
-                if (!authData.user) {
-                    throw new Error('User creation failed - no user returned');
-                }
-
-                console.log('Auth user created:', authData.user.id);
-
-                // Step 2: Wait for auth propagation
-                console.log('Waiting for auth propagation...');
-                // Simple wait - Supabase needs time to propagate the user
-                await new Promise(resolve => setTimeout(resolve, 2000));
-
-                // Step 3: Create profile using direct upsert
-                console.log('Creating profile...');
-                
-                // First attempt - simple upsert
-                let profile;
-                let profileError;
-                
-                for (let attempt = 1; attempt <= 3; attempt++) {
-                    console.log(`Profile creation attempt ${attempt}...`);
-                    
-                    const { data, error } = await window.hardySupabase
-                        .from('profiles')
-                        .upsert({
-                            id: authData.user.id,
-                            full_name: fullName,
-                            nickname: nickname,
-                            email: email,
-                            zip_code: zipcode,
-                            neighborhood: neighborhood,
-                            address: address,
-                            city: city,
-                            updated_at: new Date().toISOString()
-                        }, { 
-                            onConflict: 'id'
-                        })
-                        .select()
-                        .single();
-                    
-                    if (!error) {
-                        profile = data;
-                        console.log('Profile created successfully!');
-                        break;
-                    } else {
-                        profileError = error;
-                        console.log(`Attempt ${attempt} failed:`, error.message);
-                        if (attempt < 3) {
-                            // Wait longer before next attempt
-                            await new Promise(resolve => setTimeout(resolve, 2000));
-                        }
-                    }
+                if (!result.success) {
+                    throw new Error(result.error || 'Failed to resend magic link');
                 }
                 
-                if (!profile && profileError) {
-                    console.error('All profile creation attempts failed:', profileError);
-                    // Don't throw error - user is created, just profile failed
-                    // We'll continue and try to send email anyway
-                }
-
-                if (profile) {
-                    console.log('Profile saved:', profile);
-                }
-                
-                // Step 5: Send welcome email
-                console.log('Sending welcome email...');
-                try {
-                    await sendWelcomeEmail(email, fullName);
-                    console.log('Welcome email sent successfully');
-                } catch (emailError) {
-                    // Log error but don't block signup
-                    console.error('Failed to send welcome email:', emailError);
-                }
-                
-                // Show success message
-                successMsg.innerHTML = `
-                    <h3 style="margin-top: 0;">Welcome to Hardy! 🌱</h3>
-                    <p><strong>Check your email to verify your account.</strong></p>
-                    <p>We've sent a confirmation link to ${email}. Click the link in the email to log in and activate your account using the credentials you just created.</p>
-                    <p style="margin-bottom: 0;">Can't find the email? Check your spam folder or <a href="#" onclick="resendConfirmation('${email}')">click here to resend</a>. It may take a few minutes for the email to arrive.</p>
-                `;
-                successMsg.style.display = 'block';
-                
-                // Hide the form to reduce confusion
-                document.getElementById('signup-form').style.display = 'none';
-                
-                // Add a "Back to Sign In" button
-                const backButton = document.createElement('button');
-                backButton.className = 'btn btn-secondary btn-block';
-                backButton.style.marginTop = '1rem';
-                backButton.textContent = 'Back to Sign In';
-                backButton.onclick = showLoginForm;
-                document.getElementById('signup-form-container').appendChild(backButton);
-                
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'sign_up', { 'event_category': 'engagement' });
-                }
+                alert('New magic link sent! Check your email.');
                 
             } catch (error) {
-                console.error('Signup error:', error);
-                errorMsg.textContent = error.message || 'An error occurred. Please try again.';
-                errorMsg.style.display = 'block';
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Create Account';
-                submitBtn.classList.remove('loading');
+                alert('Failed to resend link: ' + error.message);
             }
         });
         
-        // Handle forgot password
-        document.getElementById('forgot-link').addEventListener('click', async (e) => {
-            e.preventDefault();
-            
-            const email = document.getElementById('login-email').value;
-            const errorMsg = document.getElementById('login-error');
-            const successMsg = document.getElementById('login-success');
-            
-            if (!email) {
-                errorMsg.textContent = 'Please enter your email address first.';
-                errorMsg.style.display = 'block';
-                return;
-            }
-            
-            try {
-                const { error } = await window.hardySupabase.auth.resetPasswordForEmail(email, {
-                    redirectTo: window.location.origin + '/pages/reset-password.html'
-                });
-                
-                if (error) throw error;
-                
-                successMsg.textContent = 'Password reset email sent! Check your inbox.';
-                successMsg.style.display = 'block';
-                errorMsg.style.display = 'none';
-                
-            } catch (error) {
-                errorMsg.textContent = error.message || 'Error sending reset email.';
-                errorMsg.style.display = 'block';
-            }
-        });
-
-        // Helper function to get ZIP display name
-        function getZipDisplayName(zip) {
-            const zipNames = {
-                // Kenosha County
-                '53142': 'Kenosha',
-                '53143': 'Kenosha',
-                '53144': 'Kenosha',
-                '53158': 'Pleasant Prairie',
-                '53104': 'Bristol',
-                '53168': 'Somers',
-                // Racine County
-                '53402': 'Racine',
-                '53403': 'Racine',
-                '53404': 'Racine',
-                '53405': 'Racine',
-                '53406': 'Racine',
-                '53126': 'Franksville',
-                '53177': 'Sturtevant',
-                '53185': 'Waterford',
-                // Multi-county
-                '53105': 'Burlington',
-                '53182': 'Union Grove'
-            };
-            return zipNames[zip] || zip;
+        // Check if we're returning from a redirect
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectTo = urlParams.get('redirect');
+        if (redirectTo) {
+            // Store where to redirect after auth
+            localStorage.setItem('hardy_auth_redirect', redirectTo);
         }
     </script>
 </body>

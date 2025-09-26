@@ -902,9 +902,7 @@
                             <option value="seeds">Seeds & Seedlings</option>
                             <option value="plants">Plants & Cuttings</option>
                             <option value="eggs">Eggs</option>
-                            <option value="honey">Honey</option>                            
-				<option value="gardening">Gardening Supplies</option>
-                            <option value="knowledge">Knowledge & Help</option>
+                            <option value="honey">Honey</option>
                             <option value="other">Other</option>
                         </select>
                     </div>
@@ -996,14 +994,6 @@
             await loadListings();
             setupEventListeners();
             setupMobileMenu();
-            
-            // Check for expired listings
-            try {
-                await window.hardySupabase.rpc('mark_expired_listings_inactive');
-            } catch (err) {
-                // Silent fail - not critical if this doesn't work
-                console.log('Could not check expired listings');
-            }
         });
         
         // Check if user is logged in and update UI accordingly
@@ -1013,7 +1003,7 @@
                 currentUser = user;
                 
                 if (user) {
-                    // Get user profile - FIXED to properly fetch from profiles table
+                    // Get user profile
                     const { data: profile, error } = await window.hardySupabase
                         .from('profiles')
                         .select('*')
@@ -1052,7 +1042,7 @@
             }
         }
         
-        // Show personal header for logged-in users - FIXED to use actual names
+        // Show personal header for logged-in users
         function showPersonalHeader(profile) {
             if (!profile) return;
             
@@ -1074,11 +1064,11 @@
             const monthYear = memberDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
             document.getElementById('member-date').textContent = monthYear;
             
-            // Load user stats (placeholder for now)
+            // Load user stats
             loadUserStats();
         }
         
-        // Update header actions based on auth state - FIXED to show actual user name
+        // Update header actions based on auth state
         function updateHeaderActions(isLoggedIn) {
             const userActions = document.getElementById('user-actions');
             
@@ -1118,7 +1108,7 @@
             }
         }
         
-        // Load user stats (placeholder)
+        // Load user stats with simplified messages table
         async function loadUserStats() {
             try {
                 // Count active listings
@@ -1130,42 +1120,21 @@
                 
                 document.getElementById('active-listings').textContent = activeCount || '0';
                 
-                // Count unread messages
-                const { data: unreadConversations } = await window.hardySupabase
-                    .from('conversation_participants')
-                    .select(`
-                        conversation_id,
-                        conversations!inner(
-                            id,
-                            messages(
-                                id,
-                                created_at,
-                                sender_id
-                            )
-                        )
-                    `)
-                    .eq('user_id', currentUser.id);
+                // Count unread messages using simplified structure
+                const { count: unreadCount } = await window.hardySupabase
+                    .from('messages')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('recipient_id', currentUser.id)
+                    .eq('is_read', false);
                 
-                let unreadCount = 0;
-                if (unreadConversations) {
-                    unreadConversations.forEach(participant => {
-                        const messages = participant.conversations?.messages || [];
-                        const unreadMessages = messages.filter(msg => 
-                            msg.sender_id !== currentUser.id && 
-                            (!participant.last_read_at || new Date(msg.created_at) > new Date(participant.last_read_at))
-                        );
-                        unreadCount += unreadMessages.length;
-                    });
-                }
-                
-                document.getElementById('message-count').textContent = unreadCount;
+                document.getElementById('message-count').textContent = unreadCount || '0';
                 
             } catch (error) {
                 console.error('Error loading user stats:', error);
             }
         }
         
-        // Load listings from database - UPDATED to include zip_code
+        // Load listings from database with auto-expire logic
         async function loadListings() {
             try {
                 const { data: listings, error } = await window.hardySupabase
@@ -1184,7 +1153,16 @@
 
                 if (error) throw error;
 
-                allListings = listings || [];
+                // Apply auto-expire logic on frontend
+                const now = new Date();
+                allListings = (listings || []).filter(listing => {
+                    if (listing.expires_at) {
+                        const expiryDate = new Date(listing.expires_at);
+                        return expiryDate > now;
+                    }
+                    return true;
+                });
+                
                 applyFilters();
                 
             } catch (error) {
@@ -1206,8 +1184,6 @@
             const categoryFilter = document.getElementById('filter-category').value;
             
             filteredListings = allListings.filter(listing => {
-                // No longer filter out user's own listings
-                
                 // Listing type filter
                 if (listingTypeFilter && listing.listing_type !== listingTypeFilter) {
                     return false;
@@ -1257,7 +1233,7 @@
             });
         }
         
-        // Create a listing card element - UPDATED to show ZIP code
+        // Create a listing card element
         function createListingCard(listing) {
             const card = document.createElement('div');
             card.className = 'listing-card';
@@ -1364,7 +1340,7 @@
             return div.innerHTML;
         }
         
-        // Handle contact button click - NOW WITH EMAIL NOTIFICATIONS!
+        // Handle contact button click with simplified messaging
         async function contactUser(listingId, event) {
             if (!currentUser) {
                 alert('Please sign in to contact other gardeners!');
@@ -1377,6 +1353,12 @@
                 const listing = allListings.find(l => l.id === listingId);
                 if (!listing) {
                     alert('Listing not found');
+                    return;
+                }
+                
+                // Prevent messaging yourself
+                if (listing.user_id === currentUser.id) {
+                    alert("You can't message yourself about your own listing!");
                     return;
                 }
                 
@@ -1396,27 +1378,23 @@
                 button.disabled = true;
                 button.textContent = 'Sending...';
                 
-                // Use the start_conversation function we created in the database
-                const { data: conversationId, error } = await window.hardySupabase
-                    .rpc('start_conversation', {
-                        p_listing_id: listingId,
-                        p_message_content: message.trim()
-                    });
+                // Create message using simplified structure
+                const { data: newMessage, error } = await window.hardySupabase
+                    .from('messages')
+                    .insert({
+                        listing_id: listingId,
+                        sender_id: currentUser.id,
+                        recipient_id: listing.user_id,
+                        content: message.trim()
+                    })
+                    .select()
+                    .single();
                 
                 if (error) {
-                    // Check if it's because they're messaging themselves
-                    if (error.message.includes('Cannot start a conversation with yourself')) {
-                        alert("You can't message yourself about your own listing!");
-                    } else {
-                        throw error;
-                    }
-                    // Reset button
-                    button.disabled = false;
-                    button.textContent = originalText;
-                    return;
+                    throw error;
                 }
                 
-                // Now send the email notification to the listing owner
+                // Send email notification to the listing owner
                 try {
                     // Get listing owner's email and profile info
                     const { data: ownerProfile, error: profileError } = await window.hardySupabase
@@ -1437,7 +1415,7 @@
                             senderName,
                             listing.title,
                             message.trim(),
-                            conversationId
+                            listing.id
                         );
                         
                         console.log('Email notification sent to listing owner');
@@ -1447,8 +1425,8 @@
                     console.error('Failed to send email notification:', emailError);
                 }
                 
-                // Success! Redirect to dashboard messages tab with the conversation
-                window.location.href = `dashboard.html?tab=messages&conversation=${conversationId}`;
+                // Success! Redirect to dashboard messages tab with the listing
+                window.location.href = `dashboard.html?tab=messages&listing=${listingId}`;
                 
             } catch (error) {
                 console.error('Error starting conversation:', error);
@@ -1468,16 +1446,6 @@
             document.getElementById('filter-listing-type').addEventListener('change', applyFilters);
             document.getElementById('filter-transaction-type').addEventListener('change', applyFilters);
             document.getElementById('filter-category').addEventListener('change', applyFilters);
-            
-            // Newsletter form
-            document.getElementById('newsletter-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const emailInput = this.querySelector('input[type="email"]');
-                if (emailInput && emailInput.value) {
-                    alert('Thanks for subscribing! We\'ll keep you updated on Hardy\'s development.');
-                    emailInput.value = '';
-                }
-            });
         }
         
         // Navigation functions
