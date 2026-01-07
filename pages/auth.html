@@ -534,9 +534,55 @@
                     <p>Click the link in the email to sign in or create your account.</p>
                 </div>
                 
+                <div style="background-color: #FFF8E1; border: 1px solid #FFE082; border-radius: var(--radius-md); padding: var(--spacing-md); margin: var(--spacing-lg) 0;">
+                    <p style="margin: 0; font-size: 0.9rem;">
+                        <i class="fas fa-building" style="color: #F9A825;"></i>
+                        <strong>Using work email?</strong> Corporate security can block sign-in links.<br>
+                        <a href="#" id="send-code-link" style="font-weight: 600;">Send me a code instead</a>
+                    </p>
+                </div>
+                
                 <p style="color: var(--text-secondary); font-size: 0.9rem;">
                     Can't find it? Check your spam folder or 
                     <a href="#" id="resend-link">send a new link</a>
+                </p>
+                
+                <button class="btn btn-secondary btn-block" onclick="showEmailScreen()">
+                    Use a different email
+                </button>
+            </div>
+            
+            <!-- Code Entry Screen -->
+            <div id="code-entry-screen" style="display: none;">
+                <div class="email-icon">
+                    <i class="fas fa-key"></i>
+                </div>
+                
+                <div class="auth-header">
+                    <h3>Enter Your Code</h3>
+                    <p>We've sent a 6-digit code to:</p>
+                    <p id="code-sent-to-email" style="font-weight: bold;"></p>
+                </div>
+                
+                <div class="error-message" id="code-error"></div>
+                
+                <form id="code-form">
+                    <div class="form-group">
+                        <label for="otp-code">6-Digit Code</label>
+                        <input type="text" id="otp-code" required 
+                               placeholder="123456" 
+                               maxlength="6" 
+                               pattern="[0-9]{6}"
+                               style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem;">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block" id="code-submit">
+                        Verify Code
+                    </button>
+                </form>
+                
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: var(--spacing-lg);">
+                    Didn't receive it? <a href="#" id="resend-code-link">Send a new code</a>
                 </p>
                 
                 <button class="btn btn-secondary btn-block" onclick="showEmailScreen()">
@@ -595,6 +641,10 @@
     
     <!-- Page Scripts -->
     <script>
+        // Store the current email for OTP flow
+        let currentEmail = '';
+        let currentRememberMe = true;
+        
         // Mobile menu functionality
         document.addEventListener('DOMContentLoaded', function() {
             const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
@@ -617,6 +667,7 @@
         function showEmailScreen() {
             document.getElementById('email-screen').style.display = 'block';
             document.getElementById('magic-link-sent').style.display = 'none';
+            document.getElementById('code-entry-screen').style.display = 'none';
             document.getElementById('email').value = '';
             document.getElementById('email-error').style.display = 'none';
             document.getElementById('email-success').style.display = 'none';
@@ -626,7 +677,66 @@
         function showMagicLinkSent(email) {
             document.getElementById('email-screen').style.display = 'none';
             document.getElementById('magic-link-sent').style.display = 'block';
+            document.getElementById('code-entry-screen').style.display = 'none';
             document.getElementById('sent-to-email').textContent = email;
+            currentEmail = email;
+        }
+        
+        // Show code entry screen
+        function showCodeEntry(email) {
+            document.getElementById('email-screen').style.display = 'none';
+            document.getElementById('magic-link-sent').style.display = 'none';
+            document.getElementById('code-entry-screen').style.display = 'block';
+            document.getElementById('code-sent-to-email').textContent = email;
+            document.getElementById('otp-code').value = '';
+            document.getElementById('code-error').style.display = 'none';
+            currentEmail = email;
+        }
+        
+        // Send OTP code
+        async function sendOTPCode(email) {
+            try {
+                const { data, error } = await supabase.auth.signInWithOtp({
+                    email: email,
+                    options: {
+                        shouldCreateUser: true
+                    }
+                });
+                
+                if (error) throw error;
+                
+                return { success: true };
+            } catch (error) {
+                console.error('OTP send error:', error);
+                return { success: false, error: error.message };
+            }
+        }
+        
+        // Verify OTP code
+        async function verifyOTPCode(email, code) {
+            try {
+                const { data, error } = await supabase.auth.verifyOtp({
+                    email: email,
+                    token: code,
+                    type: 'email'
+                });
+                
+                if (error) throw error;
+                
+                // Handle remember me
+                if (currentRememberMe && data.session) {
+                    const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+                    const expiry = new Date(Date.now() + thirtyDays);
+                    localStorage.setItem('hardy_remember_token', data.session.access_token);
+                    localStorage.setItem('hardy_token_expiry', expiry.toISOString());
+                    localStorage.setItem('hardy_user_token', data.session.access_token);
+                }
+                
+                return { success: true, session: data.session, user: data.user };
+            } catch (error) {
+                console.error('OTP verify error:', error);
+                return { success: false, error: error.message };
+            }
         }
         
         // Handle email form submission
@@ -639,6 +749,7 @@
             const rememberMe = document.getElementById('remember-me').checked;
             
             errorMsg.style.display = 'none';
+            currentRememberMe = rememberMe;
             
             submitBtn.disabled = true;
             submitBtn.textContent = 'Sending magic link...';
@@ -676,10 +787,9 @@
             e.preventDefault();
             
             const email = document.getElementById('sent-to-email').textContent;
-            const rememberMe = document.getElementById('remember-me').checked;
             
             try {
-                const result = await sendMagicLink(email, rememberMe);
+                const result = await sendMagicLink(email, currentRememberMe);
                 
                 if (!result.success) {
                     throw new Error(result.error || 'Failed to resend magic link');
@@ -689,6 +799,126 @@
                 
             } catch (error) {
                 alert('Failed to resend link: ' + error.message);
+            }
+        });
+        
+        // Handle "Send me a code instead" link
+        document.getElementById('send-code-link').addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            const email = currentEmail;
+            const link = e.target;
+            const originalText = link.textContent;
+            
+            link.textContent = 'Sending code...';
+            link.style.pointerEvents = 'none';
+            
+            try {
+                const result = await sendOTPCode(email);
+                
+                if (!result.success) {
+                    throw new Error(result.error || 'Failed to send code');
+                }
+                
+                // Track event
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'otp_code_sent', { 'event_category': 'engagement' });
+                }
+                
+                // Show code entry screen
+                showCodeEntry(email);
+                
+            } catch (error) {
+                alert('Failed to send code: ' + error.message);
+                link.textContent = originalText;
+                link.style.pointerEvents = 'auto';
+            }
+        });
+        
+        // Handle code form submission
+        document.getElementById('code-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('code-submit');
+            const errorMsg = document.getElementById('code-error');
+            const code = document.getElementById('otp-code').value.trim();
+            
+            errorMsg.style.display = 'none';
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Verifying...';
+            
+            try {
+                const result = await verifyOTPCode(currentEmail, code);
+                
+                if (!result.success) {
+                    throw new Error(result.error || 'Invalid code. Please try again.');
+                }
+                
+                // Track event
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'otp_verified', { 'event_category': 'engagement' });
+                }
+                
+                // Check if user has a profile
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', result.user.id)
+                    .single();
+                
+                if (!profile || !profile.nickname) {
+                    // Redirect to callback page for profile completion
+                    window.location.href = 'auth-callback.html';
+                } else {
+                    // User has profile, redirect to browse or stored redirect
+                    const storedRedirect = localStorage.getItem('hardy_auth_redirect');
+                    localStorage.removeItem('hardy_auth_redirect');
+                    
+                    let redirectTo = 'browse.html';
+                    if (storedRedirect === 'dashboard') {
+                        redirectTo = 'dashboard.html';
+                    } else if (storedRedirect === 'create') {
+                        redirectTo = 'create.html';
+                    }
+                    
+                    window.location.href = redirectTo;
+                }
+                
+            } catch (error) {
+                console.error('Code verification error:', error);
+                errorMsg.textContent = error.message || 'Invalid code. Please try again.';
+                errorMsg.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Verify Code';
+            }
+        });
+        
+        // Handle resend code
+        document.getElementById('resend-code-link').addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            const link = e.target;
+            const originalText = link.textContent;
+            
+            link.textContent = 'Sending...';
+            link.style.pointerEvents = 'none';
+            
+            try {
+                const result = await sendOTPCode(currentEmail);
+                
+                if (!result.success) {
+                    throw new Error(result.error || 'Failed to resend code');
+                }
+                
+                alert('New code sent! Check your email.');
+                link.textContent = originalText;
+                link.style.pointerEvents = 'auto';
+                
+            } catch (error) {
+                alert('Failed to resend code: ' + error.message);
+                link.textContent = originalText;
+                link.style.pointerEvents = 'auto';
             }
         });
         
