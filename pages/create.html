@@ -1492,7 +1492,7 @@
                 // Get user profile for location data
                 const { data: profile } = await window.hardySupabase
                     .from('profiles')
-                    .select('neighborhood, location_coords, zip_code')
+                    .select('neighborhood, zip_code')
                     .eq('id', currentUser.id)
                     .single();
                 
@@ -1515,8 +1515,7 @@
                     expires_at: expiresAt.toISOString(),
                     is_active: true,
                     zip_code: profile?.zip_code || null,
-                    location_display: profile?.neighborhood || null,
-                    location_coords: profile?.location_coords || null
+                    location_display: profile?.neighborhood || null
                 };
                 
                 let result;
