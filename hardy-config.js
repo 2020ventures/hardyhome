@@ -1,3 +1,7 @@
+// ==========================================
+// HARDY CONFIGURATION - v2
+// ==========================================
+
 const SUPABASE_URL = 'https://asfinbvecejglhfojclp.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzZmluYnZlY2VqZ2xoZm9qY2xwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMDYyODcsImV4cCI6MjA2NDU4MjI4N30.5NBfuWhO55DgFJvu4BXygrdJlRm5KkC8lwr3C7t8JGA';
 
@@ -5,11 +9,11 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const RESEND_API_KEY = 're_eq5Wx4ZK_ACmt9g7GvKBmZ4KzHvJoSGKd';
 const FROM_EMAIL = 'Hardy Home and Garden <notifications@hardyhome.us>';
 
-// Initialize Supabase client
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// Export for use in other scripts
-window.hardySupabase = supabase;
+// Initialize Supabase client (safe for multiple loads)
+if (!window.hardySupabase) {
+    window.hardySupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+const supabase = window.hardySupabase;
 
 // Valid ZIP codes for Kenosha & Racine Counties
 const KENOSHA_RACINE_ZIPS = [
@@ -237,13 +241,6 @@ async function sendMessage(listingId, recipientId, content) {
       .eq('id', recipientId)
       .single();
     
-    // Get listing info
-    const { data: listing } = await supabase
-      .from('listings')
-      .select('title')
-      .eq('id', listingId)
-      .single();
-    
     // Get sender info
     const { data: sender } = await supabase
       .from('profiles')
@@ -251,20 +248,22 @@ async function sendMessage(listingId, recipientId, content) {
       .eq('id', user.id)
       .single();
     
-    // Send email notification if recipient has email
+    // Get listing info
+    const { data: listing } = await supabase
+      .from('listings')
+      .select('title')
+      .eq('id', listingId)
+      .single();
+    
+    // Send email notification (don't await - fire and forget)
     if (recipient?.email) {
-      try {
-        await sendMessageNotification(
-          recipient.email,
-          recipient.nickname || recipient.full_name,
-          sender.nickname || sender.full_name,
-          listing.title,
-          content.substring(0, 100) + (content.length > 100 ? '...' : '')
-        );
-      } catch (emailError) {
-        console.error('Failed to send email notification:', emailError);
-        // Don't fail the message send if email fails
-      }
+      sendMessageNotification(
+        recipient.email,
+        recipient.nickname || recipient.full_name || 'Hardy User',
+        sender?.nickname || sender?.full_name || 'A Hardy neighbor',
+        listing?.title || 'a listing',
+        content.substring(0, 100)
+      ).catch(err => console.error('Email notification failed:', err));
     }
     
     return { success: true, message };
@@ -274,7 +273,7 @@ async function sendMessage(listingId, recipientId, content) {
   }
 }
 
-// Get messages for current user (v2 simplified)
+// Get messages for current user (grouped by listing)
 async function getMyMessages() {
   try {
     const { data: { user } } = await supabase.auth.getUser();
@@ -286,8 +285,8 @@ async function getMyMessages() {
       .select(`
         *,
         listing:listings(id, title, user_id),
-        sender:profiles!sender_id(nickname, full_name),
-        recipient:profiles!recipient_id(nickname, full_name)
+        sender:profiles!messages_v2_sender_id_fkey(id, nickname, full_name),
+        recipient:profiles!messages_v2_recipient_id_fkey(id, nickname, full_name)
       `)
       .or(`sender_id.eq.${user.id},recipient_id.eq.${user.id}`)
       .order('created_at', { ascending: false });
@@ -295,31 +294,32 @@ async function getMyMessages() {
     if (error) throw error;
     
     // Group messages by listing
-    const messagesByListing = {};
+    const grouped = {};
     messages.forEach(msg => {
-      if (!messagesByListing[msg.listing_id]) {
-        messagesByListing[msg.listing_id] = {
+      const listingId = msg.listing_id;
+      if (!grouped[listingId]) {
+        grouped[listingId] = {
           listing: msg.listing,
           messages: [],
           otherUser: msg.sender_id === user.id ? msg.recipient : msg.sender,
           unreadCount: 0
         };
       }
-      messagesByListing[msg.listing_id].messages.push(msg);
-      if (!msg.is_read && msg.recipient_id === user.id) {
-        messagesByListing[msg.listing_id].unreadCount++;
+      grouped[listingId].messages.push(msg);
+      if (msg.recipient_id === user.id && !msg.is_read) {
+        grouped[listingId].unreadCount++;
       }
     });
     
-    return { success: true, messagesByListing };
+    return { success: true, conversations: Object.values(grouped), userId: user.id };
   } catch (error) {
     console.error('Get messages error:', error);
     return { success: false, error: error.message };
   }
 }
 
-// Mark messages as read (v2 simplified)
-async function markMessagesRead(listingId) {
+// Mark messages as read
+async function markMessagesRead(listingId, otherUserId) {
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Not authenticated');
@@ -328,30 +328,57 @@ async function markMessagesRead(listingId) {
       .from('messages_v2')
       .update({ is_read: true })
       .eq('listing_id', listingId)
-      .eq('recipient_id', user.id)
-      .eq('is_read', false);
+      .eq('sender_id', otherUserId)
+      .eq('recipient_id', user.id);
     
     if (error) throw error;
     
     return { success: true };
   } catch (error) {
-    console.error('Mark messages read error:', error);
+    console.error('Mark read error:', error);
     return { success: false, error: error.message };
   }
 }
 
+// Get unread message count
+async function getUnreadCount() {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { success: true, count: 0 };
+    
+    const { count, error } = await supabase
+      .from('messages_v2')
+      .select('*', { count: 'exact', head: true })
+      .eq('recipient_id', user.id)
+      .eq('is_read', false);
+    
+    if (error) throw error;
+    
+    return { success: true, count: count || 0 };
+  } catch (error) {
+    console.error('Unread count error:', error);
+    return { success: false, count: 0 };
+  }
+}
+
 // ==========================================
-// LISTINGS WITH AUTO-EXPIRE (V2)
+// LISTINGS
 // ==========================================
 
-// Get active listings with auto-expire filter
+// Get active listings with auto-expire filtering
 async function getActiveListings(filters = {}) {
   try {
     let query = supabase
       .from('listings')
       .select(`
         *,
-        profiles (nickname, full_name, neighborhood)
+        profiles (
+          id,
+          nickname,
+          full_name,
+          neighborhood,
+          zip_code
+        )
       `)
       .eq('is_active', true)
       .in('zip_code', VALID_ZIPS);
