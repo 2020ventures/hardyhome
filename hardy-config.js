@@ -5,8 +5,7 @@
 var SUPABASE_URL = 'https://asfinbvecejglhfojclp.supabase.co';
 var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzZmluYnZlY2VqZ2xoZm9qY2xwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMDYyODcsImV4cCI6MjA2NDU4MjI4N30.5NBfuWhO55DgFJvu4BXygrdJlRm5KkC8lwr3C7t8JGA';
 
-// Email configuration (Resend)
-var RESEND_API_KEY = 're_eq5Wx4ZK_ACmt9g7GvKBmZ4KzHvJoSGKd';
+// Email configuration (Resend) - API key stored securely in Netlify environment variables
 var FROM_EMAIL = 'Hardy Home and Garden <notifications@hardyhome.us>';
 
 // Initialize Supabase client (safe for multiple loads)
