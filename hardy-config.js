@@ -2,21 +2,21 @@
 // HARDY CONFIGURATION - v2
 // ==========================================
 
-const SUPABASE_URL = 'https://asfinbvecejglhfojclp.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzZmluYnZlY2VqZ2xoZm9qY2xwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMDYyODcsImV4cCI6MjA2NDU4MjI4N30.5NBfuWhO55DgFJvu4BXygrdJlRm5KkC8lwr3C7t8JGA';
+var SUPABASE_URL = 'https://asfinbvecejglhfojclp.supabase.co';
+var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzZmluYnZlY2VqZ2xoZm9qY2xwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMDYyODcsImV4cCI6MjA2NDU4MjI4N30.5NBfuWhO55DgFJvu4BXygrdJlRm5KkC8lwr3C7t8JGA';
 
 // Email configuration (Resend)
-const RESEND_API_KEY = 're_eq5Wx4ZK_ACmt9g7GvKBmZ4KzHvJoSGKd';
-const FROM_EMAIL = 'Hardy Home and Garden <notifications@hardyhome.us>';
+var RESEND_API_KEY = 're_eq5Wx4ZK_ACmt9g7GvKBmZ4KzHvJoSGKd';
+var FROM_EMAIL = 'Hardy Home and Garden <notifications@hardyhome.us>';
 
 // Initialize Supabase client (safe for multiple loads)
 if (!window.hardySupabase) {
     window.hardySupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
-const supabase = window.hardySupabase;
+var supabase = window.hardySupabase;
 
 // Valid ZIP codes for Kenosha & Racine Counties
-const KENOSHA_RACINE_ZIPS = [
+var KENOSHA_RACINE_ZIPS = [
   // Kenosha County
   '53102', '53104', '53105', '53109', '53114', '53119', '53125',
   '53128', '53140', '53141', '53142', '53143', '53144', '53152',
@@ -29,10 +29,10 @@ const KENOSHA_RACINE_ZIPS = [
 ];
 
 // Remove duplicates (some ZIPs serve both counties)
-const VALID_ZIPS = [...new Set(KENOSHA_RACINE_ZIPS)];
+var VALID_ZIPS = [...new Set(KENOSHA_RACINE_ZIPS)];
 
 // V2 SIMPLIFIED CATEGORIES (reduced from 10 to 8)
-const LISTING_CATEGORIES = [
+var LISTING_CATEGORIES = [
   'Vegetables',
   'Fruits',
   'Herbs',
