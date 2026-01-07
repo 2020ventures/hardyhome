@@ -28,9 +28,13 @@ exports.handler = async (event, context) => {
     // Parse the request body
     const { to, subject, html } = JSON.parse(event.body);
     
-    // Your Resend API key
-    const RESEND_API_KEY = 're_eq5Wx4ZK_ACmt9g7GvKBmZ4KzHvJoSGKd';
+    // Get API key from environment variable
+    const RESEND_API_KEY = process.env.RESEND_API_KEY;
     const FROM_EMAIL = 'Hardy Home and Garden <notifications@hardyhome.us>';
+
+    if (!RESEND_API_KEY) {
+      throw new Error('RESEND_API_KEY environment variable not set');
+    }
 
     // Send email via Resend API
     const response = await fetch('https://api.resend.com/emails', {
