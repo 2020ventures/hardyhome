@@ -538,7 +538,7 @@
                     <p style="margin: 0; font-size: 0.9rem;">
                         <i class="fas fa-building" style="color: #F9A825;"></i>
                         <strong>Using work email?</strong> Corporate security can block sign-in links.<br>
-                        <a href="#" id="send-code-link" style="font-weight: 600;">Send me a code instead</a>
+                        <a href="#" id="send-code-link" style="font-weight: 600;">Enter the code from the email instead</a>
                     </p>
                 </div>
                 
@@ -560,8 +560,9 @@
                 
                 <div class="auth-header">
                     <h3>Enter Your Code</h3>
-                    <p>We've sent a 6-digit code to:</p>
+                    <p>Find the 6-digit code in the email we sent to:</p>
                     <p id="code-sent-to-email" style="font-weight: bold;"></p>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">It's in the same email as the sign-in link.</p>
                 </div>
                 
                 <div class="error-message" id="code-error"></div>
@@ -573,6 +574,7 @@
                                placeholder="123456" 
                                maxlength="6" 
                                pattern="[0-9]{6}"
+                               inputmode="numeric"
                                style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem;">
                     </div>
                     
@@ -802,37 +804,17 @@
             }
         });
         
-        // Handle "Send me a code instead" link
+        // Handle "Enter code instead" link - just show code entry, don't send new email
         document.getElementById('send-code-link').addEventListener('click', async (e) => {
             e.preventDefault();
             
-            const email = currentEmail;
-            const link = e.target;
-            const originalText = link.textContent;
-            
-            link.textContent = 'Sending code...';
-            link.style.pointerEvents = 'none';
-            
-            try {
-                const result = await sendOTPCode(email);
-                
-                if (!result.success) {
-                    throw new Error(result.error || 'Failed to send code');
-                }
-                
-                // Track event
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'otp_code_sent', { 'event_category': 'engagement' });
-                }
-                
-                // Show code entry screen
-                showCodeEntry(email);
-                
-            } catch (error) {
-                alert('Failed to send code: ' + error.message);
-                link.textContent = originalText;
-                link.style.pointerEvents = 'auto';
+            // Track event
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'otp_code_entry', { 'event_category': 'engagement' });
             }
+            
+            // Just show the code entry screen - code is already in the email
+            showCodeEntry(currentEmail);
         });
         
         // Handle code form submission
