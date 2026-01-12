@@ -458,6 +458,54 @@
                 padding: var(--spacing-lg);
             }
         }
+        /* Method Choice Cards */
+        .method-card {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-lg);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--background-white);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            width: 100%;
+        }
+        
+        .method-card:hover {
+            border-color: var(--hardy-green);
+            background-color: #f8fdf8;
+        }
+        
+        .method-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        .method-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .method-text strong {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+        
+        .method-text span {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
     </style>
 </head>
 <body>
@@ -521,6 +569,40 @@
                 </p>
             </div>
             
+            <!-- Choose Method Screen -->
+            <div id="choose-method" style="display: none;">
+                <div class="auth-header">
+                    <h2>How would you like to sign in?</h2>
+                    <p>We'll send it to: <strong id="chosen-email"></strong></p>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: var(--spacing-md); margin: var(--spacing-xl) 0;">
+                    <button id="choose-link" class="method-card">
+                        <div class="method-icon"><i class="fas fa-link"></i></div>
+                        <div class="method-text">
+                            <strong>Send me a link</strong>
+                            <span>Click a button in the email to sign in</span>
+                        </div>
+                    </button>
+                    
+                    <button id="choose-code" class="method-card">
+                        <div class="method-icon"><i class="fas fa-key"></i></div>
+                        <div class="method-text">
+                            <strong>Send me a code</strong>
+                            <span>Enter a 6-digit code to sign in</span>
+                        </div>
+                    </button>
+                </div>
+                
+                <p style="text-align: center; color: var(--text-secondary); font-size: 0.85rem;">
+                    <i class="fas fa-building"></i> Using work or corporate email? <strong>Code works best.</strong>
+                </p>
+                
+                <button class="btn btn-secondary btn-block" onclick="showEmailScreen()" style="margin-top: var(--spacing-lg);">
+                    Use a different email
+                </button>
+            </div>
+            
             <!-- Magic Link Sent Screen -->
             <div id="magic-link-sent" style="display: none;">
                 <div class="email-icon">
@@ -531,20 +613,16 @@
                     <h3>Check Your Email!</h3>
                     <p><strong>We've sent a sign-in link to:</strong></p>
                     <p id="sent-to-email" style="font-weight: bold;"></p>
-                    <p>Click the link in the email to sign in or create your account.</p>
-                </div>
-                
-                <div style="background-color: #FFF8E1; border: 1px solid #FFE082; border-radius: var(--radius-md); padding: var(--spacing-md); margin: var(--spacing-lg) 0;">
-                    <p style="margin: 0; font-size: 0.9rem;">
-                        <i class="fas fa-building" style="color: #F9A825;"></i>
-                        <strong>Using work email?</strong> Corporate security can block sign-in links.<br>
-                        <a href="#" id="send-code-link" style="font-weight: 600;">Enter the code from the email instead</a>
-                    </p>
+                    <p>Click the link in the email to sign in.</p>
                 </div>
                 
                 <p style="color: var(--text-secondary); font-size: 0.9rem;">
                     Can't find it? Check your spam folder or 
                     <a href="#" id="resend-link">send a new link</a>
+                </p>
+                
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                    Link not working? <a href="#" id="switch-to-code">Try a code instead</a>
                 </p>
                 
                 <button class="btn btn-secondary btn-block" onclick="showEmailScreen()">
@@ -560,9 +638,8 @@
                 
                 <div class="auth-header">
                     <h3>Enter Your Code</h3>
-                    <p>Find the 6-digit code in the email we sent to:</p>
+                    <p>We sent a 6-digit code to:</p>
                     <p id="code-sent-to-email" style="font-weight: bold;"></p>
-                    <p style="font-size: 0.9rem; color: var(--text-secondary);">It's in the same email as the sign-in link.</p>
                 </div>
                 
                 <div class="error-message" id="code-error"></div>
@@ -575,6 +652,7 @@
                                maxlength="6" 
                                pattern="[0-9]{6}"
                                inputmode="numeric"
+                               autocomplete="one-time-code"
                                style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem;">
                     </div>
                     
@@ -584,7 +662,7 @@
                 </form>
                 
                 <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: var(--spacing-lg);">
-                    Didn't receive it? <a href="#" id="resend-code-link">Send a new code</a>
+                    Didn't get it? <a href="#" id="resend-code-link">Send a new code</a>
                 </p>
                 
                 <button class="btn btn-secondary btn-block" onclick="showEmailScreen()">
@@ -643,7 +721,7 @@
     
     <!-- Page Scripts -->
     <script>
-        // Store the current email for OTP flow
+        // Store the current email for auth flow
         let currentEmail = '';
         let currentRememberMe = true;
         
@@ -665,37 +743,43 @@
             }
         });
         
-        // Show email screen
-        function showEmailScreen() {
-            document.getElementById('email-screen').style.display = 'block';
+        // Screen management
+        function hideAllScreens() {
+            document.getElementById('email-screen').style.display = 'none';
+            document.getElementById('choose-method').style.display = 'none';
             document.getElementById('magic-link-sent').style.display = 'none';
             document.getElementById('code-entry-screen').style.display = 'none';
-            document.getElementById('email').value = '';
-            document.getElementById('email-error').style.display = 'none';
-            document.getElementById('email-success').style.display = 'none';
         }
         
-        // Show magic link sent screen
-        function showMagicLinkSent(email) {
-            document.getElementById('email-screen').style.display = 'none';
-            document.getElementById('magic-link-sent').style.display = 'block';
-            document.getElementById('code-entry-screen').style.display = 'none';
-            document.getElementById('sent-to-email').textContent = email;
+        function showEmailScreen() {
+            hideAllScreens();
+            document.getElementById('email-screen').style.display = 'block';
+            document.getElementById('email').value = '';
+            document.getElementById('email-error').style.display = 'none';
+        }
+        
+        function showChooseMethod(email) {
+            hideAllScreens();
+            document.getElementById('choose-method').style.display = 'block';
+            document.getElementById('chosen-email').textContent = email;
             currentEmail = email;
         }
         
-        // Show code entry screen
+        function showMagicLinkSent(email) {
+            hideAllScreens();
+            document.getElementById('magic-link-sent').style.display = 'block';
+            document.getElementById('sent-to-email').textContent = email;
+        }
+        
         function showCodeEntry(email) {
-            document.getElementById('email-screen').style.display = 'none';
-            document.getElementById('magic-link-sent').style.display = 'none';
+            hideAllScreens();
             document.getElementById('code-entry-screen').style.display = 'block';
             document.getElementById('code-sent-to-email').textContent = email;
             document.getElementById('otp-code').value = '';
             document.getElementById('code-error').style.display = 'none';
-            currentEmail = email;
         }
         
-        // Send OTP code
+        // Send OTP code (code-only, no link)
         async function sendOTPCode(email) {
             try {
                 const { data, error } = await supabase.auth.signInWithOtp({
@@ -706,7 +790,6 @@
                 });
                 
                 if (error) throw error;
-                
                 return { success: true };
             } catch (error) {
                 console.error('OTP send error:', error);
@@ -741,83 +824,140 @@
             }
         }
         
-        // Handle email form submission
+        // Handle successful auth - check profile and redirect
+        async function handleAuthSuccess(user) {
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', user.id)
+                .single();
+            
+            if (!profile || !profile.nickname) {
+                window.location.href = 'auth-callback.html';
+            } else {
+                const storedRedirect = localStorage.getItem('hardy_auth_redirect');
+                localStorage.removeItem('hardy_auth_redirect');
+                
+                let redirectTo = 'browse.html';
+                if (storedRedirect === 'dashboard') {
+                    redirectTo = 'dashboard.html';
+                } else if (storedRedirect === 'create') {
+                    redirectTo = 'create.html';
+                }
+                
+                window.location.href = redirectTo;
+            }
+        }
+        
+        // Email form -> show choice screen
         document.getElementById('email-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const submitBtn = document.getElementById('email-submit');
-            const errorMsg = document.getElementById('email-error');
             const email = document.getElementById('email').value.trim();
             const rememberMe = document.getElementById('remember-me').checked;
             
-            errorMsg.style.display = 'none';
+            currentEmail = email;
             currentRememberMe = rememberMe;
             
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Sending magic link...';
-            submitBtn.classList.add('loading');
+            // Show the choice screen
+            showChooseMethod(email);
+        });
+        
+        // Choose Link
+        document.getElementById('choose-link').addEventListener('click', async () => {
+            const btn = document.getElementById('choose-link');
+            btn.disabled = true;
+            btn.style.opacity = '0.6';
             
             try {
-                // Use the sendMagicLink function from hardy-config.js
-                const result = await sendMagicLink(email, rememberMe);
+                const result = await sendMagicLink(currentEmail, currentRememberMe);
                 
                 if (!result.success) {
-                    throw new Error(result.error || 'Failed to send magic link');
+                    throw new Error(result.error || 'Failed to send link');
                 }
                 
-                // Show success screen
-                showMagicLinkSent(email);
-                
-                // Track event
                 if (typeof gtag !== 'undefined') {
                     gtag('event', 'magic_link_sent', { 'event_category': 'engagement' });
                 }
                 
+                showMagicLinkSent(currentEmail);
+                
             } catch (error) {
-                console.error('Magic link error:', error);
-                errorMsg.textContent = error.message || 'Failed to send magic link. Please try again.';
-                errorMsg.style.display = 'block';
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Continue with Email';
-                submitBtn.classList.remove('loading');
+                alert('Failed to send link: ' + error.message);
+                btn.disabled = false;
+                btn.style.opacity = '1';
             }
         });
         
-        // Handle resend link
+        // Choose Code
+        document.getElementById('choose-code').addEventListener('click', async () => {
+            const btn = document.getElementById('choose-code');
+            btn.disabled = true;
+            btn.style.opacity = '0.6';
+            
+            try {
+                const result = await sendOTPCode(currentEmail);
+                
+                if (!result.success) {
+                    throw new Error(result.error || 'Failed to send code');
+                }
+                
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'otp_code_sent', { 'event_category': 'engagement' });
+                }
+                
+                showCodeEntry(currentEmail);
+                
+            } catch (error) {
+                alert('Failed to send code: ' + error.message);
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            }
+        });
+        
+        // Resend link
         document.getElementById('resend-link').addEventListener('click', async (e) => {
             e.preventDefault();
             
-            const email = document.getElementById('sent-to-email').textContent;
-            
             try {
-                const result = await sendMagicLink(email, currentRememberMe);
+                const result = await sendMagicLink(currentEmail, currentRememberMe);
                 
                 if (!result.success) {
-                    throw new Error(result.error || 'Failed to resend magic link');
+                    throw new Error(result.error || 'Failed to resend link');
                 }
                 
-                alert('New magic link sent! Check your email.');
+                alert('New link sent! Check your email.');
                 
             } catch (error) {
-                alert('Failed to resend link: ' + error.message);
+                alert('Failed to resend: ' + error.message);
             }
         });
         
-        // Handle "Enter code instead" link - just show code entry, don't send new email
-        document.getElementById('send-code-link').addEventListener('click', async (e) => {
+        // Switch to code from link screen
+        document.getElementById('switch-to-code').addEventListener('click', async (e) => {
             e.preventDefault();
             
-            // Track event
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'otp_code_entry', { 'event_category': 'engagement' });
-            }
+            const link = e.target;
+            link.textContent = 'Sending code...';
+            link.style.pointerEvents = 'none';
             
-            // Just show the code entry screen - code is already in the email
-            showCodeEntry(currentEmail);
+            try {
+                const result = await sendOTPCode(currentEmail);
+                
+                if (!result.success) {
+                    throw new Error(result.error || 'Failed to send code');
+                }
+                
+                showCodeEntry(currentEmail);
+                
+            } catch (error) {
+                alert('Failed to send code: ' + error.message);
+                link.textContent = 'Try a code instead';
+                link.style.pointerEvents = 'auto';
+            }
         });
         
-        // Handle code form submission
+        // Code form submission
         document.getElementById('code-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -826,7 +966,6 @@
             const code = document.getElementById('otp-code').value.trim();
             
             errorMsg.style.display = 'none';
-            
             submitBtn.disabled = true;
             submitBtn.textContent = 'Verifying...';
             
@@ -837,38 +976,13 @@
                     throw new Error(result.error || 'Invalid code. Please try again.');
                 }
                 
-                // Track event
                 if (typeof gtag !== 'undefined') {
                     gtag('event', 'otp_verified', { 'event_category': 'engagement' });
                 }
                 
-                // Check if user has a profile
-                const { data: profile } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', result.user.id)
-                    .single();
-                
-                if (!profile || !profile.nickname) {
-                    // Redirect to callback page for profile completion
-                    window.location.href = 'auth-callback.html';
-                } else {
-                    // User has profile, redirect to browse or stored redirect
-                    const storedRedirect = localStorage.getItem('hardy_auth_redirect');
-                    localStorage.removeItem('hardy_auth_redirect');
-                    
-                    let redirectTo = 'browse.html';
-                    if (storedRedirect === 'dashboard') {
-                        redirectTo = 'dashboard.html';
-                    } else if (storedRedirect === 'create') {
-                        redirectTo = 'create.html';
-                    }
-                    
-                    window.location.href = redirectTo;
-                }
+                await handleAuthSuccess(result.user);
                 
             } catch (error) {
-                console.error('Code verification error:', error);
                 errorMsg.textContent = error.message || 'Invalid code. Please try again.';
                 errorMsg.style.display = 'block';
                 submitBtn.disabled = false;
@@ -876,13 +990,11 @@
             }
         });
         
-        // Handle resend code
+        // Resend code
         document.getElementById('resend-code-link').addEventListener('click', async (e) => {
             e.preventDefault();
             
             const link = e.target;
-            const originalText = link.textContent;
-            
             link.textContent = 'Sending...';
             link.style.pointerEvents = 'none';
             
@@ -894,12 +1006,11 @@
                 }
                 
                 alert('New code sent! Check your email.');
-                link.textContent = originalText;
-                link.style.pointerEvents = 'auto';
                 
             } catch (error) {
-                alert('Failed to resend code: ' + error.message);
-                link.textContent = originalText;
+                alert('Failed to resend: ' + error.message);
+            } finally {
+                link.textContent = 'Send a new code';
                 link.style.pointerEvents = 'auto';
             }
         });
@@ -908,7 +1019,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         const redirectTo = urlParams.get('redirect');
         if (redirectTo) {
-            // Store where to redirect after auth
             localStorage.setItem('hardy_auth_redirect', redirectTo);
         }
     </script>
