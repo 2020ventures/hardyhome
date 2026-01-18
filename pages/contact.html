@@ -563,11 +563,6 @@
                 <h2>Get In Touch</h2>
                 
                 <div class="contact-method">
-                    <p><i class="fas fa-envelope"></i> <strong>Email:</strong></p>
-                    <p><a href="mailto:info@hardygarden.com">info@hardygarden.com</a></p>
-                </div>
-                
-                <div class="contact-method">
                     <p><i class="fas fa-clock"></i> <strong>Response Time:</strong></p>
                     <p>We aim to respond to all inquiries within 48 hours during business days.</p>
                 </div>
@@ -628,7 +623,7 @@
     </footer>
 
     <!-- App Scripts -->
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         // Navigation function
         async function navigateToDashboard(event) {
             event.preventDefault();
@@ -804,12 +799,4 @@
                     e.preventDefault();
                     const emailInput = form.querySelector('input[type="email"]');
                     if (emailInput && emailInput.value) {
-                        alert('Thanks for subscribing! We\'ll keep you updated on Hardy\'s development.');
-                        emailInput.value = '';
-                    }
-                });
-            });
-        });
-    </script>
-</body>
-</html>
+        
