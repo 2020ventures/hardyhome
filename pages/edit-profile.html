@@ -821,6 +821,25 @@
                         </div>
                     </div>
 
+                    <!-- Email Preferences -->
+                    <div class="form-section">
+                        <h2 class="section-title">📬 Email Preferences</h2>
+                        
+                        <div class="form-group">
+                            <div style="display: flex; flex-direction: column; gap: var(--spacing-md);">
+                                <label style="display: flex; align-items: center; gap: var(--spacing-sm); font-weight: normal; cursor: pointer;">
+                                    <input type="checkbox" id="pref_platform_updates" name="pref_platform_updates">
+                                    Send me Hardy platform updates and tips
+                                </label>
+                                <label style="display: flex; align-items: center; gap: var(--spacing-sm); font-weight: normal; cursor: pointer;">
+                                    <input type="checkbox" id="pref_marketing" name="pref_marketing">
+                                    Send me occasional partner offers and promotions
+                                </label>
+                            </div>
+                            <p class="form-help" style="margin-top: var(--spacing-sm);">You'll always receive message notifications when someone contacts you about a listing.</p>
+                        </div>
+                    </div>
+
                     <!-- Form Actions -->
                     <div class="form-actions">
                         <div class="form-actions-left">
@@ -1001,6 +1020,11 @@
                 document.getElementById('zip_code').value = profile.zip_code;
             }
             
+            // Email Preferences (default to true for platform_updates if not set)
+            const prefs = profile.email_preferences || { platform_updates: true, marketing: false };
+            document.getElementById('pref_platform_updates').checked = prefs.platform_updates !== false;
+            document.getElementById('pref_marketing').checked = prefs.marketing === true;
+            
             // Update avatar
             updateAvatar();
         }
@@ -1141,6 +1165,10 @@
                     city: formData.get('city'),
                     neighborhood: formData.get('neighborhood'),
                     zip_code: newZipCode,
+                    email_preferences: {
+                        platform_updates: document.getElementById('pref_platform_updates').checked,
+                        marketing: document.getElementById('pref_marketing').checked
+                    },
                     updated_at: new Date().toISOString()
                 };
                 

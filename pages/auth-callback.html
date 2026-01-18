@@ -345,6 +345,21 @@
                     <small id="zip-help">Hardy is currently serving Kenosha & Racine Counties</small>
                 </div>
                 
+                <div class="form-group" style="margin-top: var(--spacing-lg);">
+                    <label style="margin-bottom: var(--spacing-sm);">📬 Email Preferences</label>
+                    <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                        <label style="display: flex; align-items: center; gap: var(--spacing-sm); font-weight: normal; cursor: pointer;">
+                            <input type="checkbox" id="pref_platform_updates" checked>
+                            Send me Hardy platform updates and tips
+                        </label>
+                        <label style="display: flex; align-items: center; gap: var(--spacing-sm); font-weight: normal; cursor: pointer;">
+                            <input type="checkbox" id="pref_marketing">
+                            Send me occasional partner offers and promotions
+                        </label>
+                    </div>
+                    <small style="margin-top: var(--spacing-xs); display: block;">You'll always receive message notifications. You can change these anytime in your profile.</small>
+                </div>
+                
                 <button type="submit" class="btn btn-primary btn-block" id="profile-submit">
                     Complete Profile
                 </button>
@@ -465,6 +480,8 @@
             const nickname = document.getElementById('nickname').value.trim();
             const fullName = document.getElementById('full_name').value.trim();
             const zipCode = document.getElementById('zip_code').value;
+            const prefPlatformUpdates = document.getElementById('pref_platform_updates').checked;
+            const prefMarketing = document.getElementById('pref_marketing').checked;
             
             if (zipCode === 'other') {
                 errorMsg.innerHTML = 'Hardy is currently available only in Kenosha and Racine Counties. <a href="waitlist.html">Join our waitlist</a> to be notified when we expand!';
@@ -486,6 +503,10 @@
                         zip_code: zipCode,
                         neighborhood: getZipDisplayName(zipCode),
                         email: currentUser.email,
+                        email_preferences: {
+                            platform_updates: prefPlatformUpdates,
+                            marketing: prefMarketing
+                        },
                         updated_at: new Date().toISOString()
                     });
                 
