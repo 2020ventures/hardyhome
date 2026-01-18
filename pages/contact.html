@@ -623,7 +623,7 @@
     </footer>
 
     <!-- App Scripts -->
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script>
         // Navigation function
         async function navigateToDashboard(event) {
             event.preventDefault();
@@ -739,7 +739,7 @@
                 
             } catch (error) {
                 console.error('Contact form error:', error);
-                errorText.textContent = 'Sorry, there was an error sending your message. Please try again later or email us directly at info@hardygarden.com';
+                errorText.textContent = 'Sorry, there was an error sending your message. Please try again later.';
                 errorMessage.style.display = 'block';
                 errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
             } finally {
