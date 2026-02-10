@@ -114,6 +114,48 @@ async function sendMagicLink(email, rememberMe = true) {
   }
 }
 
+// Verify OTP code (for corporate email users who can't click magic links)
+async function verifyLoginCode(email, code) {
+  try {
+    const { data, error } = await supabase.auth.verifyOtp({
+      email: email,
+      token: code,
+      type: 'email'
+    });
+
+    if (error) throw error;
+    if (!data.session) throw new Error('No session returned');
+
+    // Check if user has a profile
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', data.session.user.id)
+      .single();
+
+    // Set remember token if requested
+    const rememberMe = localStorage.getItem('hardy_remember_preference') === 'true';
+    if (rememberMe) {
+      const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+      const expiry = new Date(Date.now() + thirtyDays);
+      localStorage.setItem('hardy_remember_token', data.session.access_token);
+      localStorage.setItem('hardy_token_expiry', expiry.toISOString());
+      localStorage.setItem('hardy_user_token', data.session.access_token);
+    } else {
+      localStorage.setItem('hardy_user_token', data.session.access_token);
+    }
+
+    if (!profile || !profile.nickname) {
+      return { success: true, needsProfile: true, userId: data.session.user.id, email: data.session.user.email };
+    }
+
+    return { success: true, hasProfile: true };
+  } catch (error) {
+    console.error('OTP verification error:', error);
+    return { success: false, error: error.message };
+  }
+}
+
 // Handle magic link callback
 async function handleMagicLinkCallback() {
   try {
