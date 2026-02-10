@@ -501,8 +501,7 @@
                         <label for="email">Email Address</label>
                         <input type="email" id="email" required placeholder="you@example.com">
                         <small style="color: var(--text-secondary); display: block; margin-top: 6px;">
-                            <i class="fas fa-lightbulb" style="color: #F9A825;"></i>
-                            Personal email (Gmail, Yahoo, etc.) works best. Work email security can sometimes block sign-in messages.
+                            We'll send you a 6-digit code to sign in. No password needed.
                         </small>
                     </div>
                     
@@ -525,27 +524,137 @@
                 </p>
             </div>
             
-            <!-- Magic Link Sent Screen -->
+            <!-- Code Entry Screen -->
             <div id="magic-link-sent" style="display: none;">
                 <div class="email-icon">
                     <i class="fas fa-envelope-open-text"></i>
                 </div>
-                
+
                 <div class="magic-link-sent">
                     <h3>Check Your Email!</h3>
-                    <p><strong>We've sent a sign-in link to:</strong></p>
+                    <p>We sent a 6-digit sign-in code to:</p>
                     <p id="sent-to-email" style="font-weight: bold;"></p>
-                    <p>Click the link in the email to sign in.</p>
                 </div>
-                
-                <p style="color: var(--text-secondary); font-size: 0.9rem;">
-                    Can't find it? Check your spam folder or 
-                    <a href="#" id="resend-link">send a new link</a>
+
+                <div class="error-message" id="code-error"></div>
+
+                <form id="code-form" style="margin: var(--spacing-lg) 0;">
+                    <div class="form-group">
+                        <label for="otp-code">Enter your 6-digit code</label>
+                        <input type="text" id="otp-code" required
+                               maxlength="6" pattern="[0-9]{6}" inputmode="numeric"
+                               placeholder="000000" autocomplete="one-time-code"
+                               style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem; font-weight: 700;">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block" id="code-submit">
+                        Verify Code
+                    </button>
+                </form>
+
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--spacing-sm);">
+                    You can also click the sign-in link in the email.
                 </p>
-                
-                <button class="btn btn-secondary btn-block" onclick="showEmailScreen()">
+
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                    Didn't get it? Check your spam folder or
+                    <a href="#" id="resend-link">send a new code</a>
+                </p>
+
+                <button class="btn btn-secondary btn-block" onclick="showEmailScreen()" style="margin-top: var(--spacing-md);">
                     Use a different email
                 </button>
+            </div>
+
+            <!-- Profile Completion (shown after code verification) -->
+            <div id="profile-form-container" style="display: none;">
+                <div class="auth-header">
+                    <h1>Complete Your Profile</h1>
+                    <p>Just a few more details to get started!</p>
+                </div>
+
+                <div style="background-color: var(--background-light); padding: var(--spacing-md); border-radius: var(--radius-sm); margin-bottom: var(--spacing-lg); text-align: center; color: var(--text-secondary);">
+                    <strong>Email:</strong> <span id="verified-email"></span>
+                </div>
+
+                <div class="error-message" id="profile-error"></div>
+
+                <form id="profile-form">
+                    <div class="form-group">
+                        <label for="nickname">Nickname*</label>
+                        <input type="text" id="nickname" required>
+                        <small style="color: var(--text-secondary); display: block; margin-top: 4px;">This is what will display on your listings</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="full_name">Full Name*</label>
+                        <input type="text" id="full_name" required>
+                        <small style="color: var(--text-secondary); display: block; margin-top: 4px;">For your account only, not shown publicly</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="zip_code">ZIP Code*</label>
+                        <select id="zip_code" required>
+                            <option value="">Select your ZIP code</option>
+                            <optgroup label="Kenosha County">
+                                <option value="53102">53102 - Salem</option>
+                                <option value="53104">53104 - Bristol</option>
+                                <option value="53105">53105 - Burlington</option>
+                                <option value="53109">53109 - Camp Lake</option>
+                                <option value="53140">53140 - Kenosha</option>
+                                <option value="53141">53141 - Kenosha</option>
+                                <option value="53142">53142 - Kenosha</option>
+                                <option value="53143">53143 - Kenosha</option>
+                                <option value="53144">53144 - Kenosha</option>
+                                <option value="53152">53152 - New Munster</option>
+                                <option value="53158">53158 - Pleasant Prairie</option>
+                                <option value="53168">53168 - Somers</option>
+                                <option value="53170">53170 - Silver Lake</option>
+                                <option value="53171">53171 - Somers</option>
+                                <option value="53179">53179 - Trevor</option>
+                                <option value="53181">53181 - Twin Lakes</option>
+                                <option value="53182">53182 - Union Grove</option>
+                            </optgroup>
+                            <optgroup label="Racine County">
+                                <option value="53108">53108 - Caledonia</option>
+                                <option value="53126">53126 - Franksville</option>
+                                <option value="53139">53139 - Kansasville</option>
+                                <option value="53154">53154 - Mount Pleasant</option>
+                                <option value="53167">53167 - Rochester</option>
+                                <option value="53177">53177 - Sturtevant</option>
+                                <option value="53185">53185 - Waterford</option>
+                                <option value="53401">53401 - Racine</option>
+                                <option value="53402">53402 - Racine</option>
+                                <option value="53403">53403 - Racine</option>
+                                <option value="53404">53404 - Racine</option>
+                                <option value="53405">53405 - Racine</option>
+                                <option value="53406">53406 - Racine</option>
+                            </optgroup>
+                            <optgroup label="Out of Area">
+                                <option value="other">My ZIP code isn't listed</option>
+                            </optgroup>
+                        </select>
+                        <small id="zip-help" style="color: var(--text-secondary); display: block; margin-top: 4px;">Hardy is currently serving Kenosha & Racine Counties</small>
+                    </div>
+
+                    <div class="form-group" style="margin-top: var(--spacing-lg);">
+                        <label style="margin-bottom: var(--spacing-sm);">Email Preferences</label>
+                        <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                            <label style="display: flex; align-items: center; gap: var(--spacing-sm); font-weight: normal; cursor: pointer;">
+                                <input type="checkbox" id="pref_platform_updates" checked>
+                                Send me Hardy platform updates and tips
+                            </label>
+                            <label style="display: flex; align-items: center; gap: var(--spacing-sm); font-weight: normal; cursor: pointer;">
+                                <input type="checkbox" id="pref_marketing">
+                                Send me occasional partner offers and promotions
+                            </label>
+                        </div>
+                        <small style="margin-top: var(--spacing-xs); display: block; color: var(--text-secondary);">You'll always receive message notifications. You can change these anytime in your profile.</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block" id="profile-submit">
+                        Complete Profile
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -599,15 +708,15 @@
     
     <!-- Page Scripts -->
     <script>
-        // Store the current email
         let currentEmail = '';
         let currentRememberMe = true;
-        
+        let currentUserId = null;
+
         // Mobile menu functionality
         document.addEventListener('DOMContentLoaded', function() {
             const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
             const mainNav = document.querySelector('.main-nav');
-            
+
             if (mobileMenuBtn && mainNav) {
                 mobileMenuBtn.addEventListener('click', function() {
                     if (mainNav.style.display === 'block') {
@@ -620,58 +729,86 @@
                 });
             }
         });
-        
+
         // Show email screen
         function showEmailScreen() {
             document.getElementById('email-screen').style.display = 'block';
             document.getElementById('magic-link-sent').style.display = 'none';
+            document.getElementById('profile-form-container').style.display = 'none';
             document.getElementById('email').value = '';
             document.getElementById('email-error').style.display = 'none';
             document.getElementById('email-success').style.display = 'none';
         }
-        
-        // Show magic link sent screen
-        function showMagicLinkSent(email) {
+
+        // Show code entry screen
+        function showCodeScreen(email) {
             document.getElementById('email-screen').style.display = 'none';
             document.getElementById('magic-link-sent').style.display = 'block';
             document.getElementById('sent-to-email').textContent = email;
+            document.getElementById('otp-code').value = '';
+            document.getElementById('code-error').style.display = 'none';
+            currentEmail = email;
+            // Auto-focus the code input
+            setTimeout(function() { document.getElementById('otp-code').focus(); }, 100);
+        }
+
+        // Show profile completion form
+        function showProfileForm(email, userId) {
+            document.getElementById('email-screen').style.display = 'none';
+            document.getElementById('magic-link-sent').style.display = 'none';
+            document.getElementById('profile-form-container').style.display = 'block';
+            document.getElementById('verified-email').textContent = email;
+            currentUserId = userId;
             currentEmail = email;
         }
-        
-        // Handle email form submission - send magic link directly
+
+        // Redirect after successful auth
+        function redirectUser() {
+            const storedRedirect = localStorage.getItem('hardy_auth_redirect');
+            localStorage.removeItem('hardy_auth_redirect');
+
+            let redirectTo = 'browse.html';
+            if (storedRedirect === 'dashboard') {
+                redirectTo = 'dashboard.html';
+            } else if (storedRedirect === 'create') {
+                redirectTo = 'create.html';
+            }
+
+            window.location.href = redirectTo;
+        }
+
+        // Handle email form submission - send OTP code
         document.getElementById('email-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const submitBtn = document.getElementById('email-submit');
             const errorMsg = document.getElementById('email-error');
             const email = document.getElementById('email').value.trim();
             const rememberMe = document.getElementById('remember-me').checked;
-            
+
             errorMsg.style.display = 'none';
             currentRememberMe = rememberMe;
-            
+
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Sending magic link...';
+            submitBtn.textContent = 'Sending sign-in code...';
             submitBtn.classList.add('loading');
-            
+
             try {
                 const result = await sendMagicLink(email, rememberMe);
-                
+
                 if (!result.success) {
-                    throw new Error(result.error || 'Failed to send magic link');
+                    throw new Error(result.error || 'Failed to send sign-in code');
                 }
-                
-                // Show success screen
-                showMagicLinkSent(email);
-                
-                // Track event
+
+                showCodeScreen(email);
+
                 if (typeof gtag !== 'undefined') {
-                    gtag('event', 'magic_link_sent', { 'event_category': 'engagement' });
+                    gtag('event', 'otp_code_sent', { 'event_category': 'engagement' });
                 }
-                
+
             } catch (error) {
-                console.error('Magic link error:', error);
-                errorMsg.textContent = error.message || 'Failed to send magic link. Please try again.';
+                console.error('Send code error:', error);
+                errorMsg.textContent = error.message || 'Failed to send sign-in code. Please try again.';
                 errorMsg.style.display = 'block';
             } finally {
                 submitBtn.disabled = false;
@@ -679,33 +816,143 @@
                 submitBtn.classList.remove('loading');
             }
         });
-        
-        // Handle resend link
+
+        // Handle OTP code form submission
+        document.getElementById('code-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('code-submit');
+            const errorMsg = document.getElementById('code-error');
+            const code = document.getElementById('otp-code').value.trim();
+
+            errorMsg.style.display = 'none';
+
+            if (!/^\d{6}$/.test(code)) {
+                errorMsg.textContent = 'Please enter the 6-digit code from your email.';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Verifying...';
+
+            try {
+                const result = await verifyLoginCode(currentEmail, code);
+
+                if (!result.success) {
+                    throw new Error(result.error || 'Invalid or expired code. Please try again.');
+                }
+
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'otp_code_verified', { 'event_category': 'engagement' });
+                }
+
+                if (result.needsProfile) {
+                    showProfileForm(result.email || currentEmail, result.userId);
+                } else {
+                    redirectUser();
+                }
+
+            } catch (error) {
+                console.error('Code verification error:', error);
+                errorMsg.textContent = error.message || 'Verification failed. Please check the code and try again.';
+                errorMsg.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Verify Code';
+            }
+        });
+
+        // Handle resend code
         document.getElementById('resend-link').addEventListener('click', async (e) => {
             e.preventDefault();
-            
+
             const link = e.target;
             const originalText = link.textContent;
             link.textContent = 'Sending...';
             link.style.pointerEvents = 'none';
-            
+
             try {
                 const result = await sendMagicLink(currentEmail, currentRememberMe);
-                
+
                 if (!result.success) {
-                    throw new Error(result.error || 'Failed to resend magic link');
+                    throw new Error(result.error || 'Failed to resend code');
                 }
-                
-                alert('New magic link sent! Check your email.');
-                
+
+                link.textContent = 'Sent!';
+                setTimeout(function() { link.textContent = originalText; }, 2000);
+
             } catch (error) {
-                alert('Failed to resend link: ' + error.message);
-            } finally {
+                alert('Failed to resend code: ' + error.message);
                 link.textContent = originalText;
+            } finally {
                 link.style.pointerEvents = 'auto';
             }
         });
-        
+
+        // Handle profile form submission
+        document.getElementById('profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('profile-submit');
+            const errorMsg = document.getElementById('profile-error');
+
+            errorMsg.style.display = 'none';
+
+            const nickname = document.getElementById('nickname').value.trim();
+            const fullName = document.getElementById('full_name').value.trim();
+            const zipCode = document.getElementById('zip_code').value;
+            const prefPlatformUpdates = document.getElementById('pref_platform_updates').checked;
+            const prefMarketing = document.getElementById('pref_marketing').checked;
+
+            if (zipCode === 'other') {
+                errorMsg.innerHTML = 'Hardy is currently available only in Kenosha and Racine Counties. <a href="waitlist.html">Join our waitlist</a> to be notified when we expand!';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Creating profile...';
+
+            try {
+                const { error } = await window.hardySupabase
+                    .from('profiles')
+                    .upsert({
+                        id: currentUserId,
+                        nickname: nickname,
+                        full_name: fullName,
+                        zip_code: zipCode,
+                        neighborhood: getZipDisplayName(zipCode),
+                        email: currentEmail,
+                        email_preferences: {
+                            platform_updates: prefPlatformUpdates,
+                            marketing: prefMarketing
+                        },
+                        updated_at: new Date().toISOString()
+                    });
+
+                if (error) throw error;
+
+                try {
+                    await sendWelcomeEmail(currentEmail, fullName);
+                } catch (emailError) {
+                    console.error('Welcome email failed:', emailError);
+                }
+
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'sign_up', { 'event_category': 'engagement' });
+                }
+
+                redirectUser();
+
+            } catch (error) {
+                console.error('Profile creation error:', error);
+                errorMsg.textContent = error.message || 'Failed to create profile. Please try again.';
+                errorMsg.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Complete Profile';
+            }
+        });
+
         // Check if we're returning from a redirect
         const urlParams = new URLSearchParams(window.location.search);
         const redirectTo = urlParams.get('redirect');

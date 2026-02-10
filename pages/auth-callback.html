@@ -369,19 +369,22 @@
         <!-- Error State -->
         <div id="error-container" class="auth-container">
             <div class="auth-header">
-                <h1>Something went wrong</h1>
+                <h1>Link expired</h1>
             </div>
             <div class="error-message" style="display: block;" id="main-error"></div>
-            
+
             <div style="background-color: #FFF8E1; border: 1px solid #FFE082; border-radius: var(--radius-md); padding: var(--spacing-md); margin: var(--spacing-md) 0;">
-                <p style="margin: 0; font-size: 0.9rem;">
+                <p style="margin: 0 0 8px 0; font-size: 0.9rem;">
                     <i class="fas fa-lightbulb" style="color: #F9A825;"></i>
-                    <strong>Using work email?</strong> Corporate security often blocks sign-in links. Try using a code instead.
+                    <strong>Using work email?</strong> Corporate email security can expire sign-in links before you click them.
+                </p>
+                <p style="margin: 0; font-size: 0.9rem;">
+                    Use the <strong>6-digit code</strong> from the email instead -- it works with all email providers.
                 </p>
             </div>
-            
+
             <a href="auth.html" class="btn btn-primary btn-block">
-                Try Again with a Code
+                Sign In with Code
             </a>
         </div>
     </div>
