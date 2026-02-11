@@ -83,33 +83,27 @@ function getZipDisplayName(zip) {
 }
 
 // ==========================================
-// V2 AUTHENTICATION - MAGIC LINK
+// V2 AUTHENTICATION - OTP CODE VIA NETLIFY FUNCTION
 // ==========================================
 
-// Send magic link
-async function sendMagicLink(email, rememberMe = true) {
+// Send login code (generates OTP server-side, sends email via Resend)
+async function sendMagicLink(email) {
   try {
-    const { data, error } = await supabase.auth.signInWithOtp({
-      email: email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/pages/auth-callback.html`,
-        shouldCreateUser: true,
-        data: {
-          remember_me: rememberMe
-        }
-      }
+    const response = await fetch('/.netlify/functions/send-login-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email })
     });
-    
-    if (error) throw error;
-    
-    // Store remember preference locally
-    if (rememberMe) {
-      localStorage.setItem('hardy_remember_preference', 'true');
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.error || 'Failed to send sign-in code');
     }
-    
+
     return { success: true };
   } catch (error) {
-    console.error('Magic link error:', error);
+    console.error('Send login code error:', error);
     return { success: false, error: error.message };
   }
 }
@@ -133,17 +127,8 @@ async function verifyLoginCode(email, code) {
       .eq('id', data.session.user.id)
       .single();
 
-    // Set remember token if requested
-    const rememberMe = localStorage.getItem('hardy_remember_preference') === 'true';
-    if (rememberMe) {
-      const thirtyDays = 30 * 24 * 60 * 60 * 1000;
-      const expiry = new Date(Date.now() + thirtyDays);
-      localStorage.setItem('hardy_remember_token', data.session.access_token);
-      localStorage.setItem('hardy_token_expiry', expiry.toISOString());
-      localStorage.setItem('hardy_user_token', data.session.access_token);
-    } else {
-      localStorage.setItem('hardy_user_token', data.session.access_token);
-    }
+    // Store session token
+    localStorage.setItem('hardy_user_token', data.session.access_token);
 
     if (!profile || !profile.nickname) {
       return { success: true, needsProfile: true, userId: data.session.user.id, email: data.session.user.email };
@@ -171,18 +156,8 @@ async function handleMagicLinkCallback() {
       .eq('id', session.user.id)
       .single();
     
-    // Set remember token if requested
-    const rememberMe = localStorage.getItem('hardy_remember_preference') === 'true';
-    if (rememberMe) {
-      const thirtyDays = 30 * 24 * 60 * 60 * 1000;
-      const expiry = new Date(Date.now() + thirtyDays);
-      localStorage.setItem('hardy_remember_token', session.access_token);
-      localStorage.setItem('hardy_token_expiry', expiry.toISOString());
-      localStorage.setItem('hardy_user_token', session.access_token);
-    } else {
-      // Session only
-      localStorage.setItem('hardy_user_token', session.access_token);
-    }
+    // Store session token
+    localStorage.setItem('hardy_user_token', session.access_token);
     
     // If no profile, redirect to profile completion
     if (!profile || !profile.nickname) {
@@ -200,33 +175,11 @@ async function handleMagicLinkCallback() {
 async function checkAuth() {
   try {
     const { data: { user } } = await supabase.auth.getUser();
-    
+
     if (!user) {
-      // Check remember token
-      const rememberToken = localStorage.getItem('hardy_remember_token');
-      const tokenExpiry = localStorage.getItem('hardy_token_expiry');
-      
-      if (rememberToken && tokenExpiry) {
-        const now = new Date().getTime();
-        const expiry = new Date(tokenExpiry).getTime();
-        
-        if (now < expiry) {
-          // Token still valid, restore session
-          const { data: { user: restoredUser }, error } = await supabase.auth.setSession({
-            access_token: rememberToken,
-            refresh_token: rememberToken
-          });
-          
-          if (!error && restoredUser) {
-            return { isAuthenticated: true, user: restoredUser };
-          }
-        }
-      }
-      
-      // No valid session
       return { isAuthenticated: false, user: null };
     }
-    
+
     return { isAuthenticated: true, user };
   } catch (error) {
     console.error('Auth check error:', error);
@@ -238,13 +191,9 @@ async function checkAuth() {
 async function signOut() {
   try {
     await supabase.auth.signOut();
-    // Clear all local storage
     localStorage.removeItem('hardy_user_token');
-    localStorage.removeItem('hardy_remember_token');
-    localStorage.removeItem('hardy_token_expiry');
-    localStorage.removeItem('hardy_remember_preference');
     localStorage.removeItem('hardy_message_listing');
-    
+
     window.location.href = '/';
   } catch (error) {
     console.error('Sign out error:', error);
