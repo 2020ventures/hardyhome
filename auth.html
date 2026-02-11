@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Hardy</title>
+    
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="Hardy - The Community Garden in Your Pocket">
+    <meta name="description" content="Connect with neighbors to share your garden's harvest. Free local produce exchange in Kenosha & Racine Counties.">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://hardyhome.us/">
+    <meta property="og:title" content="Hardy - The Community Garden in Your Pocket">
+    <meta property="og:description" content="Connect with neighbors to share your garden's harvest. Free local produce exchange in Kenosha & Racine Counties.">
+    <meta property="og:image" content="https://hardyhome.us/img/hardy-social-preview.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://hardyhome.us/">
+    <meta property="twitter:title" content="Hardy - The Community Garden in Your Pocket">
+    <meta property="twitter:description" content="Connect with neighbors to share your garden's harvest. Free local produce exchange in Kenosha & Racine Counties.">
+    <meta property="twitter:image" content="https://hardyhome.us/img/hardy-social-preview.png">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CJ4MS44MBB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-CJ4MS44MBB');
+    </script>
+    
+    <style>
+        /* CSS Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Variables */
+        :root {
+            /* Brand Colors */
+            --hardy-green: #4CAF50;
+            --hardy-green-dark: #388E3C;
+            --hardy-green-light: #A5D6A7;
+            
+            /* Supporting Colors */
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --text-light: #FFFFFF;
+            --background-light: #F9F9F9;
+            --background-white: #FFFFFF;
+            --border-color: #E0E0E0;
+            
+            /* Spacing */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-xxl: 3rem;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            
+            /* Box Shadows */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-md: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        }
+        
+        /* Base Styles */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background-color: var(--background-light);
+        }
+        
+        a {
+            color: var(--hardy-green);
+            text-decoration: none;
+        }
+        
+        a:hover {
+            color: var(--hardy-green-dark);
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+        
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Lora', serif;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+        }
+        
+        h2 {
+            font-size: 2rem;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+        }
+        
+        p {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        /* Forms */
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--hardy-green);
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background-color: var(--hardy-green);
+            color: var(--text-light);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background-color: var(--hardy-green-dark);
+            color: var(--text-light);
+        }
+        
+        .btn-secondary {
+            background-color: var(--text-light);
+            color: var(--hardy-green);
+            border: 2px solid var(--hardy-green);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        /* Header */
+        .site-header {
+            background-color: var(--background-white);
+            box-shadow: var(--shadow-sm);
+            padding: var(--spacing-md) 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .site-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            max-width: 150px;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .main-nav ul {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+        
+        .main-nav a {
+            color: var(--text-primary);
+            font-weight: 600;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: var(--hardy-green);
+            background-color: var(--hardy-green-light);
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+        
+        /* Footer */
+        .site-footer {
+            background-color: var(--text-primary);
+            color: var(--text-light);
+            padding: var(--spacing-xxl) 0 var(--spacing-md);
+            margin-top: var(--spacing-xxl);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-xxl);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .footer-logo {
+            margin-bottom: var(--spacing-md);
+            max-width: 150px;
+        }
+        
+        .footer-logo img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .footer-links h3 {
+            margin-bottom: var(--spacing-md);
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+        
+        .footer-links ul li {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .footer-links a {
+            color: var(--text-light);
+            opacity: 0.8;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--hardy-green-light);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Auth Specific Styles for V2 */
+        .auth-container {
+            max-width: 400px;
+            margin: var(--spacing-xxl) auto;
+            background-color: var(--background-white);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+        }
+        
+        .auth-header {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .auth-header h1 {
+            color: var(--hardy-green-dark);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .auth-header p {
+            color: var(--text-secondary);
+        }
+        
+        .magic-link-sent {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .magic-link-sent h3 {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .magic-link-sent p {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: var(--spacing-md);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-md);
+            display: none;
+            text-align: left;
+        }
+        
+        .success-message {
+            background-color: var(--hardy-green-light);
+            color: var(--hardy-green-dark);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-md);
+            display: none;
+            text-align: left;
+        }
+        
+        .loading {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .divider {
+            text-align: center;
+            color: var(--text-secondary);
+            position: relative;
+            margin: var(--spacing-xl) 0;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 45%;
+            height: 1px;
+            background-color: var(--border-color);
+        }
+        
+        .divider::before {
+            left: 0;
+        }
+        
+        .divider::after {
+            right: 0;
+        }
+        
+        .email-icon {
+            font-size: 3rem;
+            color: var(--hardy-green);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-nav > ul {
+                display: none !important;
+            }
+            
+            .user-actions {
+                display: none !important;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .auth-container {
+                margin: var(--spacing-lg) auto;
+                padding: var(--spacing-lg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <a href="../index.html">
+                    <img src="../img/logo.svg" alt="Hardy Home and Garden">
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="browse.html">Browse</a></li>
+                    <li><a href="dashboard.html">My Dashboard</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <a href="support.html" class="btn btn-secondary">Support Hardy</a>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="auth-container">
+            <!-- Email Entry Screen -->
+            <div id="email-screen">
+                <div class="auth-header">
+                    <h1>Welcome to Hardy</h1>
+                    <p>Sign in or create an account with your email</p>
+                </div>
+                
+                <div class="error-message" id="email-error"></div>
+                <div class="success-message" id="email-success"></div>
+                
+                <form id="email-form">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" required placeholder="you@example.com">
+                        <small style="color: var(--text-secondary); display: block; margin-top: 6px;">
+                            We'll send you a 6-digit code to sign in. No password needed.
+                        </small>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block" id="email-submit" style="margin-top: var(--spacing-lg);">
+                        Continue with Email
+                    </button>
+                </form>
+                
+                <div class="divider">or</div>
+                
+                <p>
+                    <a href="browse.html">
+                        <i class="fas fa-eye"></i> Continue browsing without an account
+                    </a>
+                </p>
+            </div>
+            
+            <!-- Code Entry Screen -->
+            <div id="magic-link-sent" style="display: none;">
+                <div class="email-icon">
+                    <i class="fas fa-envelope-open-text"></i>
+                </div>
+
+                <div class="magic-link-sent">
+                    <h3>Check Your Email!</h3>
+                    <p>We sent a 6-digit sign-in code to:</p>
+                    <p id="sent-to-email" style="font-weight: bold;"></p>
+                </div>
+
+                <div class="error-message" id="code-error"></div>
+
+                <form id="code-form" style="margin: var(--spacing-lg) 0;">
+                    <div class="form-group">
+                        <label for="otp-code">Enter your 6-digit code</label>
+                        <input type="text" id="otp-code" required
+                               maxlength="6" pattern="[0-9]{6}" inputmode="numeric"
+                               placeholder="000000" autocomplete="one-time-code"
+                               style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem; font-weight: 700;">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block" id="code-submit">
+                        Verify Code
+                    </button>
+                </form>
+
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--spacing-sm);">
+                    You can also click the sign-in link in the email.
+                </p>
+
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                    Didn't get it? Check your spam folder or
+                    <a href="#" id="resend-link">send a new code</a>
+                </p>
+
+                <button class="btn btn-secondary btn-block" onclick="showEmailScreen()" style="margin-top: var(--spacing-md);">
+                    Use a different email
+                </button>
+            </div>
+
+            <!-- Profile Completion (shown after code verification) -->
+            <div id="profile-form-container" style="display: none;">
+                <div class="auth-header">
+                    <h1>Complete Your Profile</h1>
+                    <p>Just a few more details to get started!</p>
+                </div>
+
+                <div style="background-color: var(--background-light); padding: var(--spacing-md); border-radius: var(--radius-sm); margin-bottom: var(--spacing-lg); text-align: center; color: var(--text-secondary);">
+                    <strong>Email:</strong> <span id="verified-email"></span>
+                </div>
+
+                <div class="error-message" id="profile-error"></div>
+
+                <form id="profile-form">
+                    <div class="form-group">
+                        <label for="nickname">Nickname*</label>
+                        <input type="text" id="nickname" required>
+                        <small style="color: var(--text-secondary); display: block; margin-top: 4px;">This is what will display on your listings</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="full_name">Full Name*</label>
+                        <input type="text" id="full_name" required>
+                        <small style="color: var(--text-secondary); display: block; margin-top: 4px;">For your account only, not shown publicly</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="zip_code">ZIP Code*</label>
+                        <select id="zip_code" required>
+                            <option value="">Select your ZIP code</option>
+                            <optgroup label="Kenosha County">
+                                <option value="53102">53102 - Salem</option>
+                                <option value="53104">53104 - Bristol</option>
+                                <option value="53105">53105 - Burlington</option>
+                                <option value="53109">53109 - Camp Lake</option>
+                                <option value="53140">53140 - Kenosha</option>
+                                <option value="53141">53141 - Kenosha</option>
+                                <option value="53142">53142 - Kenosha</option>
+                                <option value="53143">53143 - Kenosha</option>
+                                <option value="53144">53144 - Kenosha</option>
+                                <option value="53152">53152 - New Munster</option>
+                                <option value="53158">53158 - Pleasant Prairie</option>
+                                <option value="53168">53168 - Somers</option>
+                                <option value="53170">53170 - Silver Lake</option>
+                                <option value="53171">53171 - Somers</option>
+                                <option value="53179">53179 - Trevor</option>
+                                <option value="53181">53181 - Twin Lakes</option>
+                                <option value="53182">53182 - Union Grove</option>
+                            </optgroup>
+                            <optgroup label="Racine County">
+                                <option value="53108">53108 - Caledonia</option>
+                                <option value="53126">53126 - Franksville</option>
+                                <option value="53139">53139 - Kansasville</option>
+                                <option value="53154">53154 - Mount Pleasant</option>
+                                <option value="53167">53167 - Rochester</option>
+                                <option value="53177">53177 - Sturtevant</option>
+                                <option value="53185">53185 - Waterford</option>
+                                <option value="53401">53401 - Racine</option>
+                                <option value="53402">53402 - Racine</option>
+                                <option value="53403">53403 - Racine</option>
+                                <option value="53404">53404 - Racine</option>
+                                <option value="53405">53405 - Racine</option>
+                                <option value="53406">53406 - Racine</option>
+                            </optgroup>
+                            <optgroup label="Out of Area">
+                                <option value="other">My ZIP code isn't listed</option>
+                            </optgroup>
+                        </select>
+                        <small id="zip-help" style="color: var(--text-secondary); display: block; margin-top: 4px;">Hardy is currently serving Kenosha & Racine Counties</small>
+                    </div>
+
+                    <div class="form-group" style="margin-top: var(--spacing-lg);">
+                        <label style="margin-bottom: var(--spacing-sm);">Email Preferences</label>
+                        <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                            <label style="display: flex; align-items: center; gap: var(--spacing-sm); font-weight: normal; cursor: pointer;">
+                                <input type="checkbox" id="pref_platform_updates" checked>
+                                Send me Hardy platform updates and tips
+                            </label>
+                            <label style="display: flex; align-items: center; gap: var(--spacing-sm); font-weight: normal; cursor: pointer;">
+                                <input type="checkbox" id="pref_marketing">
+                                Send me occasional partner offers and promotions
+                            </label>
+                        </div>
+                        <small style="margin-top: var(--spacing-xs); display: block; color: var(--text-secondary);">You'll always receive message notifications. You can change these anytime in your profile.</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block" id="profile-submit">
+                        Complete Profile
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <div class="footer-logo">
+                        <img src="../img/logo-white.svg" alt="Hardy Home and Garden">
+                    </div>
+                    <p>The community garden in your pocket.</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="browse.html">Browse</a></li>
+                        <li><a href="about.html">About Hardy</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Get Started</h3>
+                    <ul>
+                        <li><a href="auth.html">Sign In</a></li>
+                        <li><a href="create.html">Create Listing</a></li>
+                        <li><a href="dashboard.html">My Dashboard</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="terms.html">Terms of Use</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Hardy Home and Garden. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Hardy Config -->
+    <script src="../hardy-config.js"></script>
+    
+    <!-- Page Scripts -->
+    <script>
+        let currentEmail = '';
+        let currentUserId = null;
+
+        // Mobile menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const mainNav = document.querySelector('.main-nav');
+
+            if (mobileMenuBtn && mainNav) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    if (mainNav.style.display === 'block') {
+                        mainNav.style.display = 'none';
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                    } else {
+                        mainNav.style.display = 'block';
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    }
+                });
+            }
+        });
+
+        // Show email screen
+        function showEmailScreen() {
+            document.getElementById('email-screen').style.display = 'block';
+            document.getElementById('magic-link-sent').style.display = 'none';
+            document.getElementById('profile-form-container').style.display = 'none';
+            document.getElementById('email').value = '';
+            document.getElementById('email-error').style.display = 'none';
+            document.getElementById('email-success').style.display = 'none';
+        }
+
+        // Show code entry screen
+        function showCodeScreen(email) {
+            document.getElementById('email-screen').style.display = 'none';
+            document.getElementById('magic-link-sent').style.display = 'block';
+            document.getElementById('sent-to-email').textContent = email;
+            document.getElementById('otp-code').value = '';
+            document.getElementById('code-error').style.display = 'none';
+            currentEmail = email;
+            // Auto-focus the code input
+            setTimeout(function() { document.getElementById('otp-code').focus(); }, 100);
+        }
+
+        // Show profile completion form
+        function showProfileForm(email, userId) {
+            document.getElementById('email-screen').style.display = 'none';
+            document.getElementById('magic-link-sent').style.display = 'none';
+            document.getElementById('profile-form-container').style.display = 'block';
+            document.getElementById('verified-email').textContent = email;
+            currentUserId = userId;
+            currentEmail = email;
+        }
+
+        // Redirect after successful auth
+        function redirectUser() {
+            const storedRedirect = localStorage.getItem('hardy_auth_redirect');
+            localStorage.removeItem('hardy_auth_redirect');
+
+            let redirectTo = 'browse.html';
+            if (storedRedirect === 'dashboard') {
+                redirectTo = 'dashboard.html';
+            } else if (storedRedirect === 'create') {
+                redirectTo = 'create.html';
+            }
+
+            window.location.href = redirectTo;
+        }
+
+        // Handle email form submission - send OTP code
+        document.getElementById('email-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('email-submit');
+            const errorMsg = document.getElementById('email-error');
+            const email = document.getElementById('email').value.trim();
+
+            errorMsg.style.display = 'none';
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending sign-in code...';
+            submitBtn.classList.add('loading');
+
+            try {
+                const result = await sendMagicLink(email);
+
+                if (!result.success) {
+                    throw new Error(result.error || 'Failed to send sign-in code');
+                }
+
+                showCodeScreen(email);
+
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'otp_code_sent', { 'event_category': 'engagement' });
+                }
+
+            } catch (error) {
+                console.error('Send code error:', error);
+                errorMsg.textContent = error.message || 'Failed to send sign-in code. Please try again.';
+                errorMsg.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Continue with Email';
+                submitBtn.classList.remove('loading');
+            }
+        });
+
+        // Handle OTP code form submission
+        document.getElementById('code-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('code-submit');
+            const errorMsg = document.getElementById('code-error');
+            const code = document.getElementById('otp-code').value.trim();
+
+            errorMsg.style.display = 'none';
+
+            if (!/^\d{6}$/.test(code)) {
+                errorMsg.textContent = 'Please enter the 6-digit code from your email.';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Verifying...';
+
+            try {
+                const result = await verifyLoginCode(currentEmail, code);
+
+                if (!result.success) {
+                    throw new Error(result.error || 'Invalid or expired code. Please try again.');
+                }
+
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'otp_code_verified', { 'event_category': 'engagement' });
+                }
+
+                if (result.needsProfile) {
+                    showProfileForm(result.email || currentEmail, result.userId);
+                } else {
+                    redirectUser();
+                }
+
+            } catch (error) {
+                console.error('Code verification error:', error);
+                errorMsg.textContent = error.message || 'Verification failed. Please check the code and try again.';
+                errorMsg.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Verify Code';
+            }
+        });
+
+        // Handle resend code
+        document.getElementById('resend-link').addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            const link = e.target;
+            const originalText = link.textContent;
+            link.textContent = 'Sending...';
+            link.style.pointerEvents = 'none';
+
+            try {
+                const result = await sendMagicLink(currentEmail);
+
+                if (!result.success) {
+                    throw new Error(result.error || 'Failed to resend code');
+                }
+
+                link.textContent = 'Sent!';
+                setTimeout(function() { link.textContent = originalText; }, 2000);
+
+            } catch (error) {
+                alert('Failed to resend code: ' + error.message);
+                link.textContent = originalText;
+            } finally {
+                link.style.pointerEvents = 'auto';
+            }
+        });
+
+        // Handle profile form submission
+        document.getElementById('profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('profile-submit');
+            const errorMsg = document.getElementById('profile-error');
+
+            errorMsg.style.display = 'none';
+
+            const nickname = document.getElementById('nickname').value.trim();
+            const fullName = document.getElementById('full_name').value.trim();
+            const zipCode = document.getElementById('zip_code').value;
+            const prefPlatformUpdates = document.getElementById('pref_platform_updates').checked;
+            const prefMarketing = document.getElementById('pref_marketing').checked;
+
+            if (zipCode === 'other') {
+                errorMsg.innerHTML = 'Hardy is currently available only in Kenosha and Racine Counties. <a href="waitlist.html">Join our waitlist</a> to be notified when we expand!';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Creating profile...';
+
+            try {
+                const { error } = await window.hardySupabase
+                    .from('profiles')
+                    .upsert({
+                        id: currentUserId,
+                        nickname: nickname,
+                        full_name: fullName,
+                        zip_code: zipCode,
+                        neighborhood: getZipDisplayName(zipCode),
+                        email: currentEmail,
+                        email_preferences: {
+                            platform_updates: prefPlatformUpdates,
+                            marketing: prefMarketing
+                        },
+                        updated_at: new Date().toISOString()
+                    });
+
+                if (error) throw error;
+
+                try {
+                    await sendWelcomeEmail(currentEmail, fullName);
+                } catch (emailError) {
+                    console.error('Welcome email failed:', emailError);
+                }
+
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'sign_up', { 'event_category': 'engagement' });
+                }
+
+                redirectUser();
+
+            } catch (error) {
+                console.error('Profile creation error:', error);
+                errorMsg.textContent = error.message || 'Failed to create profile. Please try again.';
+                errorMsg.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Complete Profile';
+            }
+        });
+
+        // Check if we're returning from a redirect
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectTo = urlParams.get('redirect');
+        if (redirectTo) {
+            localStorage.setItem('hardy_auth_redirect', redirectTo);
+        }
+    </script>
+</body>
+</html>
