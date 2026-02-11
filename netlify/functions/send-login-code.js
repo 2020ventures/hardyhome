@@ -67,12 +67,13 @@ exports.handler = async (event, context) => {
     }
 
     const generateData = await generateResponse.json();
-    const otp = generateData.properties?.email_otp;
-    const actionLink = generateData.properties?.action_link;
+    console.log('generate_link response keys:', Object.keys(generateData));
+    const otp = generateData.email_otp || generateData.properties?.email_otp;
+    const actionLink = generateData.action_link || generateData.properties?.action_link;
 
     if (!otp) {
-      console.error('No OTP returned from generate_link:', JSON.stringify(generateData));
-      throw new Error('Failed to generate sign-in code');
+      console.error('No OTP returned from generate_link. Full response:', JSON.stringify(generateData));
+      throw new Error('No OTP in response. Keys: ' + Object.keys(generateData).join(', '));
     }
 
     // Send the email via Resend (same pipeline as welcome/notification emails)
