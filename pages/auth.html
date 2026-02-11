@@ -162,26 +162,6 @@
             border-color: var(--hardy-green);
         }
         
-        /* Checkbox styling */
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            margin: var(--spacing-lg) 0;
-        }
-        
-        .checkbox-group input[type="checkbox"] {
-            width: auto;
-            margin: 0;
-            cursor: pointer;
-        }
-        
-        .checkbox-group label {
-            margin: 0;
-            font-weight: normal;
-            cursor: pointer;
-        }
-        
         /* Buttons */
         .btn {
             display: inline-block;
@@ -505,12 +485,7 @@
                         </small>
                     </div>
                     
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="remember-me" checked>
-                        <label for="remember-me">Remember me for 30 days</label>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary btn-block" id="email-submit">
+                    <button type="submit" class="btn btn-primary btn-block" id="email-submit" style="margin-top: var(--spacing-lg);">
                         Continue with Email
                     </button>
                 </form>
@@ -709,7 +684,6 @@
     <!-- Page Scripts -->
     <script>
         let currentEmail = '';
-        let currentRememberMe = true;
         let currentUserId = null;
 
         // Mobile menu functionality
@@ -784,17 +758,15 @@
             const submitBtn = document.getElementById('email-submit');
             const errorMsg = document.getElementById('email-error');
             const email = document.getElementById('email').value.trim();
-            const rememberMe = document.getElementById('remember-me').checked;
 
             errorMsg.style.display = 'none';
-            currentRememberMe = rememberMe;
 
             submitBtn.disabled = true;
             submitBtn.textContent = 'Sending sign-in code...';
             submitBtn.classList.add('loading');
 
             try {
-                const result = await sendMagicLink(email, rememberMe);
+                const result = await sendMagicLink(email);
 
                 if (!result.success) {
                     throw new Error(result.error || 'Failed to send sign-in code');
@@ -872,7 +844,7 @@
             link.style.pointerEvents = 'none';
 
             try {
-                const result = await sendMagicLink(currentEmail, currentRememberMe);
+                const result = await sendMagicLink(currentEmail);
 
                 if (!result.success) {
                     throw new Error(result.error || 'Failed to resend code');
