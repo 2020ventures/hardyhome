@@ -69,14 +69,13 @@ exports.handler = async (event, context) => {
     const generateData = await generateResponse.json();
     console.log('generate_link response keys:', Object.keys(generateData));
     const otp = generateData.email_otp || generateData.properties?.email_otp;
-    const actionLink = generateData.action_link || generateData.properties?.action_link;
 
     if (!otp) {
       console.error('No OTP returned from generate_link. Full response:', JSON.stringify(generateData));
       throw new Error('No OTP in response. Keys: ' + Object.keys(generateData).join(', '));
     }
 
-    // Send the email via Resend (same pipeline as welcome/notification emails)
+    // Send the email via Resend (code only — no clickable links that corporate email scanners can consume)
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto;">
         <div style="background-color: #4CAF50; color: white; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
@@ -84,14 +83,11 @@ exports.handler = async (event, context) => {
         </div>
         <div style="padding: 30px; background-color: #f9f9f9; border-radius: 0 0 8px 8px;">
           <p>Hi there,</p>
-          <p>Here is your sign-in code:</p>
+          <p>Enter this code on the sign-in page:</p>
           <div style="background-color: #ffffff; padding: 20px; text-align: center; margin: 24px 0; border-radius: 8px; border: 2px solid #4CAF50;">
             <span style="font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #212121;">${otp}</span>
           </div>
           <p style="color: #757575; font-size: 14px;">This code expires in 1 hour.</p>
-          <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 24px 0;">
-          <p style="color: #757575; font-size: 13px;">You can also sign in by clicking the link below:</p>
-          <p><a href="${actionLink}" style="color: #4CAF50;">Sign in to Hardy</a></p>
           <p style="color: #999; font-size: 12px; margin-top: 24px;">If you didn't request this, you can safely ignore this email.</p>
         </div>
       </div>
