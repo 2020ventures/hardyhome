@@ -56,16 +56,14 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({
         type: 'magiclink',
         email: email,
-        options: {
-          redirect_to: 'https://hardyhome.us/pages/auth-callback.html'
-        }
+        redirect_to: 'https://hardyhome.us/pages/auth-callback.html'
       })
     });
 
     if (!generateResponse.ok) {
       const errorText = await generateResponse.text();
       console.error('Supabase generate_link error:', generateResponse.status, errorText);
-      throw new Error('Failed to generate sign-in code');
+      throw new Error(`Supabase error (${generateResponse.status}): ${errorText}`);
     }
 
     const generateData = await generateResponse.json();
